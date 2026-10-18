@@ -1,0 +1,397 @@
+{
+  "actual_contexts": [
+    {
+      "bug": "Time-9",
+      "class_units": 0,
+      "hash": "e5fbb261b53a0b2b0ff8f8572cc2efb1c51b8fc1531eb4e51133b13d80f97cf2"
+    },
+    {
+      "bug": "Time-23",
+      "class_units": 0,
+      "hash": "9b2f9e19c6742502e0ddb1f161257f2082372d6e32b475d4cb2286820843f6d1"
+    },
+    {
+      "bug": "Chart-21",
+      "class_units": 0,
+      "hash": "8487e38b9980b52433c565f1162e8b8a96aae8ce3ee0ddd0be2fd83095ff3313"
+    },
+    {
+      "bug": "Chart-19",
+      "class_units": 0,
+      "hash": "aa0df2d1aa5791f70077a3e4b7c01b64189efbc92b8ad2b87159fb4d33571d5b"
+    },
+    {
+      "bug": "Time-6",
+      "class_units": 0,
+      "hash": "c4541dfe3d209608016e809d288da72c562994b966b2cee763e55319644da9aa"
+    },
+    {
+      "bug": "Math-20",
+      "class_units": 0,
+      "hash": "feca6a1296361f5add6a95160a61090797e703c479c5b50e993b6001ade09e0d"
+    },
+    {
+      "bug": "Lang-19",
+      "class_units": 0,
+      "hash": "1d3159d2aaa90ad8cab0e770f158f920be44ae6226562df2e9f5f11dd5eb74d7"
+    },
+    {
+      "bug": "Lang-17",
+      "class_units": 0,
+      "hash": "ff4fc501a28f88292b5706b7bfe0f25891a5c9000c3f114ae5edb5de031786e7"
+    },
+    {
+      "bug": "Chart-25",
+      "class_units": 0,
+      "hash": "059ed10264a0a6c4186eea1d3432097dd77e12057a149047a58ffa4ccf3b01f0"
+    },
+    {
+      "bug": "Chart-6",
+      "class_units": 0,
+      "hash": "9beab42e7c63cd47be110a5f96092a125f777ec5844e0e55d3e9a0202e6a6f52"
+    },
+    {
+      "bug": "Math-10",
+      "class_units": 0,
+      "hash": "5ef390a6802089e137a798485d7c89cc7db79a99a9a9879f1886b3d9bf92ce9d"
+    },
+    {
+      "bug": "Chart-20",
+      "class_units": 0,
+      "hash": "547b47a8c53479e1b37319a299a16d6d0decea2f61ef7b8319dab42d42ac00e7"
+    },
+    {
+      "bug": "Time-17",
+      "class_units": 0,
+      "hash": "d8099b3166677e8b4390bc3a77b1e5c75264a71c9c77305c24775b2f0a797f58"
+    },
+    {
+      "bug": "Lang-16",
+      "class_units": 0,
+      "hash": "f3f335e5b4a4b90aeeca784fa531995bfce450ddb3b116cbb3f3949de03544db"
+    },
+    {
+      "bug": "Chart-22",
+      "class_units": 0,
+      "hash": "4ac77e0b7fbc7ba43cff76a5565392c13482bcb0acf78c9c8b9e2e08ebd8a3a0"
+    },
+    {
+      "bug": "Math-21",
+      "class_units": 0,
+      "hash": "01619f4913a666999cf3b0e5c10003bc3e0495ced64d12e27909ece12f93b621"
+    },
+    {
+      "bug": "Chart-23",
+      "class_units": 0,
+      "hash": "1189d8942ebc7d910222872492406510d5709396ee422e653ab2c96147d32848"
+    },
+    {
+      "bug": "Time-16",
+      "class_units": 0,
+      "hash": "6750c40e57c5ac871c811b762d1dcb9424a3b089581c32e6c38c73f8876e5ec7"
+    },
+    {
+      "bug": "Math-9",
+      "class_units": 0,
+      "hash": "2365116c4249620eef56ade808e8870826af874d335229ded8c8897b5267f153"
+    },
+    {
+      "bug": "Math-12",
+      "class_units": 0,
+      "hash": "5f2b6f28e48f1ad726ba04073ca03b8a240e2406a4428b7b531c44a38faea1d4"
+    },
+    {
+      "bug": "Chart-13",
+      "class_units": 0,
+      "hash": "e828d29b32d87b6599f7f78284d906bf6889ea31aeed03003261fbc0a205f378"
+    },
+    {
+      "bug": "Time-14",
+      "class_units": 0,
+      "hash": "2d81157c3d5110400066f240fa846755731e621282754b5f7d95080a91e0e6d6"
+    },
+    {
+      "bug": "Lang-21",
+      "class_units": 0,
+      "hash": "96f86050f314baec20cd340cbf14e4c3053630712d663bdc30b3b7ded2ee2632"
+    },
+    {
+      "bug": "Math-13",
+      "class_units": 0,
+      "hash": "220fcbe8d7a1a38f714c531176411c411ea5e71a5e39c22692432323199f45e9"
+    },
+    {
+      "bug": "Chart-18",
+      "class_units": 0,
+      "hash": "e4ec5b5a642b8e6d2612e2e9cf72545403ebe23e82a46633fe9669ea92048155"
+    },
+    {
+      "bug": "Chart-9",
+      "class_units": 0,
+      "hash": "020e3b9aee7d8292db67c755125e9e671091dda213f32e60e388b9fd5c730bcf"
+    },
+    {
+      "bug": "Time-24",
+      "class_units": 0,
+      "hash": "4bc09b5476c0c8f6176072f0210984c17e0dfebe7a70761518342570f68a3b9e"
+    },
+    {
+      "bug": "Time-7",
+      "class_units": 0,
+      "hash": "b57475be25a93389b6b5abf2319481d74e3b991ee66f0d99877e33247a3f45bb"
+    },
+    {
+      "bug": "Chart-12",
+      "class_units": 0,
+      "hash": "924fdab930e5acabcec53505cefa75a79308c2af8ca96063c298de8eeacd5e93"
+    },
+    {
+      "bug": "Lang-9",
+      "class_units": 0,
+      "hash": "7dffb3bee56726fc4dcc02c5e2e6d47788b3f798be006c4764d7ee0f3750c443"
+    },
+    {
+      "bug": "Lang-23",
+      "class_units": 0,
+      "hash": "d8a3a21265494677000aaf589b314555f6c55b8bcb12a114d74483cfd0d152e6"
+    },
+    {
+      "bug": "Math-25",
+      "class_units": 0,
+      "hash": "2450804b7f2e1aacf6f069766383457ff882d25a87013cd736a95c3bac4b069c"
+    },
+    {
+      "bug": "Time-18",
+      "class_units": 0,
+      "hash": "fa41347f93480a1fdeea25922a7c544aad8b026e867698a2777a1c60c9389482"
+    },
+    {
+      "bug": "Lang-14",
+      "class_units": 0,
+      "hash": "5b60a0b2ddb7a43e13d66aa3ea8ced589929e2e863837b2201aa34babf7c2c31"
+    },
+    {
+      "bug": "Math-17",
+      "class_units": 0,
+      "hash": "62a721e5ae98ae8ab1a0df9aa886035a27b9265985609f4751f18f2f1e1de615"
+    },
+    {
+      "bug": "Time-25",
+      "class_units": 0,
+      "hash": "1d54c4b0a261fed93c22e9085dee502f5a27e22f2dc2af62c925cf5ede3111f0"
+    },
+    {
+      "bug": "Chart-15",
+      "class_units": 0,
+      "hash": "f8c732806a185a1e3d119230eb33b6c601d98bd2b00893776a2624ad5bbefd96"
+    },
+    {
+      "bug": "Lang-10",
+      "class_units": 0,
+      "hash": "85c5eb019a8cf16fa7809f018311b179ae47fbb957493c5e15c47646144b332c"
+    },
+    {
+      "bug": "Lang-22",
+      "class_units": 0,
+      "hash": "9839a485d536b7cd31be43a0a4802df58b3d1a7bf24e324d4375c046b1289a48"
+    },
+    {
+      "bug": "Chart-14",
+      "class_units": 0,
+      "hash": "54d1c9cab7a04ca62344fcb06433f7104be1b0d478584550d8984ee19b8b92de"
+    },
+    {
+      "bug": "Math-22",
+      "class_units": 0,
+      "hash": "a42b1c25b2c349bcfee9455f81e2594489aa0c231091474fbad9dd2f14161f86"
+    },
+    {
+      "bug": "Time-10",
+      "class_units": 0,
+      "hash": "7e8f140e25f003216b3ba3a905ec44b2f3faf615bf7198440276572114fa7213"
+    },
+    {
+      "bug": "Lang-15",
+      "class_units": 0,
+      "hash": "d5292cf423cd56a2c93e8e91285d1fda92cf5b586d629653dd4399502420fc2e"
+    },
+    {
+      "bug": "Lang-24",
+      "class_units": 0,
+      "hash": "f79ed742b0409cd37e4204a6898f86bb3f105c9547a8b502c40d0ba12e41d622"
+    },
+    {
+      "bug": "Time-12",
+      "class_units": 0,
+      "hash": "2938cfb0af9f69b67f0d23e21bcb60185399e6f52249358f55d550cb5d3955d8"
+    },
+    {
+      "bug": "Lang-13",
+      "class_units": 0,
+      "hash": "7191c71dab8d9151c857017d4f18285246cbe76c9a9b75865ab06dcaf3af63c5"
+    },
+    {
+      "bug": "Time-20",
+      "class_units": 0,
+      "hash": "a540ce294f2c3f7d442c53eead84e8d22d9b0b9cb1db39adca951ff2d05bb936"
+    },
+    {
+      "bug": "Math-6",
+      "class_units": 0,
+      "hash": "0ff06c9041f4b3cd3ef9f5a7650108cb6c4d05db0c311d3e0235a6579e2fb46e"
+    },
+    {
+      "bug": "Time-8",
+      "class_units": 0,
+      "hash": "a39c25f3f31d374025ea302e140709082f816499c402a29d6d029ee15f9b5476"
+    },
+    {
+      "bug": "Math-11",
+      "class_units": 0,
+      "hash": "359d2a4d7daaa3f0f50d7f887586cd9de4d5c5c78b6db6239bd170cf93e8de18"
+    },
+    {
+      "bug": "Lang-26",
+      "class_units": 0,
+      "hash": "c28a1eca7970c0890fdfb6430410563ecd12a47e54562a91ffbba4a02eb49233"
+    },
+    {
+      "bug": "Lang-11",
+      "class_units": 0,
+      "hash": "8aacb820a1f55ddef964cc848e58fd8efeac49e5faa7b8d3b3493e2b6bc345d1"
+    },
+    {
+      "bug": "Math-24",
+      "class_units": 0,
+      "hash": "56dde1e10e6a37141ae278e88f61ec2b149939fea4c43e97b986a94a2f6106fd"
+    },
+    {
+      "bug": "Lang-8",
+      "class_units": 0,
+      "hash": "b10a590af49c156e566e9cf193a00d2eb6eb9b0907c5128bddf23c775ecac937"
+    },
+    {
+      "bug": "Math-19",
+      "class_units": 0,
+      "hash": "1ba5151a133d82e81464773d39efe6bb653af3a72e5570a25202cb08ca53eed5"
+    },
+    {
+      "bug": "Time-13",
+      "class_units": 0,
+      "hash": "83982f7da62c20d71718670e169e08f713b14e0b74bea02db908e84a7c99f917"
+    },
+    {
+      "bug": "Math-16",
+      "class_units": 0,
+      "hash": "d2b129b1359f5a2bf64c285475c3ed112088e023aaa3d482220b36c9d8e9a90e"
+    },
+    {
+      "bug": "Math-14",
+      "class_units": 0,
+      "hash": "f8730de7733393940f84c481080bc748ee3b9b0a5a18408b3b746a4d46c6932b"
+    },
+    {
+      "bug": "Time-15",
+      "class_units": 0,
+      "hash": "c8f94e5530154072409f68ac7e5f3abb948f64a32397d3b148bdf168e3750a95"
+    },
+    {
+      "bug": "Lang-20",
+      "class_units": 0,
+      "hash": "b7a359ffa1369dbdad6b772ba1681fbead1018656d3d1d31f723594d84101d54"
+    }
+  ],
+  "baseline_evidence_identical": true,
+  "bugs": 60,
+  "contexts_rebuilt": false,
+  "disposable_java_files_remaining": 0,
+  "feedback_guided_repair": false,
+  "main_calls": 360,
+  "plausible_full_suite_proofs": [
+    {
+      "bug": "Chart-25",
+      "condition": "combined",
+      "path": "outputs/final/runs/Chart-25/evaluation-logs/combined-0-logs/00006-test.json",
+      "sha256": "53d9fb0634991e01f1f3cf7d4463bf3fecca17213c26803489e3824f881e672d"
+    },
+    {
+      "bug": "Chart-25",
+      "condition": "direct",
+      "path": "outputs/final/runs/Chart-25/evaluation-logs/direct-0-logs/00006-test.json",
+      "sha256": "5f0023252edc06951bdac12ed9e847cbf4010a49d97eb8f28d535231d87a0474"
+    },
+    {
+      "bug": "Chart-25",
+      "condition": "llm",
+      "path": "outputs/final/runs/Chart-25/evaluation-logs/llm-0-logs/00006-test.json",
+      "sha256": "8aae3f295407377514ff0d9d70abe8d9ae848e0dea926df50082f012f7bb397b"
+    },
+    {
+      "bug": "Chart-25",
+      "condition": "spectrum",
+      "path": "outputs/final/runs/Chart-25/evaluation-logs/spectrum-0-logs/00006-test.json",
+      "sha256": "c13f93b452cf0999a3cdbf360c1e00fce53f523e667281b30077d5b0ba83001b"
+    },
+    {
+      "bug": "Lang-21",
+      "condition": "combined",
+      "path": "outputs/final/runs/Lang-21/evaluation-logs/combined-0-logs/00003-test.json",
+      "sha256": "b880c8e8992435d88891618a7b74007140415ce598a417ad96a8da6a5c891329"
+    },
+    {
+      "bug": "Lang-21",
+      "condition": "direct",
+      "path": "outputs/final/runs/Lang-21/evaluation-logs/direct-0-logs/00003-test.json",
+      "sha256": "36a97fe5e4dc57c6e44d47baf26bd831ab79f01dd438d180cd0f52beabcc81ff"
+    },
+    {
+      "bug": "Lang-21",
+      "condition": "llm",
+      "path": "outputs/final/runs/Lang-21/evaluation-logs/llm-0-logs/00003-test.json",
+      "sha256": "5b21ef581492b8754770e90072c06d3402eabbcc05b0b730613ddaff20de4c0b"
+    },
+    {
+      "bug": "Lang-21",
+      "condition": "spectrum",
+      "path": "outputs/final/runs/Lang-21/evaluation-logs/spectrum-0-logs/00003-test.json",
+      "sha256": "9574337762f85b6f2fc9a99f4ed4c7c5b6268a6e21679e0da1065f7255513da3"
+    },
+    {
+      "bug": "Math-22",
+      "condition": "combined",
+      "path": "outputs/final/runs/Math-22/evaluation-logs/combined-0-logs/00004-test.json",
+      "sha256": "feec9e229947ef5cf090898b7f338aebf803ecab19ba3efaf6f05b7c50333d83"
+    },
+    {
+      "bug": "Math-22",
+      "condition": "direct",
+      "path": "outputs/final/runs/Math-22/evaluation-logs/direct-0-logs/00004-test.json",
+      "sha256": "049dc28213b9d3945aba61041bed344276df1ebbafb572ecd26bc656683cb066"
+    },
+    {
+      "bug": "Math-22",
+      "condition": "llm",
+      "path": "outputs/final/runs/Math-22/evaluation-logs/llm-0-logs/00004-test.json",
+      "sha256": "aec4ccee542fd2907b2ccc67e62de32be740120bf9a5761042401427a053d7a0"
+    },
+    {
+      "bug": "Math-22",
+      "condition": "spectrum",
+      "path": "outputs/final/runs/Math-22/evaluation-logs/spectrum-0-logs/00004-test.json",
+      "sha256": "ae832be44616c0f40cb5847ade52a90d04af54c8af5383a020af7693fdfbef4a"
+    },
+    {
+      "bug": "Lang-20",
+      "condition": "combined",
+      "path": "outputs/final/runs/Lang-20/evaluation-logs/combined-0-logs/00004-test.json",
+      "sha256": "2aecce6011d29548e219f6faa9d87829902c00728557d6a7f582c548b404e8ae"
+    },
+    {
+      "bug": "Lang-20",
+      "condition": "llm",
+      "path": "outputs/final/runs/Lang-20/evaluation-logs/llm-0-logs/00004-test.json",
+      "sha256": "17b52f0bccef8e45be55624b8ed9dad5e4bab4f46c24ec02a792eb50e8a16fab"
+    }
+  ],
+  "repair_attempts": 240
+}

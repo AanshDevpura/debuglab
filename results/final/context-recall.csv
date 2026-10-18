@@ -1,0 +1,2 @@
+bugs,expected,file_any,file_all,method_any,method_all,line_eligible,line_any,line_all,line_fraction
+60,60,1,0.9833333333333333,0.9,0.8333333333333334,39,0.9487179487179487,0.9230769230769231,0.9358974358974359
