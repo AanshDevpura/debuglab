@@ -5,17 +5,14 @@ real Java bugs from Defects4J. It compares spectrum-based localization, LLM-only
 localization and their combination, then checks one generated patch per repair
 condition with real compilation and tests.
 
-There is **one selected evaluation set**, stored as a flat list in
-[`configs/bugs.json`](configs/bugs.json). There are no pilot, development or test
-partitions. The intended extensions are a stronger hosted model and a larger bug
-list; both use configuration rather than a new pipeline.
+The selected evaluation set is a list of Defects4J bug IDs in
+[`configs/bugs.json`](configs/bugs.json).
 
 ## Measured localization results
 
-The published evaluation used local Qwen2.5-Coder 7B on 60 selected bugs from Lang,
-Math, Chart and Time. These measured results are preserved in
-[`results/final`](results/final); the runner refactor does not replace them with
-new or simulated outcomes.
+The evaluation used local Qwen2.5-Coder 7B on 60 selected bugs from Lang,
+Math, Chart and Time. Full results and analysis are in
+[`results/final`](results/final).
 
 | Ranker | Method Top-1 | Method Top-3 | Method Top-5 | Line Top-1 | Line Top-3 | Line Top-5 |
 |---|---:|---:|---:|---:|---:|---:|
@@ -46,13 +43,12 @@ The same evaluation completed 360 model calls and 240 one-shot repair attempts.
 | LLM-guided | 4 | 6.7% | 4 / 50 (8.0%) |
 | Combined-guided | 4 | 6.7% | 4 / 50 (8.0%) |
 
-These are **14 passing condition/bug pairs across four unique bugs**, not 14
-repaired bugs. Chart-25, Lang-21 and Math-22 pass all four conditions; Lang-20
-passes with LLM and combined hints. A test-plausible patch passes the available
+The **14 passing condition/bug pairs cover four unique bugs**. Chart-25, Lang-21
+and Math-22 pass all four conditions; Lang-20 passes with LLM and combined hints. A test-plausible patch passes the available
 suite; this does not prove semantic correctness.
 
-The stricter repair subset requires **all true faulty methods to be retrieved**
-(50/60 bugs). Localization additionally reports the subset with at least one
+The retrieval-eligible repair subset requires **all true faulty methods to be
+retrieved** (50/60 bugs). Localization additionally reports the subset with at least one
 faulty method retrieved (54/60). Both supplement the complete selected-set results;
 retrieval misses are never removed from the main denominator. See the
 [summary](results/final/SUMMARY.md), [detailed report](results/final/REPORT.md),
@@ -103,8 +99,8 @@ the same frozen source and failure information. Only its localization hint chang
 | LLM-guided | The validated LLM-only rankings |
 | Combined-guided | The validated combined rankings |
 
-Rankings are guidance, not forced edit locations. The model may choose any complete
-method available in the shared context. It returns one JSON patch containing one
+The repair model uses rankings as guidance and may choose any complete method
+available in the shared context. It returns one JSON patch containing one
 to three distinct method handles and **complete replacement Java methods or
 constructors**, including their original signatures and braces. It does not run
 shell commands, edit files itself or receive compiler/test feedback.
@@ -205,10 +201,34 @@ debuglab run --bug Chart-25 --output outputs/smoke
 ```
 
 A full run submits six model requests per bug: two localizations and four repairs.
-The default output directory is `outputs/local-7b`. Settings preserve the local
+The default output directory is `outputs/local-7b`. The local configuration uses a
 32,768-token context, 4,096-token output budget, 512-token safety reserve,
 temperature 0 and seed 20261009. The matching tokenizer supplies local chat-template
 counts; the input limit is 28,160 tokens.
+
+### Resume and report
+
+Repeat the **same run command** to resume. The runner locks the output directory,
+freezes the configuration, bug list and source before calls, skips completed bugs
+and preserves request caches. Never delete fingerprints or regenerate an
+interrupted/completed call. A pending request without a saved response becomes an
+explicit failure rather than permission to resample.
+
+To regenerate reports from saved evidence, without model calls:
+
+```sh
+debuglab report --output outputs/local-7b
+```
+
+Reports contain pooled method/line Top-1/3/5, infinite and ranked-only mean ranks,
+context recall, syntax-validity rates, all repair statuses, missing selected bugs,
+and both context-conditioned subsets. Incomplete runs are explicitly labeled;
+partial rates are not presented as completed-set results.
+
+## Extensibility
+
+The two planned extensions are a stronger hosted model and a larger evaluation
+set. Model settings and the bug list are configured independently.
 
 ### Hosted stronger model
 
@@ -230,18 +250,18 @@ debuglab run --config configs/hosted.local.json
 ```
 
 The example uses `tokenizer: "conservative"`: UTF-8 byte counts plus estimated
-message framing, explicitly labeled **estimates**, without downloading a tokenizer.
+message framing, explicitly labeled **estimates**.
 For an open-weight hosted model, set `tokenizer` to its matching Hugging Face
 identifier or local tokenizer directory to use its chat template instead. The
 server may use a different template; reported token usage and discrepancies are
 retained separately. The estimator cannot guarantee an unknown server's framing.
-A response reporting an input-budget overflow remains a failed attempt, not a retry.
+Input-budget overflows are recorded as failed attempts.
 
 Provider controls are limited to request compatibility: `token_parameter` can be
 `max_tokens` or `max_completion_tokens`; `seed` and `temperature` can be `null` to
 omit them. Enable `json_mode` or `schema_mode` only if supported by the provider.
 Strict local parsing remains enabled regardless of server formatting support.
-There is no automatic fallback request or resampling after an API error.
+API errors are cached as failed attempts, preserving one-shot evaluation.
 
 ### More bugs
 
@@ -252,33 +272,15 @@ debuglab run --bugs configs/more-bugs.json --output outputs/more-bugs
 ```
 
 Lists contain Defects4J IDs such as `["Lang-1", "Math-3", "Cli-1"]`; duplicates
-and unsafe IDs are rejected. There is no fixed set size or project whitelist.
+and unsafe IDs are rejected. The runner accepts evaluation lists across Defects4J
+projects.
 Additional projects must still reproduce successfully with the benchmark toolchain;
-preparation failures stay selected and appear as incomplete, not silently excluded.
+preparation failures remain in the selected set and appear as incomplete.
 
 Changing the model, bug list or source requires a **new output directory**. All
 four repair conditions still share context within a bug. A different model,
 tokenizer or budget can change which methods fit; compare context hashes and
 retrieval recall when interpreting cross-model results.
-
-### Resume and report
-
-Repeat the **same run command** to resume. The runner locks the output directory,
-freezes the configuration, bug list and source before calls, skips completed bugs
-and preserves request caches. Never delete fingerprints or regenerate an
-interrupted/completed call. A pending request without a saved response becomes an
-explicit failure rather than permission to resample.
-
-To regenerate reports from saved evidence, without model calls:
-
-```sh
-debuglab report --output outputs/local-7b
-```
-
-Reports contain pooled method/line Top-1/3/5, infinite and ranked-only mean ranks,
-context recall, syntax-validity rates, all repair statuses, missing selected bugs,
-and both context-conditioned subsets. Incomplete runs are explicitly labeled;
-partial rates are not presented as completed-set results.
 
 ## Verify
 
@@ -294,8 +296,8 @@ source scripts/env.sh
 scripts/verify
 ```
 
-GitHub Actions runs the portable checks. Tests mock hosted responses; verification
-does not make paid model calls. No new model evaluation is implied by a code test.
+GitHub Actions runs the portable checks. The portable suite uses mock model
+responses; native integration checks use Java and Defects4J.
 
 ## Files and evidence
 
@@ -311,14 +313,12 @@ does not make paid model calls. No new model evaluation is implied by a code tes
 | `java/SpectrumRunner.java` | JUnit/JaCoCo per-test coverage helper |
 | `src/debuglab_gold/` | Separate ground-truth evaluation, reporting and comparison utilities |
 | `tests/` | Portable and native regression tests |
-| `results/final/` | Preserved measured results for the report |
+| `results/final/` | Measured evaluation results and analysis |
 | `outputs/<run>/` | Ignored run manifest, snapshots, reports, worker logs and archives |
 | `outputs/<run>/runs/<bug>/` | Context, model calls, canonical edits, test logs and outcomes |
 | `work/` | Ignored local tools, gold evaluation data and disposable checkouts |
 
-Raw prompts and responses, original-numbered edits, test proofs and hashes remain
-available locally for analysis. Ground-truth fixes are isolated in the evaluator,
-never supplied to retrieval or generation. Optional historical interface helpers
-remain for reading/testing saved evidence; new configurations cannot enable their
-experimental alternatives. Private reports, slides, credentials and runtime data
-are not distributed in Git.
+Each local run retains raw prompts and responses, original-numbered edits, test
+proofs and hashes for analysis. Ground-truth fixes are isolated in the evaluator,
+never supplied to retrieval or generation. Git tracks source, tests and compact
+result tables; `work/` and `outputs/` hold local runtime data and run evidence.
