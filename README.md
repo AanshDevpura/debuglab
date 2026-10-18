@@ -29,8 +29,6 @@ scored using its best-ranked true faulty location.
 
 Combined localization places a faulty method first on 24/60 bugs. Precise line
 localization remains difficult: all three rankers have line Top-1 accuracy of 0%.
-The selected set was used for tuning, so these are not independent generalization
-or causal claims.
 
 ## Measured repair results
 
