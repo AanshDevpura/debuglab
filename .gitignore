@@ -1,0 +1,30 @@
+# Local tools, models, checkouts and raw experiment data
+work/
+outputs/
+output/
+# Local experiment settings and presentation scratch
+configs/*.local.json
+.chart-data-*/
+# Python and editor artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+ENV/
+.venv-*/
+build/
+dist/
+# Credentials and operating-system files
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini

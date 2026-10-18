@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+source scripts/env.sh
+ruff check .
+ruff format --check .
+DEBUGLAB_INTEGRATION=1 pytest -q

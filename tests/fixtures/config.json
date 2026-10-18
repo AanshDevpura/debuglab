@@ -1,0 +1,17 @@
+{
+  "defects4j": "work/tools/defects4j/framework/bin/defects4j",
+  "model": {
+    "base_url": "http://127.0.0.1:11434/v1",
+    "model": "debuglab-qwen-coder",
+    "tokenizer": "Qwen/Qwen2.5-Coder-7B-Instruct",
+    "context_window": 16384,
+    "max_output_tokens": 2048,
+    "temperature": 0.0,
+    "seed": 20261009,
+    "api_key_env": "DEBUGLAB_API_KEY",
+    "safety_margin": 512,
+    "timeout": 600
+  },
+  "samples": 1,
+  "split_path": "tests/fixtures/split.json"
+}

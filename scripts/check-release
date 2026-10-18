@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+python - <<'PY'
+from pathlib import Path
+import re
+import subprocess
+
+files = subprocess.check_output(
+    ['git', 'ls-files', '--cached', '--others', '--exclude-standard', '-z']
+).decode().split('\0')
+files = sorted(set(filter(None, files)))
+if not files:
+    raise SystemExit('No release files found')
+patterns = {
+    'personal absolute path': rb'/(?:Users|home)/[^/\s]+/',
+    'GitHub credential': rb'(?:gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,})',
+    'AWS access key': rb'(?:AKIA|ASIA)[A-Z0-9]{16}',
+    'private key': rb'-----BEGIN (?:[A-Z0-9]+ )*PRIVATE KEY-----',
+    'literal secret': rb'''(?i)(?:api[_-]?key|secret[_-]?key|access[_-]?token|password)["']?\s*[:=]\s*["'][A-Za-z0-9_+/=.-]{24,}["']''',
+}
+failures = []
+large = []
+for name in files:
+    path = Path(name)
+    if path.is_symlink():
+        failures.append(f'{name}: symlinks must be reviewed before publishing')
+        continue
+    if not path.is_file():
+        failures.append(f'{name}: tracked file is missing')
+        continue
+    if path.parts[0] in {'work', 'outputs', 'output', '.venv', 'venv', 'env'}:
+        failures.append(f'{name}: private runtime or deliverable directory')
+    if any(part.startswith('.chart-data-') or part == '__pycache__' for part in path.parts):
+        failures.append(f'{name}: generated scratch/cache file')
+    if path.suffix.lower() in {'.pyc', '.zip', '.jar', '.docx', '.pptx', '.pdf', '.pem', '.key'}:
+        failures.append(f'{name}: binary/private artifact requires explicit review')
+    if (path.name == '.env' or path.name.startswith('.env.')) and path.name != '.env.example':
+        failures.append(f'{name}: environment secrets file')
+    size = path.stat().st_size
+    if size >= 10_000_000:
+        failures.append(f'{name}: file exceeds 10 MB ({size} bytes)')
+    elif size >= 1_000_000:
+        large.append(f'{name}: {size} bytes')
+    data = path.read_bytes()
+    for label, pattern in patterns.items():
+        if re.search(pattern, data):
+            failures.append(f'{name}: {label} detected (value redacted)')
+if large:
+    print('Large files requiring review:\n' + '\n'.join(large))
+if failures:
+    raise SystemExit('Release boundary failed:\n' + '\n'.join(failures))
+print(f'Release boundary passed: {len(files)} files; no private artifacts, detected secrets or personal paths')
+PY

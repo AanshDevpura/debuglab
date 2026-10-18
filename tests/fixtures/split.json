@@ -1,0 +1,57 @@
+{
+  "seed": 20261009,
+  "selection": "First active IDs in Lang, Math, Chart and Time; excludes deprecated IDs from official active-bugs metadata. No repair-outcome exclusions.",
+  "pool": [
+    "Lang-1",
+    "Lang-3",
+    "Lang-4",
+    "Lang-5",
+    "Lang-6",
+    "Math-1",
+    "Math-2",
+    "Math-3",
+    "Math-4",
+    "Math-5",
+    "Chart-1",
+    "Chart-2",
+    "Chart-3",
+    "Chart-4",
+    "Chart-5",
+    "Time-1",
+    "Time-2",
+    "Time-3",
+    "Time-4",
+    "Time-5"
+  ],
+  "dev": [
+    "Lang-1",
+    "Math-5",
+    "Chart-2",
+    "Time-3",
+    "Time-1",
+    "Time-5",
+    "Math-1",
+    "Chart-3",
+    "Lang-3",
+    "Time-4"
+  ],
+  "held_out": [
+    "Math-3",
+    "Math-4",
+    "Chart-4",
+    "Time-2",
+    "Lang-5",
+    "Lang-4",
+    "Chart-1",
+    "Lang-6",
+    "Chart-5",
+    "Math-2"
+  ],
+  "pilot": [
+    "Lang-1",
+    "Math-5",
+    "Chart-2",
+    "Time-3",
+    "Time-1"
+  ]
+}
