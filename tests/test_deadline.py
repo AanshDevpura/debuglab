@@ -36,10 +36,10 @@ def test_worker_restores_deadline_environment_after_failure(tmp_path, monkeypatc
 
     config = replace(
         Config.load(Path("tests/fixtures/config.json")),
-        split_path=str(tmp_path / "split.json"),
+        bugs_path=str(tmp_path / "bugs.json"),
         output_root=str(tmp_path / "runs"),
     )
-    save(Path(config.split_path), {"dev": ["Lang-1"]})
+    save(Path(config.bugs_path), ["Lang-1"])
     config_path = tmp_path / "config.json"
     save(config_path, asdict(config))
     monkeypatch.setenv("DEBUGLAB_BUG_DEADLINE_MONOTONIC", "old-parent-value")
@@ -54,7 +54,7 @@ def test_worker_restores_deadline_environment_after_failure(tmp_path, monkeypatc
 
     monkeypatch.setattr(debuglab.pipeline, "run_bug", fail)
     with pytest.raises(RuntimeError, match="pipeline interrupted"):
-        one(config_path, "dev", "Lang-1")
+        one(config_path, "Lang-1")
     import os
 
     assert os.environ["DEBUGLAB_BUG_DEADLINE_MONOTONIC"] == "old-parent-value"

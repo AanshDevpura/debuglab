@@ -1,0 +1,22 @@
+{
+  "model": {
+    "base_url": "https://api.provider.example/v1",
+    "model": "your-hosted-model",
+    "tokenizer": "conservative",
+    "context_window": 32768,
+    "max_output_tokens": 4096,
+    "safety_margin": 2048,
+    "temperature": null,
+    "seed": null,
+    "token_parameter": "max_tokens",
+    "api_key_env": "DEBUGLAB_API_KEY",
+    "json_mode": false,
+    "schema_mode": false,
+    "timeout": 600
+  },
+  "defects4j": "work/tools/defects4j/framework/bin/defects4j",
+  "bugs_path": "configs/bugs.json",
+  "output_root": "outputs/hosted/runs",
+  "work_root": "work/hosted/bugs",
+  "bug_timeout": 2400
+}

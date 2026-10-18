@@ -90,10 +90,10 @@ def test_context_bytes_identical_and_only_hint_changes(
     assert schema["properties"]["lines"]["maxItems"] == 3
 
 
-def test_replay_cannot_resample_held_out(tmp_path: Path) -> None:
+def test_replay_refuses_unselected_bugs(tmp_path: Path) -> None:
     cfg = replace(Config.load(Path("tests/fixtures/config.json")), output_root=str(tmp_path))
-    with pytest.raises(ValueError, match="dev only"):
-        reuse(cfg, "Math-3", Path("outputs/runs"))
+    with pytest.raises(ValueError, match="selected evaluation set"):
+        reuse(cfg, "Cli-999", Path("outputs/runs"))
 
 
 def test_context_inventory_includes_fields_but_not_test_lines() -> None:
@@ -140,14 +140,13 @@ def test_line_array_representation_preserves_each_requested_source_line() -> Non
 def test_pool_replay_reuses_cleaned_sources_without_copying_model_calls(
     tmp_path: Path, rebuild_context: bool
 ) -> None:
-    split = tmp_path / "split.json"
-    split.write_text(json.dumps({"dev": [], "pool": ["Math-3"]}))
+    selected = tmp_path / "bugs.json"
+    selected.write_text(json.dumps(["Math-3"]))
     source = tmp_path / "source" / "Math-3"
     source.mkdir(parents=True)
     cfg = replace(
         Config.load(Path("tests/fixtures/config.json")),
-        allow_pool_tuning=True,
-        split_path=str(split),
+        bugs_path=str(selected),
         output_root=str(tmp_path / "new"),
         work_root=str(tmp_path / "new-checkout"),
     )
@@ -169,6 +168,6 @@ def test_pool_replay_reuses_cleaned_sources_without_copying_model_calls(
     assert (output / "context-manifest.json").exists() is not rebuild_context
     assert not (Path(cfg.work_root) / "Math-3").exists()
     assert (
-        json.loads((output / "replay-provenance.json").read_text())["partition"]
-        == "authorized_pool"
+        json.loads((output / "replay-provenance.json").read_text())["selection"]
+        == "all_selected_bugs"
     )

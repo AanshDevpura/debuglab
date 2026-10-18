@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import json
 import shutil
 from pathlib import Path
 
 from debuglab.config import Config
 from debuglab.io import digest, save
+from debuglab.selection import read_bugs
 
 ARTIFACTS = (
     "metadata.json",
@@ -22,10 +22,9 @@ ARTIFACTS = (
 
 
 def reuse(config: Config, bug: str, source_root: Path, *, rebuild_context: bool = False) -> None:
-    split = json.loads(Path(config.split_path).read_text())
-    allowed = split["pool"] if config.allow_pool_tuning else split["dev"]
+    allowed = read_bugs(Path(config.bugs_path))
     if bug not in allowed:
-        raise ValueError("Infrastructure replay is dev only")
+        raise ValueError("Bug is not in the selected evaluation set")
     source = source_root.resolve() / bug
     output = Path(config.output_root).resolve() / bug
     old_config = Config.load(source / "config.json")
@@ -61,7 +60,7 @@ def reuse(config: Config, bug: str, source_root: Path, *, rebuild_context: bool 
         {
             "source": str(source),
             "hashes": hashes,
-            "partition": "authorized_pool" if config.allow_pool_tuning else "dev",
+            "selection": "all_selected_bugs",
             "ground_truth_inputs": False,
             "frozen_context_reused": not rebuild_context,
         },

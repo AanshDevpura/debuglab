@@ -1,57 +1,144 @@
 # DebugLab
 
-LLM-assisted fault localization and automated program repair for real Java bugs.
-DebugLab compares spectrum-based localization, LLM localization and their
-combination, then generates one patch per repair condition and validates it with
-Java compilation and the complete Defects4J test suite.
+DebugLab evaluates LLM-assisted fault localization and automated program repair on
+real Java bugs from Defects4J. It compares spectrum-based localization, LLM-only
+localization and their combination, then checks one generated patch per repair
+condition with real compilation and tests.
 
-## Results
+There is **one selected evaluation set**, stored as a flat list in
+[`configs/bugs.json`](configs/bugs.json). There are no pilot, development or test
+partitions. The intended extensions are a stronger hosted model and a larger bug
+list; both use configuration rather than a new pipeline.
 
-The **selected evaluation set** contains 60 bugs from Lang, Math, Chart and Time.
-The completed evaluation used Qwen2.5-Coder 7B for 360 model calls and 240 one-shot
-repair attempts. It produced **14 test-plausible condition/bug pairs across four
-unique bugs**. Passing the available tests does not prove semantic correctness.
+## Measured localization results
 
-| Condition | Plausible / 60 | Overall rate | Plausible / 50 retrieval-eligible bugs |
+The published evaluation used local Qwen2.5-Coder 7B on 60 selected bugs from Lang,
+Math, Chart and Time. These measured results are preserved in
+[`results/final`](results/final); the runner refactor does not replace them with
+new or simulated outcomes.
+
+| Ranker | Method Top-1 | Method Top-3 | Method Top-5 | Line Top-1 | Line Top-3 | Line Top-5 |
+|---|---:|---:|---:|---:|---:|---:|
+| Spectrum / Ochiai | 21.7% | 53.3% | 66.7% | 0.0% | 7.7% | 15.4% |
+| LLM | 35.0% | 53.3% | 63.3% | 0.0% | 7.7% | 7.7% |
+| Combined | 40.0% | 60.0% | 70.0% | 0.0% | 10.3% | 17.9% |
+
+Method metrics include all 60 bugs. Line metrics have 39 eligible bugs, defined by
+changed or deleted buggy lines; insertion-only fixes remain method-eligible.
+Unranked faults remain counted: method misses are 3/20/18 and line misses are
+3/31/25 for spectrum/LLM/combined. Overall mean ranks are therefore infinite;
+ranked-only means are reported separately. Ties receive mean rank, and a bug is
+scored using its best-ranked true faulty location.
+
+Combined localization places a faulty method first on 24/60 bugs. Precise line
+localization remains difficult: all three rankers have line Top-1 accuracy of 0%.
+The selected set was used for tuning, so these are not independent generalization
+or causal claims.
+
+## Measured repair results
+
+The same evaluation completed 360 model calls and 240 one-shot repair attempts.
+
+| Repair condition | Plausible / 60 | Overall rate | Plausible / 50 retrieval-eligible bugs |
 |---|---:|---:|---:|
 | Direct | 3 | 5.0% | 3 / 50 (6.0%) |
 | Spectrum-guided | 3 | 5.0% | 3 / 50 (6.0%) |
 | LLM-guided | 4 | 6.7% | 4 / 50 (8.0%) |
 | Combined-guided | 4 | 6.7% | 4 / 50 (8.0%) |
 
-Repair eligibility requires **all true faulty methods to be present in the
-retrieved context**. The ten other bugs remain in the overall denominator.
-Method Top-1 accuracy is 21.7% for spectrum, 35.0% for LLM and 40.0% for combined
-localization. See the [final summary](results/final/SUMMARY.md),
-[full report](results/final/REPORT.md) and [CSV tables](results/final/).
+These are **14 passing condition/bug pairs across four unique bugs**, not 14
+repaired bugs. Chart-25, Lang-21 and Math-22 pass all four conditions; Lang-20
+passes with LLM and combined hints. A test-plausible patch passes the available
+suite; this does not prove semantic correctness.
 
-The set was used for tuning. These results are not independent evidence of
-generalization, and sparse repair successes do not establish causality.
+The stricter repair subset requires **all true faulty methods to be retrieved**
+(50/60 bugs). Localization additionally reports the subset with at least one
+faulty method retrieved (54/60). Both supplement the complete selected-set results;
+retrieval misses are never removed from the main denominator. See the
+[summary](results/final/SUMMARY.md), [detailed report](results/final/REPORT.md),
+[localization tables](results/final/localization.csv) and
+[repair tables](results/final/repair.csv).
 
-## Pipeline
+## What the LLM actually does
 
-```mermaid
-flowchart LR
-  B[Original buggy source and failing tests] --> C[Frozen source context]
-  B --> S[Per-test coverage and Ochiai]
-  C --> L[LLM and combined localization]
-  S --> L
-  C --> R[Four one-shot repair conditions]
-  L --> R
-  R --> T[Strict edits, compile, trigger, full suite]
-  T --> E[Sealed evaluation and reports]
+### 1. Build a shared debugging input
+
+The harness checks out the original buggy version, reproduces failing tests and
+collects per-test executable-line coverage. Ochiai converts coverage into
+suspiciousness rankings without using an LLM.
+
+Separately, retrieval selects relevant complete methods and compact class
+information using failing-test text, stack traces, lexical matches, an unranked
+executed-method set and conservative call proximity. Retrieval cannot read Ochiai
+scores or known fixes. The selected source is numbered, assigned short method
+handles such as `M001`, budgeted and frozen once per bug.
+
+### 2. Ask for fault rankings
+
+The configured model receives two separate localization requests:
+
+- **LLM-only:** source context plus failing-test/error information.
+- **Combined:** the same input plus spectrum-based suspiciousness hints.
+
+The model returns JSON ranking up to ten methods, with up to five original line
+numbers inside each method. For example:
+
+```json
+{"methods": [{"method_id": "M001", "lines": [123, 126]}]}
 ```
 
-For each bug, two model calls localize the fault and four calls generate patches:
-direct repair without a localization hint, spectrum-guided repair, LLM-guided
-repair and combined-guided repair. All four conditions share exactly the same
-original source context and failure information; only the hint varies.
+The parser checks handles, line ranges and duplicates, then converts the response
+into original method and statement rankings. Invalid rankings remain recorded
+failures. Ground-truth fixes are used only by a separate evaluation process.
+
+### 3. Ask for four independent patches
+
+The same configured model makes four **separate repair calls**. Every call gets
+the same frozen source and failure information. Only its localization hint changes:
+
+| Condition | Input added to the repair request |
+|---|---|
+| Direct | No explicit localization ranking |
+| Spectrum-guided | Ochiai method/statement rankings |
+| LLM-guided | The validated LLM-only rankings |
+| Combined-guided | The validated combined rankings |
+
+Rankings are guidance, not forced edit locations. The model may choose any complete
+method available in the shared context. It returns one JSON patch containing one
+to three distinct method handles and **complete replacement Java methods or
+constructors**, including their original signatures and braces. It does not run
+shell commands, edit files itself or receive compiler/test feedback.
+
+The harness resolves each handle to its original production file and inclusive
+line range. It replaces those method bodies and declarations with the generated
+strings, applying ranges from the bottom of a file upward so line numbers do not
+drift. No test edits, arbitrary paths, duplicate handles or overlapping ranges are
+accepted. Generated source is not hand-corrected.
+
+### 4. Check each patch on an isolated checkout
+
+Each condition starts from a fresh copy of the original buggy program. Validation
+stops at the first failed stage:
+
+1. Parse JSON and validate the original-source edit mappings.
+2. Parse the modified Java source to check syntax.
+3. Compile with the benchmark's native build.
+4. Run the original triggering tests.
+5. Run the **complete** native test suite.
+
+A patch is `PLAUSIBLE` only if the full `defects4j test` command, without `-t`,
+returns code 0, does not time out and reports a final `Failing tests: 0`. Exit code
+0 alone is insufficient. Failures are classified as `INVALID_FORMAT`,
+`INVALID_APPLY`, `SYNTAX_ERROR`, `COMPILE_ERROR`, `FAILS_TRIGGER`, `FAILS_SUITE`,
+`MODEL_ERROR` or `TIMEOUT`. All remain in the results. There is no feedback-driven
+revision, repeated sampling or best-of selection.
 
 ## Install
 
-Use Python 3.11 on macOS or Linux. Git, Java, benchmark dependencies and model
-weights are installed separately. This repository does not include those tools
-or benchmark checkouts.
+Use Python 3.11 and Java 11 on macOS or Linux. Native experiments also need Git,
+Subversion, Perl and `cpanm`, as documented by
+[Defects4J](https://github.com/rjust/defects4j#setting-up-defects4j). The measured
+benchmark version is 3.0.1.
 
 ```sh
 git clone https://github.com/AanshDevpura/debuglab.git
@@ -60,22 +147,7 @@ python3.11 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements-lock.txt
 pip install --no-deps -e .
-```
 
-The lock file pins the validated Python application and development dependencies.
-The tokenizer is downloaded on first use and then cached. Unit tests mock model
-generation and do not need a running model or old experiment artifacts.
-
-### Defects4J and Java
-
-Install Java 11, Git, Subversion, Perl and `cpanm`. Set `JAVA_HOME` to your Java 11
-installation and put its `bin` directory on `PATH`. Follow the
-[official Defects4J installation requirements](https://github.com/rjust/defects4j#setting-up-defects4j)
-for the platform prerequisites. The evaluated benchmark version is 3.0.1.
-
-From the repository root:
-
-```sh
 mkdir -p work/tools
 git clone https://github.com/rjust/defects4j.git work/tools/defects4j
 (
@@ -83,25 +155,13 @@ git clone https://github.com/rjust/defects4j.git work/tools/defects4j
   cpanm --installdeps .
   ./init.sh
 )
-source scripts/env.sh
-java -version
-defects4j info -p Lang
 ```
 
-Check that the installed Defects4J checkout reports version 3.0.1 if reproducing
-the published evaluation. `configs/local.json` and the integration fixtures expect
-the executable at `work/tools/defects4j/framework/bin/defects4j`. A different
-installation can be supplied through a copied configuration for experiment runs.
-The integration tests use the documented local tools location.
+Set `JAVA_HOME` and `PATH` to your Java 11 installation. Check that Defects4J reports
+version 3.0.1 when reproducing the measured results. The default executable is
+`work/tools/defects4j/framework/bin/defects4j`; another path can be configured.
 
-`scripts/env.sh` optionally discovers workspace-local tools and sets the benchmark
-timezone to `America/Los_Angeles`. Always run native tests and experiments in that
-timezone. Check that sourcing it has not selected a different Java installation.
-
-### Coverage dependencies
-
-The coverage runner requires the JaCoCo 0.8.12 runtime agent and command-line JARs
-at these filenames. Download them from Maven Central:
+Install the coverage dependencies at these filenames:
 
 ```sh
 mkdir -p work/tools/jacoco
@@ -111,229 +171,154 @@ curl --fail --location \
 curl --fail --location \
   https://repo.maven.apache.org/maven2/org/jacoco/org.jacoco.cli/0.8.12/org.jacoco.cli-0.8.12-nodeps.jar \
   --output work/tools/jacoco/cli.jar
+
+source scripts/env.sh
+java -version
+defects4j info -p Lang
 ```
 
-`java/SpectrumRunner.java` uses JUnit and JaCoCo to collect per-test executable-line
-coverage. Its compiled classes are generated locally under `work/tools/jacoco`.
+The environment script discovers optional workspace-local tools and sets the
+benchmark timezone to `America/Los_Angeles`. Always use this timezone for native
+runs. Python dependencies are pinned; model weights and native tools are separate.
 
-### Local model
+## Run
 
-Install and start [Ollama](https://docs.ollama.com/quickstart), then run:
+### Local 7B model
+
+Install and start [Ollama](https://docs.ollama.com/quickstart), then create the alias:
 
 ```sh
 ollama pull qwen2.5-coder:7b
 ollama create debuglab-qwen-coder-32k -f configs/ollama-7b.Modelfile
-ollama show debuglab-qwen-coder-32k
 ```
 
-`configs/local.json` targets the OpenAI-compatible endpoint
-`http://127.0.0.1:11434/v1`. The evaluated settings are a 32,768-token context,
-4,096-token output, 512-token safety reserve, temperature 0, seed 20261009 and one
-sample per repair condition. Input prompts must fit 28,160 tokens. An authenticated
-compatible service can read its key from the `DEBUGLAB_API_KEY` environment
-variable; do not put credentials in configuration files or commit `.env` files.
-
-Pulling a model by tag may obtain different weights later. Exact replay also
-requires the original weights, tokenizer and chat template. The evaluated weight
-blob was `60e05f2100071479f596b964f89f510f057ce397ea22f2833a0cfe029bfc2463`.
-
-## Verify the installation
-
-Portable checks, also run by GitHub Actions:
+Run **every bug in the selected list** with one command:
 
 ```sh
+debuglab run
+```
+
+Or run just one selected bug in a separate output directory:
+
+```sh
+debuglab run --bug Chart-25 --output outputs/smoke
+```
+
+A full run submits six model requests per bug: two localizations and four repairs.
+The default output directory is `outputs/local-7b`. Settings preserve the local
+32,768-token context, 4,096-token output budget, 512-token safety reserve,
+temperature 0 and seed 20261009. The matching tokenizer supplies local chat-template
+counts; the input limit is 28,160 tokens.
+
+### Hosted stronger model
+
+Copy [`configs/hosted.example.json`](configs/hosted.example.json) to an ignored
+local configuration, then edit the provider details:
+
+```sh
+cp configs/hosted.example.json configs/hosted.local.json
+```
+
+Set `base_url` to a Chat Completions-compatible endpoint, `model` to the hosted
+model ID, and the context/output budgets to values supported by that model. Put
+credentials in the environment variable named by `api_key_env`:
+
+```sh
+read -s DEBUGLAB_API_KEY
+export DEBUGLAB_API_KEY
+debuglab run --config configs/hosted.local.json
+```
+
+The example uses `tokenizer: "conservative"`: UTF-8 byte counts plus estimated
+message framing, explicitly labeled **estimates**, without downloading a tokenizer.
+For an open-weight hosted model, set `tokenizer` to its matching Hugging Face
+identifier or local tokenizer directory to use its chat template instead. The
+server may use a different template; reported token usage and discrepancies are
+retained separately. The estimator cannot guarantee an unknown server's framing.
+A response reporting an input-budget overflow remains a failed attempt, not a retry.
+
+Provider controls are limited to request compatibility: `token_parameter` can be
+`max_tokens` or `max_completion_tokens`; `seed` and `temperature` can be `null` to
+omit them. Enable `json_mode` or `schema_mode` only if supported by the provider.
+Strict local parsing remains enabled regardless of server formatting support.
+There is no automatic fallback request or resampling after an API error.
+
+### More bugs
+
+Edit the flat JSON list in `configs/bugs.json`, or pass a different list:
+
+```sh
+debuglab run --bugs configs/more-bugs.json --output outputs/more-bugs
+```
+
+Lists contain Defects4J IDs such as `["Lang-1", "Math-3", "Cli-1"]`; duplicates
+and unsafe IDs are rejected. There is no fixed set size or project whitelist.
+Additional projects must still reproduce successfully with the benchmark toolchain;
+preparation failures stay selected and appear as incomplete, not silently excluded.
+
+Changing the model, bug list or source requires a **new output directory**. All
+four repair conditions still share context within a bug. A different model,
+tokenizer or budget can change which methods fit; compare context hashes and
+retrieval recall when interpreting cross-model results.
+
+### Resume and report
+
+Repeat the **same run command** to resume. The runner locks the output directory,
+freezes the configuration, bug list and source before calls, skips completed bugs
+and preserves request caches. Never delete fingerprints or regenerate an
+interrupted/completed call. A pending request without a saved response becomes an
+explicit failure rather than permission to resample.
+
+To regenerate reports from saved evidence, without model calls:
+
+```sh
+debuglab report --output outputs/local-7b
+```
+
+Reports contain pooled method/line Top-1/3/5, infinite and ranked-only mean ranks,
+context recall, syntax-validity rates, all repair statuses, missing selected bugs,
+and both context-conditioned subsets. Incomplete runs are explicitly labeled;
+partial rates are not presented as completed-set results.
+
+## Verify
+
+```sh
+# Portable checks; no model or benchmark installation needed
 ruff check .
 ruff format --check .
 pytest -q -m 'not integration'
 scripts/check-release
-```
 
-After installing Java, Defects4J and the coverage dependencies:
-
-```sh
+# Includes real Java/Defects4J integration checks after native setup
 source scripts/env.sh
 scripts/verify
 ```
 
-The validated suite has 61 portable tests and two native integration tests. The
-native tests use real Java/Defects4J; no model generation is needed. Local runtime
-logs and caches remain ignored. GitHub Actions runs the portable suite only.
+GitHub Actions runs the portable checks. Tests mock hosted responses; verification
+does not make paid model calls. No new model evaluation is implied by a code test.
 
-## Reproduce the selected 60-bug evaluation
-
-Run commands from the repository root with the virtual environment active and
-`scripts/env.sh` sourced. A full study involves real benchmark test suites and 360
-local model calls; plan for a long-running job. Do not run two workers or
-coordinators against the same output directory.
-
-### Fresh run from a clone
-
-`configs/split.json` contains the original selected evaluation set. Its internal
-partition keys are execution-order groups, not independently reported datasets.
-The driver runs the initial 12 bugs, verifies the implementation, and then runs
-the remaining 48. Report all 60 together.
-
-Create an ignored configuration with new work/output paths so a new run cannot
-overwrite the published run or its cached calls:
-
-```sh
-python - <<'PY'
-import json
-from pathlib import Path
-
-path = Path('configs/reproduce.local.json')
-if path.exists() or Path('outputs/reproduce').exists() or Path('work/reproduce').exists():
-    raise SystemExit('Choose unused configuration, output and work paths for a new run')
-config = json.loads(Path('configs/local.json').read_text())
-config.update(
-    work_root='work/reproduce/bugs',
-    output_root='outputs/reproduce/runs',
-    freeze_path='outputs/reproduce/frozen.json',
-    pilot_baseline_path='outputs/reproduce/recall-baseline.json',
-)
-path.write_text(json.dumps(config, indent=2) + '\n')
-PY
-
-python -m debuglab.driver --config configs/reproduce.local.json
-python -m debuglab_gold.large_report --config configs/reproduce.local.json
-```
-
-The ordinary pipeline prepares buggy checkouts, coverage, failure evidence and
-contexts from Defects4J. This route does not require any historical data bundle.
-Its regenerated contexts or model responses may differ from the published run;
-report its actual outcomes rather than selecting a preferred sample.
-
-To run one selected bug instead, use an unused configuration prepared as above
-and run the following command **instead of** starting the full driver:
-
-```sh
-scripts/debuglab run --bug Chart-25 --config configs/reproduce.local.json
-```
-
-### Exact frozen-context replay with the local data bundle
-
-Exact replay requires the separately retained `work/final-baseline` debugging-input
-bundle. It is intentionally not distributed in Git. The public reports can be read
-without it. If this bundle is available, create the new configuration above and
-prepare its protected-input ledger before starting the cohort coordinator:
-
-```sh
-python - <<'PY'
-import hashlib
-import json
-from pathlib import Path
-
-baseline = Path('work/final-baseline')
-bugs = json.loads(Path('configs/split.json').read_text())['pool']
-if not all((baseline / bug / 'context.txt').is_file() for bug in bugs):
-    raise SystemExit('The original 60-bug debugging-input bundle is required')
-root = Path('outputs/reproduce')
-root.mkdir(parents=True, exist_ok=True)
-ledger = root / 'baseline-artifact-hashes.json'
-if ledger.exists():
-    raise SystemExit('Preserve the existing ledger; do not reset a run')
-ledger.write_text(json.dumps({
-    str(path): hashlib.sha256(path.read_bytes()).hexdigest()
-    for path in sorted(baseline.rglob('*')) if path.is_file()
-}, indent=2) + '\n')
-PY
-
-python -m debuglab.cohort_run --config configs/reproduce.local.json \
-  --baseline work/final-baseline --reuse-context
-```
-
-This coordinator verifies native tests and the input ledger, freezes the source,
-configuration and selection, reuses only original debugging inputs, and audits the
-completed calls and full-suite proofs. It never copies saved answers into new
-model calls. Comparison reads the baseline results separately after generation and
-rejects context changes by default. Source archives and fingerprints remain local.
-
-### Outputs and resuming
-
-For either route, reports are written under `outputs/reproduce`, with individual
-bug directories under `outputs/reproduce/runs`. Each bug directory contains:
-
-- `context.txt`, `context-manifest.json`, methods, failures and spectrum evidence;
-- `calls/` with request parameters, exact token counts and saved responses;
-- `mapped-edits/` and `evaluation-logs/` with canonical patches and native proofs;
-- `result.json` with localization metrics and repair outcomes.
-
-The driver/coordinator saves progress and can resume the same configuration.
-Inspect processes and logs first. Never delete a fingerprint, change configuration
-mid-run, overwrite a call cache, or treat an interrupted call as permission to
-resample. Completed calls are immutable; failed outcomes remain counted.
-
-## Evaluation protocol
-
-- **Population:** the same 60 selected bugs, selected using pre-model eligibility.
-  No bug is excluded because of a model or repair outcome. The whole selected
-  evaluation set is the primary reporting population.
-- **Retrieval:** original source, failing-test text, stack frames, lexical
-  relevance, an unranked executed-method set and conservative call proximity.
-  Retrieval does not access suspiciousness scores or known fixes. Whole methods
-  and compact class declarations are packed using exact tokenizer counts.
-- **Localization:** spectrum/Ochiai, LLM-only, and spectrum-informed LLM rankings.
-  Report method and line Top-1/3/5. Ties receive mean rank; evaluation takes the
-  best rank over true faulty locations. Unranked faults have infinite rank;
-  ranked-only means are labeled separately. Changed/deleted buggy lines define
-  line eligibility; insertion-only fixes remain method-eligible. Unmapped
-  class-scope faults remain in the method denominator.
-- **Repair:** one generated patch per condition, with at most three canonical
-  original-source method edits. No compiler/test feedback revision, repeated
-  sampling, best-of selection, manual patch correction or parser relaxation.
-- **Validation:** parse/apply, Java syntax, native compilation, triggering tests,
-  then the complete suite. Plausibility requires `defects4j test` without `-t`,
-  return code 0, no timeout and a final `Failing tests: 0`. Exit code 0 alone is
-  insufficient. Invalid outputs, compile failures, test failures, model errors
-  and timeouts all remain in the denominators.
-- **Ground truth:** fixed source and diffs are isolated in `debuglab_gold`.
-  Generation never receives gold, repository tools or native feedback. A separate
-  subprocess audits leakage and evaluates saved outcomes.
-- **Conditional analysis:** localization also reports the 54-bug subset with at
-  least one faulty method retrieved. The summary's stricter repair subset has
-  all faulty methods retrieved (50 bugs). These supplement the 60-bug results.
-
-## Key design decisions and limitations
-
-The evaluated configuration uses the existing local 7B model, Java source/type
-guidance, string replacements, ordinary context allocation and unrestricted line
-choices. Optional balanced retrieval, class-member editing, line-array edits and
-strict executable-line hints remain disabled. Their implementation is retained
-where it supports compatibility or tests, without claiming they improve this run.
-
-The four repair conditions share frozen source bytes and failures. Hashes protect
-source/configuration/selection and cached calls. Monotonic deadlines propagate
-remaining native-process budgets; cleanup preserves logs while removing disposable
-checkouts. This does not promise identical behavior across host suspend semantics.
-
-This selected evaluation set was used for tuning, so the study cannot establish
-independent generalization. Greedy seeded service calls are not guaranteed to be
-bitwise deterministic. Stronger method rankings did not translate into substantial
-repair gains; plausible patches may still overfit the test suite. Missing context,
-unmapped class-scope faults, insertion-only fixes and conservative overload
-resolution also limit interpretation.
-
-## Repository layout
+## Files and evidence
 
 | Path | Purpose |
 |---|---|
-| `src/debuglab/cli.py` | Command-line entry point for individual runs and reports |
-| `src/debuglab/pipeline.py` | Per-bug preparation, localization, patch generation and validation |
-| `src/debuglab/cohort_run.py` | Frozen-context cohort replay, audits and report publication |
-| `src/debuglab/driver.py`, `study.py` | Selected-set execution, progress, deadlines and resume |
-| `src/debuglab/source.py`, `retrieval.py` | Java indexing and source-context construction |
-| `src/debuglab/model.py`, `interface.py` | Prompts, token accounting, immutable calls and method handles |
-| `src/debuglab/spectrum.py`, `java/SpectrumRunner.java` | Coverage collection and Ochiai rankings |
-| `src/debuglab/edits.py`, `harness.py` | Safe patch application and native test execution |
-| `src/debuglab_gold/` | Sealed ground-truth evaluation and aggregate reports |
-| `configs/local.json`, `configs/split.json` | Evaluated settings and selected evaluation set |
-| `tests/` | Portable fixtures and opt-in native integration checks |
-| `scripts/` | Environment setup, CLI wrapper, verification and release checks |
-| `results/final/` | Compact measured reports, CSVs and audit records |
-| `.github/workflows/ci.yml` | Portable verification on pushes and pull requests |
-| `work/`, `outputs/` | Ignored local tools, checkouts, raw calls and logs |
+| `configs/bugs.json` | One selected evaluation list |
+| `configs/local.json`, `configs/hosted.example.json` | Local and hosted model settings |
+| `src/debuglab/cli.py`, `cohort_run.py`, `study.py` | Commands, frozen runs, workers and deadlines |
+| `src/debuglab/pipeline.py` | Per-bug source preparation, localization and four repairs |
+| `src/debuglab/model.py`, `interface.py` | Model calls, token accounting and strict method mappings |
+| `src/debuglab/source.py`, `retrieval.py`, `spectrum.py` | Java indexing, context selection and Ochiai |
+| `src/debuglab/edits.py`, `harness.py` | Isolated patch application and native validation |
+| `java/SpectrumRunner.java` | JUnit/JaCoCo per-test coverage helper |
+| `src/debuglab_gold/` | Separate ground-truth evaluation, reporting and comparison utilities |
+| `tests/` | Portable and native regression tests |
+| `results/final/` | Preserved measured results for the report |
+| `outputs/<run>/` | Ignored run manifest, snapshots, reports, worker logs and archives |
+| `outputs/<run>/runs/<bug>/` | Context, model calls, canonical edits, test logs and outcomes |
+| `work/` | Ignored local tools, gold evaluation data and disposable checkouts |
 
-Reports, slides and presentation notes are private deliverables and are not part
-of this repository. Only compact research results are published. Local toolchains,
-model weights, raw benchmark data, credentials and virtual environments are not
-tracked. No new model evaluation was performed as part of repository packaging.
+Raw prompts and responses, original-numbered edits, test proofs and hashes remain
+available locally for analysis. Ground-truth fixes are isolated in the evaluator,
+never supplied to retrieval or generation. Optional historical interface helpers
+remain for reading/testing saved evidence; new configurations cannot enable their
+experimental alternatives. Private reports, slides, credentials and runtime data
+are not distributed in Git.

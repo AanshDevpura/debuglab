@@ -1,4 +1,4 @@
-"""Frozen one-shot cohort run with rebuilt contexts and protected prior evidence."""
+"""One locked, frozen run over an arbitrary selected bug list."""
 
 from __future__ import annotations
 
@@ -6,16 +6,28 @@ import argparse
 import fcntl
 import json
 import re
-import subprocess
 import sys
+from dataclasses import asdict, replace
 from pathlib import Path
 
-from debuglab.artifacts import archive, command, publish_reports
+from debuglab.artifacts import archive, command
 from debuglab.cli import fingerprint
 from debuglab.config import Config
-from debuglab.driver import complete
 from debuglab.io import digest, save
-from debuglab.replay import reuse
+from debuglab.model import require_model_credentials
+from debuglab.selection import read_bugs
+from debuglab.study import execute
+
+
+def complete(config: Config, bugs: list[str]) -> bool:
+    for bug in bugs:
+        path = Path(config.output_root) / bug / "result.json"
+        if not path.exists():
+            return False
+        data = json.loads(path.read_text())
+        if not data.get("evaluated") or not data.get("pipeline_complete"):
+            return False
+    return True
 
 
 def verify_ledger(root: Path) -> None:
@@ -24,8 +36,8 @@ def verify_ledger(root: Path) -> None:
         raise RuntimeError("Protected baseline evidence changed or ledger empty")
 
 
-def final_audit(config: Config, baseline: Path) -> dict:
-    bugs = json.loads(Path(config.split_path).read_text())["pool"]
+def final_audit(config: Config, baseline: Path | None = None) -> dict:
+    bugs = read_bugs(Path(config.bugs_path))
     proofs, contexts = [], []
     calls = attempts = 0
     for bug in bugs:
@@ -37,7 +49,10 @@ def final_audit(config: Config, baseline: Path) -> dict:
         if digest(context) != result["context_hash"] or result["leak_violations"]:
             raise RuntimeError(f"Context or sealed audit mismatch: {bug}")
         for name in ["failure.json", "spectrum.json", "source-hashes.json", "methods.json"]:
-            if (folder / name).read_bytes() != (baseline / bug / name).read_bytes():
+            if (
+                baseline is not None
+                and (folder / name).read_bytes() != (baseline / bug / name).read_bytes()
+            ):
                 raise RuntimeError(f"Baseline input changed: {bug}/{name}")
         if digest((folder / "failure.json").read_bytes()) != result["failure_hash"]:
             raise RuntimeError(f"Failure hash mismatch: {bug}")
@@ -49,12 +64,15 @@ def final_audit(config: Config, baseline: Path) -> dict:
             prompt = call["parameters"]["messages"][1]["content"]
             limit = (
                 call["context_window"]
-                - call["parameters"]["max_tokens"]
+                - call["parameters"].get(
+                    "max_tokens",
+                    call["parameters"].get("max_completion_tokens", config.model.max_output_tokens),
+                )
                 - config.model.safety_margin
             )
             if (
                 not prompt.startswith(context.decode() + "\n\nLOCALIZATION HINT:\n")
-                or call["input_tokens_exact"] > limit
+                or call.get("input_tokens", call.get("input_tokens_exact", 0)) > limit
             ):
                 raise RuntimeError(f"Actual prompt context/budget failed: {path}")
             if call["status"] == "IN_FLIGHT":
@@ -100,112 +118,119 @@ def final_audit(config: Config, baseline: Path) -> dict:
         )
     if list(Path(config.work_root).parent.rglob("*.java")):
         raise RuntimeError("Disposable Java checkouts remain")
-    return {
+    audit = {
         "bugs": len(bugs),
         "main_calls": calls,
         "repair_attempts": attempts,
         "feedback_guided_repair": False,
-        "baseline_evidence_identical": True,
-        "contexts_rebuilt": any(
-            row["hash"] != digest((baseline / row["bug"] / "context.txt").read_bytes())
-            for row in contexts
-        ),
         "plausible_full_suite_proofs": proofs,
         "actual_contexts": contexts,
         "disposable_java_files_remaining": 0,
     }
 
+    if baseline is not None:
+        audit.update(
+            baseline_evidence_identical=True,
+            contexts_rebuilt=any(
+                row["hash"] != digest((baseline / row["bug"] / "context.txt").read_bytes())
+                for row in contexts
+            ),
+        )
+    return audit
+
+
+def prepare_run(
+    config_path: Path,
+    *,
+    bugs_path: Path | None = None,
+    bug: str | None = None,
+    output: Path | None = None,
+) -> tuple[Config, Path]:
+    config = Config.load(config_path)
+    bugs = read_bugs(bugs_path or Path(config.bugs_path))
+    if bug is not None:
+        if bug not in bugs:
+            raise ValueError("Bug is not in the selected evaluation set; update the bug list first")
+        bugs = [bug]
+    root = output or Path(config.output_root).parent
+    if (
+        not root.resolve().is_relative_to(Path("outputs").resolve())
+        or root.resolve() == Path("outputs").resolve()
+    ):
+        raise ValueError("Use a run-specific directory inside outputs/")
+    if output is not None:
+        name = root.name + "-" + digest(str(root.resolve()).encode())[:8]
+        config = replace(config, output_root=str(root / "runs"), work_root=f"work/{name}/bugs")
+    if not Path(config.work_root).resolve().is_relative_to(Path("work").resolve()):
+        raise ValueError("Checkouts must be inside work/")
+    effective = replace(config, bugs_path=str(root / "bugs.json"))
+    saved_config = root / "config.json"
+    freeze = root / "run-fingerprint.json"
+    if saved_config.exists():
+        if Config.load(saved_config) != effective or read_bugs(Path(effective.bugs_path)) != bugs:
+            raise RuntimeError("Run configuration or bug selection changed; use a new --output")
+        if not freeze.exists() or json.loads(freeze.read_text()) != fingerprint(saved_config):
+            raise RuntimeError("Frozen run source/config/selection changed; use a new --output")
+        return effective, saved_config
+    existing = [p for p in root.glob("*") if p.name != "coordinator.lock"]
+    if existing:
+        raise RuntimeError("Output directory contains unowned evidence; use a new --output")
+    root.mkdir(parents=True, exist_ok=True)
+    save(Path(effective.bugs_path), bugs)
+    save(saved_config, asdict(effective))
+    archive(root / "source-at-start.zip")
+    save(freeze, fingerprint(saved_config))
+    return effective, saved_config
+
 
 def coordinate(
     config_path: Path,
-    baseline: Path,
     *,
-    rebuild_context: bool = True,
-    publish: Path | None = None,
+    bugs_path: Path | None = None,
+    bug: str | None = None,
+    output: Path | None = None,
 ) -> None:
-    config = Config.load(config_path)
-    if config.samples != 1 or not config.allow_pool_tuning:
-        raise ValueError("This coordinator requires one-shot, authorized pooled reporting")
-    bugs = json.loads(Path(config.split_path).read_text())["pool"]
-    if len(bugs) != 60 or len(set(bugs)) != 60:
-        raise ValueError("Expected the original 60 unique selected bugs")
-    root = Path(config.output_root).parent
+    settings = Config.load(config_path)
+    root = output or Path(settings.output_root).parent
+    if (
+        not root.resolve().is_relative_to(Path("outputs").resolve())
+        or root.resolve() == Path("outputs").resolve()
+    ):
+        raise ValueError("Use a run-specific directory inside outputs/")
     root.mkdir(parents=True, exist_ok=True)
     with (root / "coordinator.lock").open("a") as lock:
-        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        verify_ledger(root)
-        state_path = root / "coordinator-state.json"
-        previous = json.loads(state_path.read_text()) if state_path.exists() else {}
-        if previous.get("stage") == "complete":
-            if not complete(config, bugs) or not (root / "final-audit.json").exists():
-                raise RuntimeError("Completed artifacts are incomplete")
-            return
-        freeze = root / "run-fingerprint.json"
-        if freeze.exists():
-            if json.loads(freeze.read_text()) != fingerprint(config_path):
-                raise RuntimeError("Frozen run code/config/split changed")
-        else:
-            save(state_path, {"stage": "verification_before_run"})
-            with (root / "PRE_RUN_VERIFICATION.txt").open("a") as log:
-                subprocess.run(["scripts/verify"], stdout=log, stderr=subprocess.STDOUT, check=True)
-            for bug in bugs:
-                old = Config.load(baseline / bug / "config.json")
-                if old.model != config.model or old.samples != 1:
-                    raise ValueError("Baseline model or sample count differs")
-                reuse(config, bug, baseline, rebuild_context=rebuild_context)
-            archive(root / "source-at-start.zip")
-            save(freeze, fingerprint(config_path))
-        save(
-            state_path,
-            {"stage": "running_60", "one_shot": True, "contexts_rebuilt": rebuild_context},
-        )
-        print("[cohort] running_60, one-shot", flush=True)
-        command([sys.executable, "-m", "debuglab.driver", "--config", str(config_path)])
-        command([sys.executable, "-m", "debuglab_gold.large_report", "--config", str(config_path)])
-        comparison = [
-            sys.executable,
-            "-m",
-            "debuglab_gold.comparison",
-            "--baseline",
-            str(baseline),
-            "--candidate",
-            config.output_root,
-            "--split",
-            config.split_path,
-            "--output",
-            str(root / "comparison.json"),
-        ]
-        if rebuild_context:
-            comparison.append("--allow-context-changes")
-        command(comparison)
-        verify_ledger(root)
-        save(root / "final-audit.json", final_audit(config, baseline))
-        save(state_path, {"stage": "final_verification"})
-        with (root / "VERIFICATION.txt").open("w") as log:
-            subprocess.run(["scripts/verify"], stdout=log, stderr=subprocess.STDOUT, check=True)
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as error:
+            raise RuntimeError("Another coordinator owns this output directory") from error
+        config, saved_config = prepare_run(config_path, bugs_path=bugs_path, bug=bug, output=output)
+        bugs = read_bugs(Path(config.bugs_path))
+        if not complete(config, bugs):
+            require_model_credentials(config.model)
+            save(root / "coordinator-state.json", {"stage": "running", "selected": len(bugs)})
+            execute(saved_config)
+        command([sys.executable, "-m", "debuglab_gold.large_report", "--config", str(saved_config)])
+        if not complete(config, bugs):
+            save(
+                root / "coordinator-state.json", {"stage": "needs_attention", "selected": len(bugs)}
+            )
+            raise RuntimeError(
+                "Incomplete bugs remain selected; inspect worker logs and resume the same command"
+            )
+        save(root / "final-audit.json", final_audit(config))
         archive(root / "source.zip")
-        if publish is not None:
-            publish_reports(root, publish)
-        save(
-            state_path,
-            {"stage": "complete", "evaluated": len(bugs), "report": str(root / "REPORT.md")},
-        )
-        print("[cohort] complete; pooled report and final audit saved", flush=True)
+        save(root / "coordinator-state.json", {"stage": "complete", "evaluated": len(bugs)})
+        print(f"Completed {len(bugs)} bugs. Report: {root / 'REPORT.md'}", flush=True)
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--config", type=Path, required=True)
-    parser.add_argument("--baseline", type=Path, required=True)
-    parser.add_argument("--reuse-context", action="store_true", help="Keep baseline contexts exact")
-    parser.add_argument("--publish", type=Path, help="Copy compact report artifacts for GitHub")
+    parser = argparse.ArgumentParser(description="Run one selected evaluation set")
+    parser.add_argument("--config", type=Path, default=Path("configs/local.json"))
+    parser.add_argument("--bugs", type=Path)
+    parser.add_argument("--bug")
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    coordinate(
-        args.config,
-        args.baseline,
-        rebuild_context=not args.reuse_context,
-        publish=args.publish,
-    )
+    coordinate(args.config, bugs_path=args.bugs, bug=args.bug, output=args.output)
 
 
 if __name__ == "__main__":

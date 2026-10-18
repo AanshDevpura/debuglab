@@ -1,15 +1,10 @@
 {
-  "allow_pool_tuning": true,
   "bug_timeout": 2400,
   "call_depth": 2,
   "cleanup_checkouts": true,
   "command_timeout": 900,
   "defects4j": "work/tools/defects4j/framework/bin/defects4j",
-  "freeze_path": "outputs/final/frozen.json",
   "hint_candidates": 30,
-  "java_source_guidance": true,
-  "line_array_edits": false,
-  "method_interface": true,
   "model": {
     "api_key_env": "DEBUGLAB_API_KEY",
     "base_url": "http://127.0.0.1:11434/v1",
@@ -24,10 +19,8 @@
     "timeout": 600,
     "tokenizer": "Qwen/Qwen2.5-Coder-7B-Instruct"
   },
-  "output_root": "outputs/final/runs",
-  "pilot_baseline_path": "outputs/final/recall-baseline.json",
+  "output_root": "outputs/local-7b/runs",
   "retrieval_candidates": 300,
-  "samples": 1,
-  "split_path": "configs/split.json",
-  "work_root": "work/final/bugs"
+  "work_root": "work/local-7b/bugs",
+  "bugs_path": "configs/bugs.json"
 }

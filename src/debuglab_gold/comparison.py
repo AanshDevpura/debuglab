@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from debuglab.io import digest, save
+from debuglab.selection import read_bugs
 
 
 def compare(
@@ -88,14 +89,14 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--baseline", type=Path, required=True)
     parser.add_argument("--candidate", type=Path, required=True)
-    parser.add_argument("--split", type=Path, required=True)
+    parser.add_argument("--bugs", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--allow-context-changes", action="store_true")
     args = parser.parse_args()
     compare(
         args.baseline,
         args.candidate,
-        json.loads(args.split.read_text())["pool"],
+        read_bugs(args.bugs),
         args.output,
         allow_context_changes=args.allow_context_changes,
     )

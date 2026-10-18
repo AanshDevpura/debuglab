@@ -8,6 +8,7 @@ from pathlib import Path
 
 from debuglab.config import Config
 from debuglab.io import CommandResult, run
+from debuglab.selection import BUG_ID
 
 FORBIDDEN_SUFFIXES = {".patch", ".diff"}
 VCS_NAMES = {".git", ".svn", ".hg", "CVS"}
@@ -24,8 +25,8 @@ def sanitize(root: Path) -> None:
 
 class Harness:
     def __init__(self, config: Config, bug: str, logs: Path):
-        if not re.fullmatch(r"(Lang|Math|Chart|Time)-[1-9][0-9]*", bug):
-            raise ValueError("Expected active small-project bug id, e.g. Lang-1")
+        if not BUG_ID.fullmatch(bug):
+            raise ValueError("Expected a Defects4J bug ID, e.g. Lang-1 or Cli-1")
         self.config = config
         self.bug = bug
         self.logs = logs

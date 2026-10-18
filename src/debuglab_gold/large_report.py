@@ -10,6 +10,7 @@ from typing import TextIO
 
 from debuglab.config import Config
 from debuglab.io import digest, save
+from debuglab.selection import read_bugs
 from debuglab.source import Method
 from debuglab_gold.report import report, write_csv
 
@@ -17,9 +18,9 @@ from debuglab_gold.report import report, write_csv
 def analyze(config: Config) -> None:
     report(config)
     root = Path(config.output_root).parent
-    split = json.loads(Path(config.split_path).read_text())
+    selected_bugs = read_bugs(Path(config.bugs_path))
     rows, localization_rows, audits, missing = [], [], [], []
-    for bug in split["pool"]:
+    for bug in selected_bugs:
         artifacts = Path(config.output_root) / bug
         path = artifacts / "result.json"
         if not path.exists():
@@ -65,22 +66,25 @@ def analyze(config: Config) -> None:
             call = json.loads(call_path.read_text())
             prompt = call["parameters"]["messages"][1]["content"]
             assert prompt.startswith(context.decode() + "\n\nLOCALIZATION HINT:\n")
-            assert call["input_tokens_exact"] <= (
+            assert call.get("input_tokens", call.get("input_tokens_exact")) <= (
                 call["context_window"]
-                - call["parameters"]["max_tokens"]
+                - call["parameters"].get(
+                    "max_tokens",
+                    call["parameters"].get("max_completion_tokens", config.model.max_output_tokens),
+                )
                 - config.model.safety_margin
             )
-            if call["status"] == "OK":
-                assert call["input_tokens_exact"] == call["usage"]["prompt_tokens"]
             audits.append(
                 {
                     "bug": bug,
                     "call": call_path.name,
                     "frozen_context_in_prompt": True,
-                    "input_tokens": call["input_tokens_exact"],
+                    "input_tokens": call.get("input_tokens", call.get("input_tokens_exact")),
                     "faulty_method_in_actual_prompt": any(
                         "METHOD " + m.id + "\n" + m.numbered() in prompt for m in targets
                     ),
+                    "token_count_method": call.get("token_count_method", "local_chat_template"),
+                    "provider_input_tokens": call.get("usage", {}).get("prompt_tokens"),
                     "finish_reason": call.get("finish_reason"),
                     "status": call["status"],
                 }
@@ -127,9 +131,9 @@ def analyze(config: Config) -> None:
     save(
         root / "completion.json",
         {
-            "expected": len(split["pool"]),
+            "expected": len(selected_bugs),
             "missing": missing,
-            "evaluated": len(split["pool"]) - len(missing),
+            "evaluated": len(selected_bugs) - len(missing),
             "complete": not missing,
         },
     )
@@ -159,80 +163,30 @@ def analyze(config: Config) -> None:
     }
     save(root / "failure-summary.json", summary)
     with (root / "REPORT.md").open("a") as handle:
-        handle.write("\n## Larger-cohort safeguards and failure analysis\n\n")
+        handle.write("\n## Saved-call audits and failure analysis\n\n")
         handle.write(
-            "Candidates, native screening logs, selected list, exclusions and eligible reserve "
-            "were saved before cohort model calls. The cohort uses one greedy 7B sample per "
-            "condition. Existing study bugs were not reused. The whole cohort is the primary "
-            "reporting population. Subset tuning was user-authorized. "
-            "No failed model outcome caused an exclusion.\n\n"
-            "All saved actual calls contain the full frozen context, fit the exact configured "
-            "budget, and pass the sealed leak audit. Raw prompts/responses and native logs "
-            "are retained after checkout cleanup. Completed calls are never resampled.\n\n"
-            "Failure categories in failure-analysis.csv classify actual attempt outcomes. "
-            "Retrieval misses are additional flags and can overlap those categories. "
-            "Wrong location means a compiling failed patch does not overlap a gold faulty "
-            "method; wrong fix means it does. These are proxies, not proof that an "
-            "alternative repair location cannot work. Class-scope fixes without an enclosing "
-            "original method remain included as unranked method faults; they are explicitly "
-            "flagged as unmapped, not excluded or assigned invented methods.\n\n"
-        )
-        handle.write(
-            f"All bugs: {summary['attempts']} actual attempts; "
+            "The selected bug list is frozen before calls. Every failed model or repair "
+            "outcome remains counted. Saved prompts retain frozen context, budget checks "
+            "and sealed leak audits. Counts are local-template counts or labeled estimates; "
+            "provider usage is recorded separately. Logs survive cleanup and completed "
+            "calls are not resampled.\n\n"
+            "Failure categories are proxies: wrong location means a compiling failed patch "
+            "does not overlap a known faulty method, while wrong fix means it does. "
+            "Retrieval misses and unmapped faults are flags, not exclusions.\n\n"
+            f"All evaluated bugs: {summary['attempts']} actual attempts; "
             f"{json.dumps(summary['attempt_causes'], sort_keys=True)}.\n"
         )
-        refinement_path = root / "schema-refinement.json"
-        if refinement_path.exists():
-            refinement = json.loads(refinement_path.read_text())
-            handle.write(
-                "\nA separate four-call schema-capacity calibration increased valid "
-                f"localization output from {refinement['baseline_valid']}/4 to "
-                f"{refinement['trial_valid']}/4 and method Top-1 from "
-                f"{refinement['baseline_method_top1']}/4 to "
-                f"{refinement['trial_method_top1']}/4, with no measured Top-1/3/5 regression. "
-                "The retained per-method array capacity bound leaves the accepted output "
-                "set, strict parsing, prompts and context unchanged. The diagnostic calls "
-                "are excluded from main results. Earlier workers with the original schema: "
-                + ", ".join(refinement["old_schema_workers_with_saved_calls"])
-                + ". Their saved invalid outputs remain in the denominator. This is a "
-                "small calibration on subsets of the pool.\n"
-            )
-        recovery_path = root / "native-log-recovery/summary.json"
-        if recovery_path.exists():
-            recovery = json.loads(recovery_path.read_text())
-            handle.write(
-                "\nA checkout-cleanup logging defect removed early native repair logs. "
-                "Permanent log placement and a cleanup regression test corrected it. "
-                f"Revalidation of {recovery['revalidated_attempts']} exact saved patches "
-                f"reconfirmed {recovery['plausible_revalidated']} plausible patches, with "
-                f"{len(recovery['status_mismatches'])} status disagreements. "
-                "The revalidation used zero new model calls and did not change the "
-                "original result JSON or repair denominators. Native logs and failing-test "
-                "traces are now retained in each bug's evaluation-logs directory.\n"
-            )
-            if recovery["status_mismatches"]:
-                handle.write(
-                    "\nRevalidation disagreements: "
-                    + ", ".join(
-                        f"{r['bug']}/{r['condition']}: {r['original_status']} -> "
-                        f"{r['revalidated_status']}"
-                        for r in recovery["status_mismatches"]
-                    )
-                    + ". They are reported as stability limitations, not grounds for "
-                    "outcome-driven exclusions.\n"
-                )
         if missing:
             handle.write(
                 "\nThis report is partial. Missing bugs remain selected and are not "
                 "imputed: " + ", ".join(missing) + ".\n"
             )
-        hypothesis(config, split, handle)
+        hypothesis(config, selected_bugs, handle)
 
 
-def hypothesis(config: Config, split: dict, handle: TextIO) -> None:
+def hypothesis(config: Config, ids: list[str], handle: TextIO) -> None:
     held = []
-    ids = split["pool"] if config.allow_pool_tuning else split["held_out"]
-    label = "larger-cohort" if config.allow_pool_tuning else "held-out"
+    label = "selected-set"
     for bug in ids:
         path = Path(config.output_root) / bug / "result.json"
         if path.exists():
@@ -274,7 +228,7 @@ def hypothesis(config: Config, split: dict, handle: TextIO) -> None:
     handle.write(
         f"{label.capitalize()} repair pass@1: "
         + json.dumps(success, sort_keys=True)
-        + ". These point estimates test this 7B setup, not every LLM. "
+        + ". These point estimates describe this configured model and selection, not every LLM. "
         "The same frozen context/failure data across conditions isolates "
         "localization hints. Sparse successes, invalid output, retrieval "
         "misses and method-interface limitations restrict interpretation; "

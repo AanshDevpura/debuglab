@@ -1,4 +1,4 @@
-"""OpenAI-compatible, text-only model calls with exact tokenizer accounting."""
+"""Cached Chat Completions calls with explicit tokenizer and provider usage accounting."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ import os
 import re
 import time
 from pathlib import Path
+from urllib.parse import urlparse
 
 import httpx
 from huggingface_hub import try_to_load_from_cache
@@ -51,6 +52,15 @@ REPAIR = (
 class TokenBudget:
     def __init__(self, config: ModelConfig):
         self.config = config
+        self.exact = config.tokenizer != "conservative"
+        if not self.exact:
+            self.tokenizer = None
+            self.provenance = {
+                "configured": "conservative",
+                "method": "UTF-8 bytes plus 256 bytes of estimated framing per message",
+                "exact": False,
+            }
+            return
         source = Path(config.tokenizer)
         if not source.is_dir():
             cached = try_to_load_from_cache(config.tokenizer, "tokenizer_config.json")
@@ -76,9 +86,13 @@ class TokenBudget:
         }
 
     def count(self, text: str) -> int:
+        if not self.exact:
+            return len(text.encode("utf-8"))
         return len(self.tokenizer.encode(text, add_special_tokens=False))
 
     def messages_count(self, messages: list[dict]) -> int:
+        if not self.exact:
+            return sum(self.count(m["role"] + m["content"]) + 256 for m in messages) + 256
         return len(
             self.tokenizer.apply_chat_template(
                 messages,
@@ -122,6 +136,12 @@ def messages(context: str, task: str, hint: dict | None) -> list[dict]:
     ]
 
 
+def require_model_credentials(config: ModelConfig) -> None:
+    local = urlparse(config.base_url).hostname in {"localhost", "127.0.0.1", "::1"}
+    if not local and not os.environ.get(config.api_key_env):
+        raise RuntimeError(f"Set {config.api_key_env} for the hosted model before running")
+
+
 def call(
     config: ModelConfig,
     budget: TokenBudget,
@@ -134,11 +154,13 @@ def call(
     params = {
         "model": config.model,
         "messages": prompt,
-        "max_tokens": config.max_output_tokens,
-        "temperature": config.temperature,
-        "seed": config.seed + sample,
+        config.token_parameter: config.max_output_tokens,
         "stream": False,
     }
+    if config.temperature is not None:
+        params["temperature"] = config.temperature
+    if config.seed is not None:
+        params["seed"] = config.seed + sample
     if schema is not None and config.schema_mode:
         params["response_format"] = {
             "type": "json_schema",
@@ -146,11 +168,15 @@ def call(
         }
     elif config.json_mode:
         params["response_format"] = {"type": "json_object"}
+    if not getattr(budget, "exact", True) and "response_format" in params:
+        input_tokens += budget.count(json.dumps(params["response_format"])) + 256
     if path.exists():
         previous = json.loads(path.read_text())
         if not previous.get("audit_only"):
             if previous.get("parameters") != params:
-                raise RuntimeError("Saved model call parameters changed; use a separate dev run")
+                raise RuntimeError(
+                    "Saved model call parameters changed; use a separate output directory"
+                )
             if previous.get("status") == "IN_FLIGHT":
                 previous.update(
                     status="MODEL_ERROR",
@@ -162,7 +188,11 @@ def call(
             return previous
     record = {
         "parameters": params,
-        "input_tokens_exact": input_tokens,
+        "input_tokens": input_tokens,
+        "input_tokens_exact": input_tokens if getattr(budget, "exact", True) else None,
+        "token_count_method": "local_chat_template"
+        if getattr(budget, "exact", True)
+        else "estimate",
         "context_window": config.context_window,
         "tokenizer": budget.provenance,
         "raw_response": None,
@@ -170,9 +200,10 @@ def call(
     }
     started = time.monotonic()
     if input_tokens > budget.input_limit:
-        record.update(status="MODEL_ERROR", error="Prompt exceeds exact token budget")
+        record.update(status="MODEL_ERROR", error="Prompt exceeds configured input budget")
         save(path, record)
         return record
+    require_model_credentials(config)
     save(path, dict(record, status="IN_FLIGHT"))
     key = os.environ.get(config.api_key_env, "local")
     try:
@@ -190,17 +221,28 @@ def call(
             raise ValueError("Missing text response")
         record.update(
             content=content,
-            usage=data.get("usage", {}),
-            output_tokens_exact=budget.count(content),
+            usage=data.get("usage") or {},
+            output_tokens_exact=budget.count(content) if getattr(budget, "exact", True) else None,
             finish_reason=data["choices"][0].get("finish_reason"),
         )
+        if not isinstance(record["usage"], dict):
+            raise ValueError("Invalid provider token usage")
+        reported = record["usage"].get("prompt_tokens")
+        if reported is not None and (type(reported) is not int or reported < 0):
+            raise ValueError("Invalid provider prompt-token count")
+        record["provider_input_tokens"] = reported
+        record["token_count_matches_provider"] = (
+            reported == input_tokens if reported is not None else None
+        )
+        if reported is not None and reported > budget.input_limit:
+            raise ValueError("Provider-reported prompt tokens exceed the configured input budget")
         if record["finish_reason"] not in {"stop", "length"}:
             raise ValueError(
                 "Incomplete or unusable server completion: missing/unsupported finish_reason"
             )
     except httpx.TimeoutException as error:
         record.update(status="TIMEOUT", error=str(error))
-    except (httpx.HTTPError, ValueError, KeyError, IndexError) as error:
+    except (httpx.HTTPError, ValueError, TypeError, KeyError, IndexError) as error:
         record.update(status="MODEL_ERROR", error=str(error))
     record["seconds"] = time.monotonic() - started
     save(path, record)

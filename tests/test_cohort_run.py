@@ -60,15 +60,15 @@ def test_context_comparison_is_explicit_and_checks_baseline_evidence(tmp_path: P
 def test_run_fingerprint_blocks_changed_source_before_any_model_call(tmp_path: Path) -> None:
     config = replace(
         Config.load(Path("tests/fixtures/config.json")),
-        split_path=str(tmp_path / "split.json"),
+        bugs_path=str(tmp_path / "bugs.json"),
         output_root=str(tmp_path / "runs"),
     )
-    save(Path(config.split_path), {"dev": ["Lang-1"]})
+    save(Path(config.bugs_path), ["Lang-1"])
     path = tmp_path / "config.json"
     save(path, asdict(config))
     save(tmp_path / "run-fingerprint.json", {"different": "source"})
-    with pytest.raises(RuntimeError, match="Run code/config/split changed"):
-        one(path, "dev", "Lang-1")
+    with pytest.raises(RuntimeError, match="Run code/config/selection changed"):
+        one(path, "Lang-1")
     assert not (tmp_path / "runs/Lang-1/calls").exists()
 
 
@@ -82,10 +82,10 @@ def test_protected_evidence_and_incomplete_audit_fail_closed(tmp_path: Path) -> 
         verify_ledger(tmp_path)
     config = replace(
         Config.load(Path("tests/fixtures/config.json")),
-        split_path=str(tmp_path / "split.json"),
+        bugs_path=str(tmp_path / "bugs.json"),
         output_root=str(tmp_path / "runs"),
     )
-    save(Path(config.split_path), {"pool": ["Lang-1"]})
+    save(Path(config.bugs_path), ["Lang-1"])
     save(tmp_path / "runs/Lang-1/result.json", {"pipeline_complete": False})
     with pytest.raises(RuntimeError, match="Incomplete bug"):
         final_audit(config, tmp_path / "old")
@@ -96,9 +96,9 @@ def test_final_audit_distinguishes_exact_replay_from_changed_context(tmp_path: P
         Config.load(Path("tests/fixtures/config.json")),
         output_root=str(tmp_path / "runs"),
         work_root=str(tmp_path / "work/bugs"),
-        split_path=str(tmp_path / "split.json"),
+        bugs_path=str(tmp_path / "bugs.json"),
     )
-    save(Path(config.split_path), {"pool": ["Lang-1"]})
+    save(Path(config.bugs_path), ["Lang-1"])
     candidate, baseline = Path(config.output_root) / "Lang-1", tmp_path / "old/Lang-1"
     for folder in (candidate, baseline):
         folder.mkdir(parents=True)

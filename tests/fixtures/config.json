@@ -13,5 +13,5 @@
     "timeout": 600
   },
   "samples": 1,
-  "split_path": "tests/fixtures/split.json"
+  "bugs_path": "tests/fixtures/bugs.json"
 }
