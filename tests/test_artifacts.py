@@ -14,7 +14,7 @@ def test_archive_excludes_runtime_and_build_artifacts(tmp_path: Path, monkeypatc
         "output/private-report.docx",
         "outputs/final/raw-call.json",
         "configs/reproduce.local.json",
-        "results/final/SUMMARY.md",
+        "results/final/README.md",
         ".github/workflows/ci.yml",
         "README.md",
     ):
@@ -28,7 +28,7 @@ def test_archive_excludes_runtime_and_build_artifacts(tmp_path: Path, monkeypatc
             "src/debuglab/run.py",
             ".github/workflows/ci.yml",
             "README.md",
-            "results/final/SUMMARY.md",
+            "results/final/README.md",
         }
         assert zipped.testzip() is None
     assert not destination.with_suffix(".zip.tmp").exists()

@@ -8,50 +8,11 @@ condition with real compilation and tests.
 The selected evaluation set is a list of Defects4J bug IDs in
 [`configs/bugs.json`](configs/bugs.json).
 
-## Measured localization results
+## Evaluation results
 
-The evaluation used local Qwen2.5-Coder 7B on 60 selected bugs from Lang,
-Math, Chart and Time. Full results and analysis are in
-[`results/final`](results/final).
-
-| Ranker | Method Top-1 | Method Top-3 | Method Top-5 | Line Top-1 | Line Top-3 | Line Top-5 |
-|---|---:|---:|---:|---:|---:|---:|
-| Spectrum / Ochiai | 21.7% | 53.3% | 66.7% | 0.0% | 7.7% | 15.4% |
-| LLM | 35.0% | 53.3% | 63.3% | 0.0% | 7.7% | 7.7% |
-| Combined | 40.0% | 60.0% | 70.0% | 0.0% | 10.3% | 17.9% |
-
-Method metrics include all 60 bugs. Line metrics have 39 eligible bugs, defined by
-changed or deleted buggy lines; insertion-only fixes remain method-eligible.
-Unranked faults remain counted: method misses are 3/20/18 and line misses are
-3/31/25 for spectrum/LLM/combined. Overall mean ranks are therefore infinite;
-ranked-only means are reported separately. Ties receive mean rank, and a bug is
-scored using its best-ranked true faulty location.
-
-Combined localization places a faulty method first on 24/60 bugs. Precise line
-localization remains difficult: all three rankers have line Top-1 accuracy of 0%.
-
-## Measured repair results
-
-The same evaluation completed 360 model calls and 240 one-shot repair attempts.
-
-| Repair condition | Plausible / 60 | Overall rate | Plausible / 50 retrieval-eligible bugs |
-|---|---:|---:|---:|
-| Direct | 3 | 5.0% | 3 / 50 (6.0%) |
-| Spectrum-guided | 3 | 5.0% | 3 / 50 (6.0%) |
-| LLM-guided | 4 | 6.7% | 4 / 50 (8.0%) |
-| Combined-guided | 4 | 6.7% | 4 / 50 (8.0%) |
-
-The **14 passing condition/bug pairs cover four unique bugs**. Chart-25, Lang-21
-and Math-22 pass all four conditions; Lang-20 passes with LLM and combined hints. A test-plausible patch passes the available
-suite; this does not prove semantic correctness.
-
-The retrieval-eligible repair subset requires **all true faulty methods to be
-retrieved** (50/60 bugs). Localization additionally reports the subset with at least one
-faulty method retrieved (54/60). Both supplement the complete selected-set results;
-retrieval misses are never removed from the main denominator. See the
-[summary](results/final/SUMMARY.md), [detailed report](results/final/REPORT.md),
-[localization tables](results/final/localization.csv) and
-[repair tables](results/final/repair.csv).
+See the [evaluation report](results/final/README.md) for localization, retrieval
+coverage, repair outcomes, evaluation settings and limitations for the selected
+60-bug evaluation.
 
 ## What the LLM actually does
 

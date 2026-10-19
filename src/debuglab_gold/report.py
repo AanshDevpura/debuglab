@@ -292,7 +292,7 @@ def report(config: Config) -> None:
                 "Model/tokenizer/context changes may affect retrieval comparability."
             ),
             (
-                "The published 60-bug set was used for tuning. Larger or stronger-model "
+                "Larger or stronger-model "
                 "evaluations must be reported as new runs with their own selection and "
                 "settings."
             ),
