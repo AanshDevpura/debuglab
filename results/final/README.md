@@ -38,7 +38,7 @@ means summarize just the faults assigned a rank.
 ### All selected bugs
 
 | Ranker | Level | Eligible bugs | Top-1 | Top-3 | Top-5 | Unranked | Mean rank | Ranked-only mean |
-|---|---|---:|---:|---:|---:|---:|---:|
+|---|---|---:|---:|---:|---:|---:|---:|---:|
 | Spectrum | Method | 60 | 21.7% | 53.3% | 66.7% | 3 | ∞ | 66.31 |
 | Spectrum | Line | 39 | 0.0% | 7.7% | 15.4% | 3 | ∞ | 609.04 |
 | LLM | Method | 60 | 35.0% | 53.3% | 63.3% | 20 | ∞ | 2.23 |
@@ -58,7 +58,7 @@ present in the frozen retrieved context**: 54 bugs, including 36 line-eligible
 bugs. It supplements the complete selected-set results.
 
 | Ranker | Level | Eligible bugs | Top-1 | Top-3 | Top-5 | Unranked | Mean rank | Ranked-only mean |
-|---|---|---:|---:|---:|---:|---:|---:|
+|---|---|---:|---:|---:|---:|---:|---:|---:|
 | Spectrum | Method | 54 | 24.1% | 59.3% | 74.1% | 0 | 67.84 | 67.84 |
 | Spectrum | Line | 36 | 0.0% | 8.3% | 16.7% | 2 | ∞ | 619.10 |
 | LLM | Method | 54 | 38.9% | 59.3% | 70.4% | 14 | ∞ | 2.23 |
