@@ -1,0 +1,161 @@
+{
+  "bug": "Math-19",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "1ba5151a133d82e81464773d39efe6bb653af3a72e5570a25202cb08ca53eed5",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": null,
+    "line_any": null,
+    "line_eligible": false,
+    "line_fraction": null,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "4997c12d2db6ae2e477cdb2043f080e38ccbd6b469548dfad74eb03addd7dbc6",
+  "gold_eligibility": {
+    "line": false,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 29.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "1ba5151a133d82e81464773d39efe6bb653af3a72e5570a25202cb08ca53eed5",
+        "detail": "<REPO>/work/final/attempts/Math-19/combined-0/src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.java",
+        "edits": [
+          {
+            "end_line": 141,
+            "file": "src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.java",
+            "replacement": "    public PointValuePair optimize(int maxEval, FUNC f, GoalType goalType,\n",
+            "start_line": 91
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-19/combined-0",
+        "failure_hash": "4997c12d2db6ae2e477cdb2043f080e38ccbd6b469548dfad74eb03addd7dbc6",
+        "sample": 0,
+        "status": "SYNTAX_ERROR"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "1ba5151a133d82e81464773d39efe6bb653af3a72e5570a25202cb08ca53eed5",
+        "detail": "<REPO>/work/final/attempts/Math-19/direct-0/src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.java",
+        "edits": [
+          {
+            "end_line": 141,
+            "file": "src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.java",
+            "replacement": "    public PointValuePair optimize(int maxEval, FUNC f, GoalType goalType,\n",
+            "start_line": 91
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-19/direct-0",
+        "failure_hash": "4997c12d2db6ae2e477cdb2043f080e38ccbd6b469548dfad74eb03addd7dbc6",
+        "sample": 0,
+        "status": "SYNTAX_ERROR"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "1ba5151a133d82e81464773d39efe6bb653af3a72e5570a25202cb08ca53eed5",
+        "detail": "<REPO>/work/final/attempts/Math-19/llm-0/src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.java",
+        "edits": [
+          {
+            "end_line": 141,
+            "file": "src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.java",
+            "replacement": "    public PointValuePair optimize(int maxEval, FUNC f, GoalType goalType,\n",
+            "start_line": 91
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-19/llm-0",
+        "failure_hash": "4997c12d2db6ae2e477cdb2043f080e38ccbd6b469548dfad74eb03addd7dbc6",
+        "sample": 0,
+        "status": "SYNTAX_ERROR"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "1ba5151a133d82e81464773d39efe6bb653af3a72e5570a25202cb08ca53eed5",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 966,
+            "file": "src/main/java/org/apache/commons/math3/optimization/direct/CMAESOptimizer.java",
+            "replacement": "public double value(final double[] point) {\n    double value;\n    if (boundaries != null && isRepairMode) {\n        double[] repaired = repair(point);\n        value = CMAESOptimizer.this\n                .computeObjectiveValue(decode(repaired)) +\n                penalty(point, repaired);\n    } else {\n        value = CMAESOptimizer.this\n                .computeObjectiveValue(decode(point));\n    }\n    return isMinimize ? value : -value;\n}",
+            "start_line": 954
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-19/spectrum-0",
+        "failure_hash": "4997c12d2db6ae2e477cdb2043f080e38ccbd6b469548dfad74eb03addd7dbc6",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

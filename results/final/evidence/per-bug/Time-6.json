@@ -1,0 +1,215 @@
+{
+  "bug": "Time-6",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "c4541dfe3d209608016e809d288da72c562994b966b2cee763e55319644da9aa",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": null,
+    "line_any": null,
+    "line_eligible": false,
+    "line_fraction": null,
+    "method_all": false,
+    "method_any": true,
+    "missing": [
+      {
+        "method_id": "src/main/java/org/joda/time/chrono/GJChronology.java::org.joda.time.chrono.GJChronology$ImpreciseCutoverField#add@995",
+        "not_executed_by_failing_test": true,
+        "reason": "outside_retrieved_set"
+      }
+    ],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "753154c084b6a0d9089af52d9f7e536c71be46d27246e2b4fed18c849d20613f",
+  "gold_eligibility": {
+    "line": false,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 7.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "c4541dfe3d209608016e809d288da72c562994b966b2cee763e55319644da9aa",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 1966,
+            "file": "src/main/java/org/joda/time/LocalDate.java",
+            "replacement": "public LocalDate addToCopy(int value) {\n    return iInstant.withLocalMillis(iField.add(iInstant.getLocalMillis(), value));\n}",
+            "start_line": 1964
+          },
+          {
+            "end_line": 1207,
+            "file": "src/main/java/org/joda/time/LocalDate.java",
+            "replacement": "public LocalDate plusYears(int years) {\n    if (years == 0) {\n        return this;\n    }\n    long instant = getChronology().years().add(getLocalMillis(), years);\n    return withLocalMillis(instant);\n}",
+            "start_line": 1201
+          },
+          {
+            "end_line": 993,
+            "file": "src/main/java/org/joda/time/chrono/GJChronology.java",
+            "replacement": "public long add(long instant, int value) {\n    if (instant >= iCutover) {\n        instant = iGregorianField.add(instant, value);\n        if (instant < iCutover) {\n            // Only adjust if gap fully crossed.\n            if (instant + iGapDuration < iCutover) {\n                instant = gregorianToJulian(instant);\n            }\n        }\n    } else {\n        instant = iJulianField.add(instant, value);\n        if (instant >= iCutover) {\n            // Only adjust if gap fully crossed.\n            if (instant - iGapDuration >= iCutover) {\n                // no special handling for year zero as cutover always after year zero\n                instant = julianToGregorian(instant);\n            }\n        }\n    }\n    return instant;\n}",
+            "start_line": 973
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-6/combined-0",
+        "failure_hash": "753154c084b6a0d9089af52d9f7e536c71be46d27246e2b4fed18c849d20613f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "c4541dfe3d209608016e809d288da72c562994b966b2cee763e55319644da9aa",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 1966,
+            "file": "src/main/java/org/joda/time/LocalDate.java",
+            "replacement": "public LocalDate addToCopy(int value) {\n    return iInstant.withLocalMillis(iField.add(iInstant.getLocalMillis(), value));\n}",
+            "start_line": 1964
+          },
+          {
+            "end_line": 1207,
+            "file": "src/main/java/org/joda/time/LocalDate.java",
+            "replacement": "public LocalDate plusYears(int years) {\n    if (years == 0) {\n        return this;\n    }\n    long instant = getChronology().years().add(getLocalMillis(), years);\n    return withLocalMillis(instant);\n}",
+            "start_line": 1201
+          },
+          {
+            "end_line": 993,
+            "file": "src/main/java/org/joda/time/chrono/GJChronology.java",
+            "replacement": "public long add(long instant, int value) {\n    if (instant >= iCutover) {\n        instant = iGregorianField.add(instant, value);\n        if (instant < iCutover) {\n            // Only adjust if gap fully crossed.\n            if (instant + iGapDuration < iCutover) {\n                instant = gregorianToJulian(instant);\n            }\n        }\n    } else {\n        instant = iJulianField.add(instant, value);\n        if (instant >= iCutover) {\n            // Only adjust if gap fully crossed.\n            if (instant - iGapDuration >= iCutover) {\n                // no special handling for year zero as cutover always after year zero\n                instant = julianToGregorian(instant);\n            }\n        }\n    }\n    return instant;\n}",
+            "start_line": 973
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-6/direct-0",
+        "failure_hash": "753154c084b6a0d9089af52d9f7e536c71be46d27246e2b4fed18c849d20613f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "c4541dfe3d209608016e809d288da72c562994b966b2cee763e55319644da9aa",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 1966,
+            "file": "src/main/java/org/joda/time/LocalDate.java",
+            "replacement": "public LocalDate addToCopy(int value) {\n    return iInstant.withLocalMillis(iField.add(iInstant.getLocalMillis(), value));\n}",
+            "start_line": 1964
+          },
+          {
+            "end_line": 1207,
+            "file": "src/main/java/org/joda/time/LocalDate.java",
+            "replacement": "public LocalDate plusYears(int years) {\n    if (years == 0) {\n        return this;\n    }\n    long instant = getChronology().years().add(getLocalMillis(), years);\n    return withLocalMillis(instant);\n}",
+            "start_line": 1201
+          },
+          {
+            "end_line": 993,
+            "file": "src/main/java/org/joda/time/chrono/GJChronology.java",
+            "replacement": "public long add(long instant, int value) {\n    if (instant >= iCutover) {\n        instant = iGregorianField.add(instant, value);\n        if (instant < iCutover) {\n            // Only adjust if gap fully crossed.\n            if (instant + iGapDuration < iCutover) {\n                instant = gregorianToJulian(instant);\n            }\n        }\n    } else {\n        instant = iJulianField.add(instant, value);\n        if (instant >= iCutover) {\n            // Only adjust if gap fully crossed.\n            if (instant - iGapDuration >= iCutover) {\n                // no special handling for year zero as cutover always after year zero\n                instant = julianToGregorian(instant);\n            }\n        }\n    }\n    return instant;\n}",
+            "start_line": 973
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-6/llm-0",
+        "failure_hash": "753154c084b6a0d9089af52d9f7e536c71be46d27246e2b4fed18c849d20613f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "c4541dfe3d209608016e809d288da72c562994b966b2cee763e55319644da9aa",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 1966,
+            "file": "src/main/java/org/joda/time/LocalDate.java",
+            "replacement": "public LocalDate addToCopy(int value) {\n    return iInstant.withLocalMillis(iField.add(iInstant.getLocalMillis(), value));\n}",
+            "start_line": 1964
+          },
+          {
+            "end_line": 1207,
+            "file": "src/main/java/org/joda/time/LocalDate.java",
+            "replacement": "public LocalDate plusYears(int years) {\n    if (years == 0) {\n        return this;\n    }\n    long instant = getChronology().years().add(getLocalMillis(), years);\n    return withLocalMillis(instant);\n}",
+            "start_line": 1201
+          },
+          {
+            "end_line": 993,
+            "file": "src/main/java/org/joda/time/chrono/GJChronology.java",
+            "replacement": "public long add(long instant, int value) {\n    if (instant >= iCutover) {\n        instant = iGregorianField.add(instant, value);\n        if (instant < iCutover) {\n            // Only adjust if gap fully crossed.\n            if (instant + iGapDuration < iCutover) {\n                instant = gregorianToJulian(instant);\n            }\n        }\n    } else {\n        instant = iJulianField.add(instant, value);\n        if (instant >= iCutover) {\n            // Only adjust if gap fully crossed.\n            if (instant - iGapDuration >= iCutover) {\n                // no special handling for year zero as cutover always after year zero\n                instant = julianToGregorian(instant);\n            }\n        }\n    }\n    return instant;\n}",
+            "start_line": 973
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-6/spectrum-0",
+        "failure_hash": "753154c084b6a0d9089af52d9f7e536c71be46d27246e2b4fed18c849d20613f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

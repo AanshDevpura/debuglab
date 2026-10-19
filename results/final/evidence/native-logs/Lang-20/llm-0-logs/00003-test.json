@@ -1,0 +1,12 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "test",
+    "-t",
+    "org.apache.commons.lang3.StringUtilsTest::testJoin_Objectarray"
+  ],
+  "output": "Running ant (compile.tests)................................................ OK\nRunning ant (run.dev.tests)................................................ OK\nFailing tests: 0\n",
+  "returncode": 0,
+  "seconds": 0.6993712919938844,
+  "timed_out": false
+}

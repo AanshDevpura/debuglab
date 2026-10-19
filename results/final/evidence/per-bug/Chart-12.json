@@ -1,0 +1,161 @@
+{
+  "bug": "Chart-12",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "924fdab930e5acabcec53505cefa75a79308c2af8ca96063c298de8eeacd5e93",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "c8ac0f8ed551f5be71f1c0cbe1c42d6a2f867d4747781eedcac006f6732150aa",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 17,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 5,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 17,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 5,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 16.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 5.0,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "924fdab930e5acabcec53505cefa75a79308c2af8ca96063c298de8eeacd5e93",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 167,
+            "file": "source/org/jfree/chart/plot/MultiplePiePlot.java",
+            "replacement": "    public CategoryDataset getDataset() {\n        return this.dataset;\n    }",
+            "start_line": 165
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-12/combined-0",
+        "failure_hash": "c8ac0f8ed551f5be71f1c0cbe1c42d6a2f867d4747781eedcac006f6732150aa",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "924fdab930e5acabcec53505cefa75a79308c2af8ca96063c298de8eeacd5e93",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 167,
+            "file": "source/org/jfree/chart/plot/MultiplePiePlot.java",
+            "replacement": "    public CategoryDataset getDataset() {\n        return this.dataset;\n    }",
+            "start_line": 165
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-12/direct-0",
+        "failure_hash": "c8ac0f8ed551f5be71f1c0cbe1c42d6a2f867d4747781eedcac006f6732150aa",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "924fdab930e5acabcec53505cefa75a79308c2af8ca96063c298de8eeacd5e93",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 167,
+            "file": "source/org/jfree/chart/plot/MultiplePiePlot.java",
+            "replacement": "    public CategoryDataset getDataset() {\n        return this.dataset;\n    }",
+            "start_line": 165
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-12/llm-0",
+        "failure_hash": "c8ac0f8ed551f5be71f1c0cbe1c42d6a2f867d4747781eedcac006f6732150aa",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "924fdab930e5acabcec53505cefa75a79308c2af8ca96063c298de8eeacd5e93",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 167,
+            "file": "source/org/jfree/chart/plot/MultiplePiePlot.java",
+            "replacement": "    public CategoryDataset getDataset() {\n        return this.dataset;\n    }",
+            "start_line": 165
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-12/spectrum-0",
+        "failure_hash": "c8ac0f8ed551f5be71f1c0cbe1c42d6a2f867d4747781eedcac006f6732150aa",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

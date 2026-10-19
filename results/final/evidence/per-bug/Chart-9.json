@@ -1,0 +1,173 @@
+{
+  "bug": "Chart-9",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "020e3b9aee7d8292db67c755125e9e671091dda213f32e60e388b9fd5c730bcf",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "ffde89e2e60c74fb3ca26d9271ecd9093938f6dbc912e5c8ac995b4b4bf1d47d",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 2,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 2,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 7.5,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1.0,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "020e3b9aee7d8292db67c755125e9e671091dda213f32e60e388b9fd5c730bcf",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 902,
+            "file": "source/org/jfree/data/time/TimeSeries.java",
+            "replacement": "public TimeSeries createCopy(int start, int end) throws CloneNotSupportedException {\n    if (start < 0) {\n        throw new IllegalArgumentException(\"Requires start >= 0.\");\n    }\n    if (end < start) {\n        throw new IllegalArgumentException(\"Requires start <= end.\");\n    }\n    TimeSeries copy = (TimeSeries) super.clone();\n    copy.data = new java.util.ArrayList();\n    if (this.data.size() > 0) {\n        for (int index = start; index <= end; index++) {\n            TimeSeriesDataItem item = (TimeSeriesDataItem) this.data.get(index);\n            TimeSeriesDataItem clone = (TimeSeriesDataItem) item.clone();\n            try {\n                copy.add(clone);\n            } catch (SeriesException e) {\n                e.printStackTrace();\n            }\n        }\n    }\n    return copy;\n}",
+            "start_line": 876
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-9/combined-0",
+        "failure_hash": "ffde89e2e60c74fb3ca26d9271ecd9093938f6dbc912e5c8ac995b4b4bf1d47d",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "020e3b9aee7d8292db67c755125e9e671091dda213f32e60e388b9fd5c730bcf",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 902,
+            "file": "source/org/jfree/data/time/TimeSeries.java",
+            "replacement": "public TimeSeries createCopy(int start, int end) throws CloneNotSupportedException {\n    if (start < 0) {\n        throw new IllegalArgumentException(\"Requires start >= 0.\");\n    }\n    if (end < start) {\n        throw new IllegalArgumentException(\"Requires start <= end.\");\n    }\n    TimeSeries copy = (TimeSeries) super.clone();\n    copy.data = new java.util.ArrayList();\n    if (this.data.size() > 0) {\n        for (int index = start; index <= end; index++) {\n            TimeSeriesDataItem item = (TimeSeriesDataItem) this.data.get(index);\n            TimeSeriesDataItem clone = (TimeSeriesDataItem) item.clone();\n            try {\n                copy.add(clone);\n            } catch (SeriesException e) {\n                e.printStackTrace();\n            }\n        }\n    }\n    return copy;\n}",
+            "start_line": 876
+          },
+          {
+            "end_line": 956,
+            "file": "source/org/jfree/data/time/TimeSeries.java",
+            "replacement": "public TimeSeries createCopy(RegularTimePeriod start, RegularTimePeriod end) throws CloneNotSupportedException {\n    if (start == null) {\n        throw new IllegalArgumentException(\"Null 'start' argument.\");\n    }\n    if (end == null) {\n        throw new IllegalArgumentException(\"Null 'end' argument.\");\n    }\n    if (start.compareTo(end) > 0) {\n        throw new IllegalArgumentException(\"Requires start on or before end.\");\n    }\n    boolean emptyRange = false;\n    int startIndex = getIndex(start);\n    if (startIndex < 0) {\n        startIndex = -(startIndex + 1);\n        if (startIndex == this.data.size()) {\n            emptyRange = true;  // start is after last data item\n        }\n    }\n    int endIndex = getIndex(end);\n    if (endIndex < 0) {             // end period is not in original series\n        endIndex = -(endIndex + 1); // this is first item AFTER end period\n        endIndex = endIndex - 1;    // so this is last item BEFORE end\n    }\n    if (endIndex < 0) {\n        emptyRange = true;\n    }\n    if (emptyRange) {\n        TimeSeries copy = (TimeSeries) super.clone();\n        copy.data = new java.util.ArrayList();\n        return copy;\n    }\n    else {\n        return createCopy(startIndex, endIndex);\n    }\n}",
+            "start_line": 918
+          },
+          {
+            "end_line": 550,
+            "file": "source/org/jfree/data/time/TimeSeries.java",
+            "replacement": "public void add(TimeSeriesDataItem item, boolean notify) {\n    if (item == null) {\n        throw new IllegalArgumentException(\"Null 'item' argument.\");\n    }\n    if (!item.getPeriod().getClass().equals(this.timePeriodClass)) {\n        StringBuffer b = new StringBuffer();\n        b.append(\"You are trying to add data where the time period class \");\n        b.append(\"is \");\n        b.append(item.getPeriod().getClass().getName());\n        b.append(\", but the TimeSeries is expecting an instance of \");\n        b.append(this.timePeriodClass.getName());\n        b.append(\".\");\n        throw new SeriesException(b.toString());\n    }\n    // make the change (if it's not a duplicate time period)...\n    boolean added = false;\n    int count = getItemCount();\n    if (count == 0) {\n        this.data.add(item);\n        added = true;\n    }\n    else {\n        RegularTimePeriod last = getTimePeriod(getItemCount() - 1);\n        if (item.getPeriod().compareTo(last) > 0) {\n            this.data.add(item);\n            added = true;\n        }\n        else {\n            int index = Collections.binarySearch(this.data, item);\n            if (index < 0) {\n                this.data.add(-index - 1, item);\n                added = true;\n            }\n            else {\n                StringBuffer b = new StringBuffer();\n                b.append(\"You are attempting to add an observation for \");\n                b.append(\"the time period \");\n                b.append(item.getPeriod().toString());\n                b.append(\" but the series already contains an observation\");\n                b.append(\" for that time period. Duplicates are not \");\n                b.append(\"permitted.  Try using the addOrUpdate() method.\");\n                throw new SeriesException(b.toString());\n            }\n        }\n    }\n    if (added) {\n        // check if this addition will exceed the maximum item count...\n        if (getItemCount() > this.maximumItemCount) {\n            this.data.remove(0);\n        }\n        removeAgedItems(false);  // remove old items if necessary, but\n                                 // don't notify anyone, because that\n                                 // happens next anyway...\n        if (notify) {\n            fireSeriesChanged();\n        }\n    }\n}",
+            "start_line": 490
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-9/direct-0",
+        "failure_hash": "ffde89e2e60c74fb3ca26d9271ecd9093938f6dbc912e5c8ac995b4b4bf1d47d",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "020e3b9aee7d8292db67c755125e9e671091dda213f32e60e388b9fd5c730bcf",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 902,
+            "file": "source/org/jfree/data/time/TimeSeries.java",
+            "replacement": "public TimeSeries createCopy(int start, int end) throws CloneNotSupportedException {\n    if (start < 0) {\n        throw new IllegalArgumentException(\"Requires start >= 0.\");\n    }\n    if (end < start) {\n        throw new IllegalArgumentException(\"Requires start <= end.\");\n    }\n    TimeSeries copy = (TimeSeries) super.clone();\n    copy.data = new java.util.ArrayList();\n    if (this.data.size() > 0) {\n        for (int index = start; index <= end; index++) {\n            TimeSeriesDataItem item = (TimeSeriesDataItem) this.data.get(index);\n            TimeSeriesDataItem clone = (TimeSeriesDataItem) item.clone();\n            try {\n                copy.add(clone);\n            } catch (SeriesException e) {\n                e.printStackTrace();\n            }\n        }\n    }\n    return copy;\n}",
+            "start_line": 876
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-9/llm-0",
+        "failure_hash": "ffde89e2e60c74fb3ca26d9271ecd9093938f6dbc912e5c8ac995b4b4bf1d47d",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "020e3b9aee7d8292db67c755125e9e671091dda213f32e60e388b9fd5c730bcf",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 902,
+            "file": "source/org/jfree/data/time/TimeSeries.java",
+            "replacement": "public TimeSeries createCopy(int start, int end) throws CloneNotSupportedException {\n    if (start < 0) {\n        throw new IllegalArgumentException(\"Requires start >= 0.\");\n    }\n    if (end < start) {\n        throw new IllegalArgumentException(\"Requires start <= end.\");\n    }\n    TimeSeries copy = (TimeSeries) super.clone();\n    copy.data = new java.util.ArrayList();\n    if (this.data.size() > 0) {\n        for (int index = start; index <= end; index++) {\n            TimeSeriesDataItem item = (TimeSeriesDataItem) this.data.get(index);\n            TimeSeriesDataItem clone = (TimeSeriesDataItem) item.clone();\n            try {\n                copy.add(clone);\n            } catch (SeriesException e) {\n                e.printStackTrace();\n            }\n        }\n    }\n    return copy;\n}",
+            "start_line": 876
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-9/spectrum-0",
+        "failure_hash": "ffde89e2e60c74fb3ca26d9271ecd9093938f6dbc912e5c8ac995b4b4bf1d47d",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

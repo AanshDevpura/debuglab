@@ -1,0 +1,209 @@
+{
+  "bug": "Time-13",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "83982f7da62c20d71718670e169e08f713b14e0b74bea02db908e84a7c99f917",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "46a96265f1ade41f4803d9a229002804a1daac447d00fa2185b4fff7aa5cb268",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 24.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 51.5,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "83982f7da62c20d71718670e169e08f713b14e0b74bea02db908e84a7c99f917",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 184,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static void setDefault(DateTimeZone zone) throws SecurityException {\n    SecurityManager sm = System.getSecurityManager();\n    if (sm != null) {\n        sm.checkPermission(new JodaTimePermission(\"DateTimeZone.setDefault\"));\n    }\n    if (zone == null) {\n        throw new IllegalArgumentException(\"The datetime zone must not be null\");\n    }\n    synchronized(DateTimeZone.class) {\n        cDefault = zone;\n    }\n}",
+            "start_line": 173
+          },
+          {
+            "end_line": 162,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static DateTimeZone getDefault() {\n    DateTimeZone zone = cDefault;\n    if (zone == null) {\n        synchronized(DateTimeZone.class) {\n            zone = cDefault;\n            if (zone == null) {\n                DateTimeZone temp = null;\n                try {\n                    try {\n                        String id = System.getProperty(\"user.timezone\");\n                        if (id != null) {  // null check avoids stack overflow\n                            temp = forID(id);\n                        }\n                    } catch (RuntimeException ex) {\n                        // ignored\n                    }\n                    if (temp == null) {\n                        temp = forTimeZone(TimeZone.getDefault());\n                    }\n                } catch (IllegalArgumentException ex) {\n                    // ignored\n                }\n                if (temp == null) {\n                    temp = UTC;\n                }\n                cDefault = zone = temp;\n            }\n        }\n    }\n    return zone;\n}",
+            "start_line": 132
+          },
+          {
+            "end_line": 213,
+            "file": "src/main/java/org/joda/time/Period.java",
+            "replacement": "public static Period seconds(int seconds) {\n    return new Period(new int[] {0, 0, 0, 0, 0, 0, seconds, 0}, PeriodType.standard());\n}",
+            "start_line": 211
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-13/combined-0",
+        "failure_hash": "46a96265f1ade41f4803d9a229002804a1daac447d00fa2185b4fff7aa5cb268",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "83982f7da62c20d71718670e169e08f713b14e0b74bea02db908e84a7c99f917",
+        "detail": "da.time.tz.ZoneInfoCompiler.compile(ZoneInfoCompiler.java:391)\n\tat org.joda.time.tz.ZoneInfoCompiler.main(ZoneInfoCompiler.java:136)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat org.apache.tools.ant.taskdefs.ExecuteJava.run(ExecuteJava.java:217)\n\tat org.apache.tools.ant.taskdefs.ExecuteJava.execute(ExecuteJava.java:152)\n\tat org.apache.tools.ant.taskdefs.Java.run(Java.java:771)\n\tat org.apache.tools.ant.taskdefs.Java.executeJava(Java.java:221)\n\tat org.apache.tools.ant.taskdefs.Java.executeJava(Java.java:135)\n\tat org.apache.tools.ant.taskdefs.Java.execute(Java.java:108)\n\tat org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:291)\n\tat jdk.internal.reflect.GeneratedMethodAccessor4.invoke(Unknown Source)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)\n\tat org.apache.tools.ant.Task.perform(Task.java:348)\n\tat org.apache.tools.ant.taskdefs.Sequential.execute(Sequential.java:68)\n\tat net.sf.antcontrib.logic.IfTask.execute(IfTask.java:217)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)\n\tat org.apache.tools.ant.TaskAdapter.execute(TaskAdapter.java:154)\n\tat org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:291)\n\tat jdk.internal.reflect.GeneratedMethodAccessor4.invoke(Unknown Source)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:566)\n\tat org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)\n\tat org.apache.tools.ant.Task.perform(Task.java:348)\n\tat org.apache.tools.ant.Target.execute(Target.java:392)\n\tat org.apache.tools.ant.Target.performTasks(Target.java:413)\n\tat org.apache.tools.ant.Project.executeSortedTargets(Project.java:1399)\n\tat org.apache.tools.ant.Project.executeTarget(Project.java:1368)\n\tat org.apache.tools.ant.helper.DefaultExecutor.executeTargets(DefaultExecutor.java:41)\n\tat org.apache.tools.ant.Project.executeTargets(Project.java:1251)\n\tat org.apache.tools.ant.Main.runBuild(Main.java:811)\n\tat org.apache.tools.ant.Main.startAnt(Main.java:217)\n\tat org.apache.tools.ant.launch.Launcher.run(Launcher.java:280)\n\tat org.apache.tools.ant.launch.Launcher.main(Launcher.java:109)\nCaused by: java.lang.IllegalArgumentException: The datetime zone id 'America/Los_Angeles' is not recognised\n\tat org.joda.time.DateTimeZone.forTimeZone(DateTimeZone.java:329)\n\tat org.joda.time.DateTimeZone.getDefault(DateTimeZone.java:148)\n\tat org.joda.time.chrono.ISOChronology.getInstance(ISOChronology.java:86)\n\tat org.joda.time.DateTimeUtils.getChronology(DateTimeUtils.java:283)\n\tat org.joda.time.base.BasePeriod.<init>(BasePeriod.java:256)\n\tat org.joda.time.Period.<init>(Period.java:298)\n\tat org.joda.time.Period.<clinit>(Period.java:65)\n\t... 44 more\n\nTotal time: 0 seconds\nCannot compile sources! at <REPO>/work/tools/defects4j/framework/bin/d4j/d4j-compile line 82.\nCompilation failed in require at <REPO>/work/tools/defects4j/framework/bin/defects4j line 195.\n",
+        "edits": [
+          {
+            "end_line": 184,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static void setDefault(DateTimeZone zone) throws SecurityException {\n    SecurityManager sm = System.getSecurityManager();\n    if (sm != null) {\n        sm.checkPermission(new JodaTimePermission(\"DateTimeZone.setDefault\"));\n    }\n    if (zone == null) {\n        throw new IllegalArgumentException(\"The datetime zone must not be null\");\n    }\n    synchronized(DateTimeZone.class) {\n        cDefault = zone;\n    }\n}",
+            "start_line": 173
+          },
+          {
+            "end_line": 162,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static DateTimeZone getDefault() {\n    DateTimeZone zone = cDefault;\n    if (zone == null) {\n        synchronized(DateTimeZone.class) {\n            zone = cDefault;\n            if (zone == null) {\n                DateTimeZone temp = null;\n                try {\n                    String id = System.getProperty(\"user.timezone\");\n                    if (id != null) {\n                        temp = forID(id);\n                    }\n                } catch (RuntimeException ex) {\n                    // ignored\n                }\n                if (temp == null) {\n                    temp = forTimeZone(TimeZone.getDefault());\n                }\n            }\n        }\n    }\n    return zone;\n}",
+            "start_line": 132
+          },
+          {
+            "end_line": 213,
+            "file": "src/main/java/org/joda/time/Period.java",
+            "replacement": "public static Period seconds(int seconds) {\n    return new Period(new int[] {0, 0, 0, 0, 0, 0, seconds, 0}, PeriodType.standard());\n}",
+            "start_line": 211
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-13/direct-0",
+        "failure_hash": "46a96265f1ade41f4803d9a229002804a1daac447d00fa2185b4fff7aa5cb268",
+        "sample": 0,
+        "status": "COMPILE_ERROR"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "83982f7da62c20d71718670e169e08f713b14e0b74bea02db908e84a7c99f917",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 184,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static void setDefault(DateTimeZone zone) throws SecurityException {\n    SecurityManager sm = System.getSecurityManager();\n    if (sm != null) {\n        sm.checkPermission(new JodaTimePermission(\"DateTimeZone.setDefault\"));\n    }\n    if (zone == null) {\n        throw new IllegalArgumentException(\"The datetime zone must not be null\");\n    }\n    synchronized(DateTimeZone.class) {\n        cDefault = zone;\n    }\n}",
+            "start_line": 173
+          },
+          {
+            "end_line": 162,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static DateTimeZone getDefault() {\n    DateTimeZone zone = cDefault;\n    if (zone == null) {\n        synchronized(DateTimeZone.class) {\n            zone = cDefault;\n            if (zone == null) {\n                DateTimeZone temp = null;\n                try {\n                    try {\n                        String id = System.getProperty(\"user.timezone\");\n                        if (id != null) {  // null check avoids stack overflow\n                            temp = forID(id);\n                        }\n                    } catch (RuntimeException ex) {\n                        // ignored\n                    }\n                    if (temp == null) {\n                        temp = forTimeZone(TimeZone.getDefault());\n                    }\n                } catch (IllegalArgumentException ex) {\n                    // ignored\n                }\n                if (temp == null) {\n                    temp = UTC;\n                }\n                cDefault = zone = temp;\n            }\n        }\n    }\n    return zone;\n}",
+            "start_line": 132
+          },
+          {
+            "end_line": 213,
+            "file": "src/main/java/org/joda/time/Period.java",
+            "replacement": "public static Period seconds(int seconds) {\n    return new Period(new int[] {0, 0, 0, 0, 0, 0, seconds, 0}, PeriodType.standard());\n}",
+            "start_line": 211
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-13/llm-0",
+        "failure_hash": "46a96265f1ade41f4803d9a229002804a1daac447d00fa2185b4fff7aa5cb268",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "83982f7da62c20d71718670e169e08f713b14e0b74bea02db908e84a7c99f917",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 184,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static void setDefault(DateTimeZone zone) throws SecurityException {\n    SecurityManager sm = System.getSecurityManager();\n    if (sm != null) {\n        sm.checkPermission(new JodaTimePermission(\"DateTimeZone.setDefault\"));\n    }\n    if (zone == null) {\n        throw new IllegalArgumentException(\"The datetime zone must not be null\");\n    }\n    synchronized(DateTimeZone.class) {\n        cDefault = zone;\n    }\n}",
+            "start_line": 173
+          },
+          {
+            "end_line": 162,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static DateTimeZone getDefault() {\n    DateTimeZone zone = cDefault;\n    if (zone == null) {\n        synchronized(DateTimeZone.class) {\n            zone = cDefault;\n            if (zone == null) {\n                DateTimeZone temp = null;\n                try {\n                    try {\n                        String id = System.getProperty(\"user.timezone\");\n                        if (id != null) {  // null check avoids stack overflow\n                            temp = forID(id);\n                        }\n                    } catch (RuntimeException ex) {\n                        // ignored\n                    }\n                    if (temp == null) {\n                        temp = forTimeZone(TimeZone.getDefault());\n                    }\n                } catch (IllegalArgumentException ex) {\n                    // ignored\n                }\n                if (temp == null) {\n                    temp = UTC;\n                }\n                cDefault = zone = temp;\n            }\n        }\n    }\n    return zone;\n}",
+            "start_line": 132
+          },
+          {
+            "end_line": 213,
+            "file": "src/main/java/org/joda/time/Period.java",
+            "replacement": "public static Period seconds(int seconds) {\n    return new Period(new int[] {0, 0, 0, 0, 0, 0, seconds, 0}, PeriodType.standard());\n}",
+            "start_line": 211
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-13/spectrum-0",
+        "failure_hash": "46a96265f1ade41f4803d9a229002804a1daac447d00fa2185b4fff7aa5cb268",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

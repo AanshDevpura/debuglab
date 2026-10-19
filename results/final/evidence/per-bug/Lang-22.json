@@ -1,0 +1,209 @@
+{
+  "bug": "Lang-22",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "9839a485d536b7cd31be43a0a4802df58b3d1a7bf24e324d4375c046b1289a48",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "6aef7361051ef5930760e6c2c8d0a7ef0109932982d79622e9c4d957a465e455",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 35,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 8,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 26.5,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 2.0,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "9839a485d536b7cd31be43a0a4802df58b3d1a7bf24e324d4375c046b1289a48",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 483,
+            "file": "src/main/java/org/apache/commons/lang3/math/Fraction.java",
+            "replacement": "public Fraction reduce() {\n        if (numerator == 0) {\n            return equals(ZERO) ? this : ZERO;\n        }\n        int gcd = greatestCommonDivisor(Math.abs(numerator), denominator);\n        if (gcd == 1) {\n            return this;\n        }\n        return Fraction.getReducedFraction(numerator / gcd, denominator / gcd);\n    }",
+            "start_line": 474
+          },
+          {
+            "end_line": 238,
+            "file": "src/main/java/org/apache/commons/lang3/math/Fraction.java",
+            "replacement": "public static Fraction getReducedFraction(int numerator, int denominator) {\n        if (denominator == 0) {\n            throw new ArithmeticException(\"The denominator must not be zero\");\n        }\n        if (numerator == 0) {\n            return ZERO; // normalize zero.\n        }\n        // allow 2^k/-2^31 as a valid fraction (where k>0)\n        if (denominator == Integer.MIN_VALUE && (numerator & 1) == 0) {\n            numerator /= 2; denominator /= 2;\n        }\n        if (denominator < 0) {\n            if (numerator == Integer.MIN_VALUE ||\n                    denominator == Integer.MIN_VALUE) {\n                throw new ArithmeticException(\"overflow: can't negate\");\n            }\n            numerator = -numerator;\n            denominator = -denominator;\n        }\n        // simplify fraction.\n        int gcd = greatestCommonDivisor(numerator, denominator);\n        numerator /= gcd;\n        denominator /= gcd;\n        return new Fraction(numerator, denominator);\n    }",
+            "start_line": 214
+          },
+          {
+            "end_line": 159,
+            "file": "src/main/java/org/apache/commons/lang3/math/Fraction.java",
+            "replacement": "public static Fraction getFraction(int numerator, int denominator) {\n        if (denominator == 0) {\n            throw new ArithmeticException(\"The denominator must not be zero\");\n        }\n        if (denominator < 0) {\n            if (numerator == Integer.MIN_VALUE ||\n                    denominator == Integer.MIN_VALUE) {\n                throw new ArithmeticException(\"overflow: can't negate\");\n            }\n            numerator = -numerator;\n            denominator = -denominator;\n        }\n        return new Fraction(numerator, denominator);\n    }",
+            "start_line": 146
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-22/combined-0",
+        "failure_hash": "6aef7361051ef5930760e6c2c8d0a7ef0109932982d79622e9c4d957a465e455",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "9839a485d536b7cd31be43a0a4802df58b3d1a7bf24e324d4375c046b1289a48",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 483,
+            "file": "src/main/java/org/apache/commons/lang3/math/Fraction.java",
+            "replacement": "public Fraction reduce() {\n        if (numerator == 0) {\n            return equals(ZERO) ? this : ZERO;\n        }\n        int gcd = greatestCommonDivisor(Math.abs(numerator), Math.abs(denominator));\n        if (gcd == 1) {\n            return this;\n        }\n        return Fraction.getFraction(numerator / gcd, denominator / gcd);\n    }",
+            "start_line": 474
+          },
+          {
+            "end_line": 238,
+            "file": "src/main/java/org/apache/commons/lang3/math/Fraction.java",
+            "replacement": "public static Fraction getReducedFraction(int numerator, int denominator) {\n        if (denominator == 0) {\n            throw new ArithmeticException(\"The denominator must not be zero\");\n        }\n        if (numerator == 0) {\n            return ZERO; // normalize zero.\n        }\n        // allow 2^k/-2^31 as a valid fraction (where k>0)\n        if (denominator == Integer.MIN_VALUE && (numerator & 1) == 0) {\n            numerator /= 2; denominator /= 2;\n        }\n        if (denominator < 0) {\n            if (numerator == Integer.MIN_VALUE ||\n                    denominator == Integer.MIN_VALUE) {\n                throw new ArithmeticException(\"overflow: can't negate\");\n            }\n            numerator = -numerator;\n            denominator = -denominator;\n        }\n        // simplify fraction.\n        int gcd = greatestCommonDivisor(numerator, denominator);\n        numerator /= gcd;\n        denominator /= gcd;\n        return new Fraction(numerator, denominator);\n    }",
+            "start_line": 214
+          },
+          {
+            "end_line": 159,
+            "file": "src/main/java/org/apache/commons/lang3/math/Fraction.java",
+            "replacement": "public static Fraction getFraction(int numerator, int denominator) {\n        if (denominator == 0) {\n            throw new ArithmeticException(\"The denominator must not be zero\");\n        }\n        if (denominator < 0) {\n            if (numerator == Integer.MIN_VALUE ||\n                    denominator == Integer.MIN_VALUE) {\n                throw new ArithmeticException(\"overflow: can't negate\");\n            }\n            numerator = -numerator;\n            denominator = -denominator;\n        }\n        return new Fraction(numerator, denominator);\n    }",
+            "start_line": 146
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-22/direct-0",
+        "failure_hash": "6aef7361051ef5930760e6c2c8d0a7ef0109932982d79622e9c4d957a465e455",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "9839a485d536b7cd31be43a0a4802df58b3d1a7bf24e324d4375c046b1289a48",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 483,
+            "file": "src/main/java/org/apache/commons/lang3/math/Fraction.java",
+            "replacement": "public Fraction reduce() {\n        if (numerator == 0) {\n            return equals(ZERO) ? this : ZERO;\n        }\n        int gcd = greatestCommonDivisor(Math.abs(numerator), denominator);\n        if (gcd == 1) {\n            return this;\n        }\n        return new Fraction(numerator / gcd, denominator / gcd);\n    }",
+            "start_line": 474
+          },
+          {
+            "end_line": 238,
+            "file": "src/main/java/org/apache/commons/lang3/math/Fraction.java",
+            "replacement": "public static Fraction getReducedFraction(int numerator, int denominator) {\n        if (denominator == 0) {\n            throw new ArithmeticException(\"The denominator must not be zero\");\n        }\n        if (numerator == 0) {\n            return ZERO; // normalize zero.\n        }\n        // allow 2^k/-2^31 as a valid fraction (where k>0)\n        if (denominator == Integer.MIN_VALUE && (numerator & 1) == 0) {\n            numerator /= 2; denominator /= 2;\n        }\n        if (denominator < 0) {\n            if (numerator == Integer.MIN_VALUE ||\n                    denominator == Integer.MIN_VALUE) {\n                throw new ArithmeticException(\"overflow: can't negate\");\n            }\n            numerator = -numerator;\n            denominator = -denominator;\n        }\n        // simplify fraction.\n        int gcd = greatestCommonDivisor(numerator, denominator);\n        numerator /= gcd;\n        denominator /= gcd;\n        return new Fraction(numerator, denominator);\n    }",
+            "start_line": 214
+          },
+          {
+            "end_line": 159,
+            "file": "src/main/java/org/apache/commons/lang3/math/Fraction.java",
+            "replacement": "public static Fraction getFraction(int numerator, int denominator) {\n        if (denominator == 0) {\n            throw new ArithmeticException(\"The denominator must not be zero\");\n        }\n        if (denominator < 0) {\n            if (numerator == Integer.MIN_VALUE ||\n                    denominator == Integer.MIN_VALUE) {\n                throw new ArithmeticException(\"overflow: can't negate\");\n            }\n            numerator = -numerator;\n            denominator = -denominator;\n        }\n        return new Fraction(numerator, denominator);\n    }",
+            "start_line": 146
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-22/llm-0",
+        "failure_hash": "6aef7361051ef5930760e6c2c8d0a7ef0109932982d79622e9c4d957a465e455",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "9839a485d536b7cd31be43a0a4802df58b3d1a7bf24e324d4375c046b1289a48",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 483,
+            "file": "src/main/java/org/apache/commons/lang3/math/Fraction.java",
+            "replacement": "public Fraction reduce() {\n        if (numerator == 0) {\n            return equals(ZERO) ? this : ZERO;\n        }\n        int gcd = greatestCommonDivisor(Math.abs(numerator), denominator);\n        if (gcd == 1) {\n            return this;\n        }\n        return Fraction.getFraction(numerator / gcd, denominator / gcd);\n    }",
+            "start_line": 474
+          },
+          {
+            "end_line": 238,
+            "file": "src/main/java/org/apache/commons/lang3/math/Fraction.java",
+            "replacement": "public static Fraction getReducedFraction(int numerator, int denominator) {\n        if (denominator == 0) {\n            throw new ArithmeticException(\"The denominator must not be zero\");\n        }\n        if (numerator == 0) {\n            return ZERO; // normalize zero.\n        }\n        // allow 2^k/-2^31 as a valid fraction (where k>0)\n        if (denominator == Integer.MIN_VALUE && (numerator & 1) == 0) {\n            numerator /= 2; denominator /= 2;\n        }\n        if (denominator < 0) {\n            if (numerator == Integer.MIN_VALUE ||\n                    denominator == Integer.MIN_VALUE) {\n                throw new ArithmeticException(\"overflow: can't negate\");\n            }\n            numerator = -numerator;\n            denominator = -denominator;\n        }\n        // simplify fraction.\n        int gcd = greatestCommonDivisor(numerator, denominator);\n        numerator /= gcd;\n        denominator /= gcd;\n        return new Fraction(numerator, denominator);\n    }",
+            "start_line": 214
+          },
+          {
+            "end_line": 159,
+            "file": "src/main/java/org/apache/commons/lang3/math/Fraction.java",
+            "replacement": "public static Fraction getFraction(int numerator, int denominator) {\n        if (denominator == 0) {\n            throw new ArithmeticException(\"The denominator must not be zero\");\n        }\n        if (denominator < 0) {\n            if (numerator == Integer.MIN_VALUE ||\n                    denominator == Integer.MIN_VALUE) {\n                throw new ArithmeticException(\"overflow: can't negate\");\n            }\n            numerator = -numerator;\n            denominator = -denominator;\n        }\n        return new Fraction(numerator, denominator);\n    }",
+            "start_line": 146
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-22/spectrum-0",
+        "failure_hash": "6aef7361051ef5930760e6c2c8d0a7ef0109932982d79622e9c4d957a465e455",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

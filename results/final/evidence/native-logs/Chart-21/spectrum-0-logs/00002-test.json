@@ -1,0 +1,12 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "test",
+    "-t",
+    "org.jfree.data.statistics.junit.DefaultBoxAndWhiskerCategoryDatasetTests::testGetRangeBounds"
+  ],
+  "output": "Running ant (compile.tests)................................................ OK\nRunning ant (run.dev.tests)................................................ OK\nFailing tests: 1\n  - org.jfree.data.statistics.junit.DefaultBoxAndWhiskerCategoryDatasetTests::testGetRangeBounds\n",
+  "returncode": 0,
+  "seconds": 0.9125283749890514,
+  "timed_out": false
+}

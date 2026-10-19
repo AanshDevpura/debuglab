@@ -1,0 +1,209 @@
+{
+  "bug": "Time-10",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "7e8f140e25f003216b3ba3a905ec44b2f3faf615bf7198440276572114fa7213",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "c3ecb78ce546800bb6e490cc3678ffa5fcb39de06d579331fb93488899e1d13e",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 3,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 3,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 14.5,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 2.0,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "7e8f140e25f003216b3ba3a905ec44b2f3faf615bf7198440276572114fa7213",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 143,
+            "file": "src/main/java/org/joda/time/Days.java",
+            "replacement": "public static Days daysBetween(ReadablePartial start, ReadablePartial end) {\n        if (start instanceof LocalDate && end instanceof LocalDate) {\n            Chronology chrono = DateTimeUtils.getChronology(start.getChronology());\n            int days = chrono.days().getDifference(\n                    ((LocalDate) end).getLocalMillis(), ((LocalDate) start).getLocalMillis());\n            return Days.days(days);\n        }\n        int amount = BaseSingleFieldPeriod.between(start, end, ZERO);\n        return Days.days(amount);\n    }",
+            "start_line": 134
+          },
+          {
+            "end_line": 163,
+            "file": "src/main/java/org/joda/time/Months.java",
+            "replacement": "public static Months monthsBetween(ReadablePartial start, ReadablePartial end) {\n        if (start instanceof LocalDate && end instanceof LocalDate) {\n            Chronology chrono = DateTimeUtils.getChronology(start.getChronology());\n            int months = chrono.months().getDifference(\n                    ((LocalDate) end).getLocalMillis(), ((LocalDate) start).getLocalMillis());\n            return Months.months(months);\n        }\n        int amount = BaseSingleFieldPeriod.between(start, end, ZERO);\n        return Months.months(amount);\n    }",
+            "start_line": 154
+          },
+          {
+            "end_line": 106,
+            "file": "src/main/java/org/joda/time/base/BaseSingleFieldPeriod.java",
+            "replacement": "protected static int between(ReadablePartial start, ReadablePartial end, ReadablePeriod zeroInstance) {\n        if (start == null || end == null) {\n            throw new IllegalArgumentException(\"ReadablePartial objects must not be null\");\n        }\n        if (start.size() != end.size()) {\n            throw new IllegalArgumentException(\"ReadablePartial objects must have the same set of fields\");\n        }\n        for (int i = 0, isize = start.size(); i < isize; i++) {\n            if (start.getFieldType(i) != end.getFieldType(i)) {\n                throw new IllegalArgumentException(\"ReadablePartial objects must have the same set of fields\");\n            }\n        }\n        if (DateTimeUtils.isContiguous(start) == false) {\n            throw new IllegalArgumentException(\"ReadablePartial objects must be contiguous\");\n        }\n        Chronology chrono = DateTimeUtils.getChronology(start.getChronology()).withUTC();\n        int[] values = chrono.get(zeroInstance, chrono.set(start, 0L), chrono.set(end, 0L));\n        return values[0];\n    }",
+            "start_line": 88
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-10/combined-0",
+        "failure_hash": "c3ecb78ce546800bb6e490cc3678ffa5fcb39de06d579331fb93488899e1d13e",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "7e8f140e25f003216b3ba3a905ec44b2f3faf615bf7198440276572114fa7213",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 143,
+            "file": "src/main/java/org/joda/time/Days.java",
+            "replacement": "public static Days daysBetween(ReadablePartial start, ReadablePartial end) {\n        if (start instanceof LocalDate && end instanceof LocalDate) {\n            Chronology chrono = DateTimeUtils.getChronology(start.getChronology());\n            int days = chrono.days().getDifference(\n                    ((LocalDate) end).getLocalMillis(), ((LocalDate) start).getLocalMillis());\n            return Days.days(days);\n        }\n        int amount = BaseSingleFieldPeriod.between(start, end, ZERO);\n        return Days.days(amount);\n    }",
+            "start_line": 134
+          },
+          {
+            "end_line": 163,
+            "file": "src/main/java/org/joda/time/Months.java",
+            "replacement": "public static Months monthsBetween(ReadablePartial start, ReadablePartial end) {\n        if (start instanceof LocalDate && end instanceof LocalDate) {\n            Chronology chrono = DateTimeUtils.getChronology(start.getChronology());\n            int months = chrono.months().getDifference(\n                    ((LocalDate) end).getLocalMillis(), ((LocalDate) start).getLocalMillis());\n            return Months.months(months);\n        }\n        int amount = BaseSingleFieldPeriod.between(start, end, ZERO);\n        return Months.months(amount);\n    }",
+            "start_line": 154
+          },
+          {
+            "end_line": 106,
+            "file": "src/main/java/org/joda/time/base/BaseSingleFieldPeriod.java",
+            "replacement": "protected static int between(ReadablePartial start, ReadablePartial end, ReadablePeriod zeroInstance) {\n        if (start == null || end == null) {\n            throw new IllegalArgumentException(\"ReadablePartial objects must not be null\");\n        }\n        if (start.size() != end.size()) {\n            throw new IllegalArgumentException(\"ReadablePartial objects must have the same set of fields\");\n        }\n        for (int i = 0, isize = start.size(); i < isize; i++) {\n            if (start.getFieldType(i) != end.getFieldType(i)) {\n                throw new IllegalArgumentException(\"ReadablePartial objects must have the same set of fields\");\n            }\n        }\n        if (DateTimeUtils.isContiguous(start) == false) {\n            throw new IllegalArgumentException(\"ReadablePartial objects must be contiguous\");\n        }\n        Chronology chrono = DateTimeUtils.getChronology(start.getChronology()).withUTC();\n        int[] values = chrono.get(zeroInstance, chrono.set(start, 0L), chrono.set(end, 0L));\n        return values[0];\n    }",
+            "start_line": 88
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-10/direct-0",
+        "failure_hash": "c3ecb78ce546800bb6e490cc3678ffa5fcb39de06d579331fb93488899e1d13e",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "7e8f140e25f003216b3ba3a905ec44b2f3faf615bf7198440276572114fa7213",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 143,
+            "file": "src/main/java/org/joda/time/Days.java",
+            "replacement": "public static Days daysBetween(ReadablePartial start, ReadablePartial end) {\n        if (start instanceof LocalDate && end instanceof LocalDate) {\n            Chronology chrono = DateTimeUtils.getChronology(start.getChronology());\n            int days = chrono.days().getDifference(\n                    ((LocalDate) end).getLocalMillis(), ((LocalDate) start).getLocalMillis());\n            return Days.days(days);\n        }\n        int amount = BaseSingleFieldPeriod.between(start, end, ZERO);\n        return Days.days(amount);\n    }",
+            "start_line": 134
+          },
+          {
+            "end_line": 163,
+            "file": "src/main/java/org/joda/time/Months.java",
+            "replacement": "public static Months monthsBetween(ReadablePartial start, ReadablePartial end) {\n        if (start instanceof LocalDate && end instanceof LocalDate) {\n            Chronology chrono = DateTimeUtils.getChronology(start.getChronology());\n            int months = chrono.months().getDifference(\n                    ((LocalDate) end).getLocalMillis(), ((LocalDate) start).getLocalMillis());\n            return Months.months(months);\n        }\n        int amount = BaseSingleFieldPeriod.between(start, end, ZERO);\n        return Months.months(amount);\n    }",
+            "start_line": 154
+          },
+          {
+            "end_line": 106,
+            "file": "src/main/java/org/joda/time/base/BaseSingleFieldPeriod.java",
+            "replacement": "protected static int between(ReadablePartial start, ReadablePartial end, ReadablePeriod zeroInstance) {\n        if (start == null || end == null) {\n            throw new IllegalArgumentException(\"ReadablePartial objects must not be null\");\n        }\n        if (start.size() != end.size()) {\n            throw new IllegalArgumentException(\"ReadablePartial objects must have the same set of fields\");\n        }\n        for (int i = 0, isize = start.size(); i < isize; i++) {\n            if (start.getFieldType(i) != end.getFieldType(i)) {\n                throw new IllegalArgumentException(\"ReadablePartial objects must have the same set of fields\");\n            }\n        }\n        if (DateTimeUtils.isContiguous(start) == false) {\n            throw new IllegalArgumentException(\"ReadablePartial objects must be contiguous\");\n        }\n        Chronology chrono = DateTimeUtils.getChronology(start.getChronology()).withUTC();\n        int[] values = chrono.get(zeroInstance, chrono.set(start, 0L), chrono.set(end, 0L));\n        return values[0];\n    }",
+            "start_line": 88
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-10/llm-0",
+        "failure_hash": "c3ecb78ce546800bb6e490cc3678ffa5fcb39de06d579331fb93488899e1d13e",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "7e8f140e25f003216b3ba3a905ec44b2f3faf615bf7198440276572114fa7213",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 143,
+            "file": "src/main/java/org/joda/time/Days.java",
+            "replacement": "public static Days daysBetween(ReadablePartial start, ReadablePartial end) {\n        if (start instanceof LocalDate && end instanceof LocalDate) {\n            Chronology chrono = DateTimeUtils.getChronology(start.getChronology());\n            int days = chrono.days().getDifference(\n                    ((LocalDate) end).getLocalMillis(), ((LocalDate) start).getLocalMillis());\n            return Days.days(days);\n        }\n        int amount = BaseSingleFieldPeriod.between(start, end, ZERO);\n        return Days.days(amount);\n    }",
+            "start_line": 134
+          },
+          {
+            "end_line": 163,
+            "file": "src/main/java/org/joda/time/Months.java",
+            "replacement": "public static Months monthsBetween(ReadablePartial start, ReadablePartial end) {\n        if (start instanceof LocalDate && end instanceof LocalDate) {\n            Chronology chrono = DateTimeUtils.getChronology(start.getChronology());\n            int months = chrono.months().getDifference(\n                    ((LocalDate) end).getLocalMillis(), ((LocalDate) start).getLocalMillis());\n            return Months.months(months);\n        }\n        int amount = BaseSingleFieldPeriod.between(start, end, ZERO);\n        return Months.months(amount);\n    }",
+            "start_line": 154
+          },
+          {
+            "end_line": 106,
+            "file": "src/main/java/org/joda/time/base/BaseSingleFieldPeriod.java",
+            "replacement": "protected static int between(ReadablePartial start, ReadablePartial end, ReadablePeriod zeroInstance) {\n        if (start == null || end == null) {\n            throw new IllegalArgumentException(\"ReadablePartial objects must not be null\");\n        }\n        if (start.size() != end.size()) {\n            throw new IllegalArgumentException(\"ReadablePartial objects must have the same set of fields\");\n        }\n        for (int i = 0, isize = start.size(); i < isize; i++) {\n            if (start.getFieldType(i) != end.getFieldType(i)) {\n                throw new IllegalArgumentException(\"ReadablePartial objects must have the same set of fields\");\n            }\n        }\n        if (DateTimeUtils.isContiguous(start) == false) {\n            throw new IllegalArgumentException(\"ReadablePartial objects must be contiguous\");\n        }\n        Chronology chrono = DateTimeUtils.getChronology(start.getChronology()).withUTC();\n        int[] values = chrono.get(zeroInstance, chrono.set(start, 0L), chrono.set(end, 0L));\n        return values[0];\n    }",
+            "start_line": 88
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-10/spectrum-0",
+        "failure_hash": "c3ecb78ce546800bb6e490cc3678ffa5fcb39de06d579331fb93488899e1d13e",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

@@ -1,0 +1,179 @@
+{
+  "bug": "Chart-15",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "f8c732806a185a1e3d119230eb33b6c601d98bd2b00893776a2624ad5bbefd96",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": null,
+    "line_any": null,
+    "line_eligible": false,
+    "line_fraction": null,
+    "method_all": false,
+    "method_any": true,
+    "missing": [
+      {
+        "method_id": "source/org/jfree/chart/plot/PiePlot.java::org.jfree.chart.plot.PiePlot#getMaximumExplodePercent@1377",
+        "not_executed_by_failing_test": true,
+        "reason": "outside_retrieved_set"
+      }
+    ],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "149d00bacc85f372fae23690f0904a99c4c6c31381f097a49d874b4fd1a2471f",
+  "gold_eligibility": {
+    "line": false,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 7.5,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "f8c732806a185a1e3d119230eb33b6c601d98bd2b00893776a2624ad5bbefd96",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 705,
+            "file": "source/org/jfree/chart/ChartFactory.java",
+            "replacement": "public static JFreeChart createPieChart3D(String title, PieDataset dataset, boolean legend, boolean tooltips, boolean urls) {\n    PiePlot3D plot = new PiePlot3D(dataset);\n    plot.setInsets(new RectangleInsets(0.0, 5.0, 5.0, 5.0));\n    if (tooltips) {\n        plot.setToolTipGenerator(new StandardPieToolTipGenerator());\n    }\n    if (urls) {\n        plot.setURLGenerator(new StandardPieURLGenerator());\n    }\n    return new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);\n}",
+            "start_line": 688
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-15/combined-0",
+        "failure_hash": "149d00bacc85f372fae23690f0904a99c4c6c31381f097a49d874b4fd1a2471f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "f8c732806a185a1e3d119230eb33b6c601d98bd2b00893776a2624ad5bbefd96",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 705,
+            "file": "source/org/jfree/chart/ChartFactory.java",
+            "replacement": "public static JFreeChart createPieChart3D(String title, PieDataset dataset, boolean legend, boolean tooltips, boolean urls) {\n    PiePlot3D plot = new PiePlot3D(dataset);\n    plot.setInsets(new RectangleInsets(0.0, 5.0, 5.0, 5.0));\n    if (tooltips) {\n        plot.setToolTipGenerator(new StandardPieToolTipGenerator());\n    }\n    if (urls) {\n        plot.setURLGenerator(new StandardPieURLGenerator());\n    }\n    return new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);\n}",
+            "start_line": 688
+          },
+          {
+            "end_line": 1225,
+            "file": "source/org/jfree/chart/JFreeChart.java",
+            "replacement": "public void draw(Graphics2D g2, Rectangle2D chartArea, Point2D anchor, ChartRenderingInfo info) {\n    notifyListeners(new ChartProgressEvent(this, this, ChartProgressEvent.DRAWING_STARTED, 0));\n    if (info != null) {\n        info.clear();\n        info.setChartArea(chartArea);\n    }\n    Shape savedClip = g2.getClip();\n    g2.clip(chartArea);\n    g2.addRenderingHints(this.renderingHints);\n    if (this.backgroundPaint != null) {\n        g2.setPaint(this.backgroundPaint);\n        g2.fill(chartArea);\n    }\n    if (this.backgroundImage != null) {\n        Composite originalComposite = g2.getComposite();\n        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, this.backgroundImageAlpha));\n        Rectangle2D dest = new Rectangle2D.Double(0.0, 0.0, this.backgroundImage.getWidth(null), this.backgroundImage.getHeight(null));\n        Align.align(dest, chartArea, this.backgroundImageAlignment);\n        g2.drawImage(this.backgroundImage, (int) dest.getX(), (int) dest.getY(), (int) dest.getWidth(), (int) dest.getHeight(), null);\n        g2.setComposite(originalComposite);\n    }\n    if (isBorderVisible()) {\n        Paint paint = getBorderPaint();\n        Stroke stroke = getBorderStroke();\n        if (paint != null && stroke != null) {\n            Rectangle2D borderArea = new Rectangle2D.Double(chartArea.getX(), chartArea.getY(), chartArea.getWidth() - 1.0, chartArea.getHeight() - 1.0);\n            g2.setPaint(paint);\n            g2.setStroke(stroke);\n            g2.draw(borderArea);\n        }\n    }\n    Rectangle2D nonTitleArea = new Rectangle2D.Double();\n    nonTitleArea.setRect(chartArea);\n    this.padding.trim(nonTitleArea);\n    EntityCollection entities = null;\n    if (info != null) {\n        entities = info.getEntityCollection();\n    }\n    if (this.title != null) {\n        EntityCollection e = drawTitle(this.title, g2, nonTitleArea, (entities != null));\n        if (e != null) {\n            entities.addAll(e);\n        }\n    }\n    Iterator iterator = this.subtitles.iterator();\n    while (iterator.hasNext()) {\n        Title currentTitle = (Title) iterator.next();\n        EntityCollection e = drawTitle(currentTitle, g2, nonTitleArea, (entities != null));\n        if (e != null) {\n            entities.addAll(e);\n        }\n    }\n    Rectangle2D plotArea = nonTitleArea;\n    PlotRenderingInfo plotInfo = null;\n    if (info != null) {\n        plotInfo = info.getPlotInfo();\n    }\n    this.plot.draw(g2, plotArea, anchor, null, plotInfo);\n    g2.setClip(savedClip);\n    notifyListeners(new ChartProgressEvent(this, this, ChartProgressEvent.DRAWING_FINISHED, 100));\n}",
+            "start_line": 1132
+          },
+          {
+            "end_line": 522,
+            "file": "source/org/jfree/chart/title/LegendTitle.java",
+            "replacement": "public Object draw(Graphics2D g2, Rectangle2D area, Object params) {\n    Rectangle2D target = (Rectangle2D) area.clone();\n    target = trimMargin(target);\n    if (this.backgroundPaint != null) {\n        g2.setPaint(this.backgroundPaint);\n        g2.fill(target);\n    }\n    BlockFrame border = getFrame();\n    border.draw(g2, target);\n    border.getInsets().trim(target);\n    BlockContainer container = this.wrapper;\n    if (container == null) {\n        container = this.items;\n    }\n    target = trimPadding(target);\n    return container.draw(g2, target, params);\n}",
+            "start_line": 506
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-15/direct-0",
+        "failure_hash": "149d00bacc85f372fae23690f0904a99c4c6c31381f097a49d874b4fd1a2471f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "f8c732806a185a1e3d119230eb33b6c601d98bd2b00893776a2624ad5bbefd96",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 591,
+            "file": "source/org/jfree/chart/plot/PiePlot3D.java",
+            "replacement": "public void draw(Graphics2D g2, Rectangle2D plotArea, Point2D anchor, PlotState parentState, PlotRenderingInfo info) {\n    // Adjust for insets...\n    RectangleInsets insets = getInsets();\n    insets.trim(plotArea);\n\n    Rectangle2D originalPlotArea = (Rectangle2D) plotArea.clone();\n    if (info != null) {\n        info.setPlotArea(plotArea);\n        info.setDataArea(plotArea);\n    }\n\n    drawBackground(g2, plotArea);\n\n    Shape savedClip = g2.getClip();\n    g2.clip(plotArea);\n\n    // Adjust the plot area by the interior spacing value\n    double gapPercent = getInteriorGap();\n    double labelPercent = 0.0;\n    if (getLabelGenerator() != null) {\n        labelPercent = getLabelGap() + getMaximumLabelWidth();\n    }\n    double gapHorizontal = plotArea.getWidth() * (gapPercent + labelPercent) * 2.0;\n    double gapVertical = plotArea.getHeight() * gapPercent * 2.0;\n\n    if (DEBUG_DRAW_INTERIOR) {\n        double hGap = plotArea.getWidth() * getInteriorGap();\n        double vGap = plotArea.getHeight() * getInteriorGap();\n        double igx1 = plotArea.getX() + hGap;\n        double igx2 = plotArea.getMaxX() - hGap;\n        double igy1 = plotArea.getY() + vGap;\n        double igy2 = plotArea.getMaxY() - vGap;\n        g2.setPaint(Color.lightGray);\n        g2.draw(new Rectangle2D.Double(igx1, igy1, igx2 - igx1, igy2 - igy1));\n    }\n\n    double linkX = plotArea.getX() + gapHorizontal / 2;\n    double linkY = plotArea.getY() + gapVertical / 2;\n    double linkW = plotArea.getWidth() - gapHorizontal;\n    double linkH = plotArea.getHeight() - gapVertical;\n\n    // Make the link area a square if the pie chart is to be circular...\n    if (isCircular()) {\n        double min = Math.min(linkW, linkH) / 2;\n        linkX = (linkX + linkX + linkW) / 2 - min;\n        linkY = (linkY + linkY + linkH) / 2 - min;\n        linkW = 2 * min;\n        linkH = 2 * min;\n    }\n\n    PiePlotState state = initialise(g2, plotArea, this, null, info);\n\n    // The link area defines the dog leg points for the linking lines to the labels\n    Rectangle2D linkAreaXX = new Rectangle2D.Double(linkX, linkY, linkW, linkH * (1 - this.depthFactor));\n    state.setLinkArea(linkAreaXX);\n\n    if (DEBUG_DRAW_LINK_AREA) {\n        g2.setPaint(Color.blue);\n        g2.draw(linkAreaXX);\n        g2.setPaint(Color.yellow);\n        g2.draw(new Ellipse2D.Double(linkAreaXX.getX(), linkAreaXX.getY(), linkAreaXX.getWidth(), linkAreaXX.getHeight()));\n    }\n\n    // The explode area defines the max circle/ellipse for the exploded pie sections.\n    // It is defined by shrinking the linkArea by the linkMargin factor.\n    double hh = linkW * getLabelLinkMargin();\n    double vv = linkH * getLabelLinkMargin();\n    Rectangle2D explodeArea = new Rectangle2D.Double(linkX + hh / 2.0, linkY + vv / 2.0, linkW - hh, linkH - vv);\n\n    state.setExplodedPieArea(explodeArea);\n\n    // The pie area defines the circle/ellipse for regular pie sections.\n    // It is defined by shrinking the explodeArea by the explodeMargin factor.\n    double maximumExplodePercent = getMaximumExplodePercent();\n    double percent = maximumExplodePercent / (1.0 + maximumExplodePercent);\n\n    double h1 = explodeArea.getWidth() * percent;\n    double v1 = explodeArea.getHeight() * percent;\n    Rectangle2D pieArea = new Rectangle2D.Double(explodeArea.getX() + h1 / 2.0, explodeArea.getY() + v1 / 2.0, explodeArea.getWidth() - h1, explodeArea.getHeight() - v1);\n\n    // The link area defines the dog-leg point for the linking lines to the labels\n    int depth = (int) (pieArea.getHeight() * this.depthFactor);\n    Rectangle2D linkArea = new Rectangle2D.Double(linkX, linkY, linkW, linkH - depth);\n    state.setLinkArea(linkArea);\n\n    state.setPieArea(pieArea);\n    state.setPieCenterX(pieArea.getCenterX());\n    state.setPieCenterY(pieArea.getCenterY() - depth / 2.0);\n    state.setPieWRadius(pieArea.getWidth() / 2.0);\n    state.setPieHRadius((pieArea.getHeight() - depth) / 2.0);\n\n    // Get the data source - return if null;\n    PieDataset dataset = getDataset();\n    if (DatasetUtilities.isEmptyOrNull(getDataset())) {\n        drawNoDataMessage(g2, plotArea);\n        g2.setClip(savedClip);\n        drawOutline(g2, plotArea);\n        return;\n    }\n\n    // If too many elements\n    if (dataset.getKeys().size() > plotArea.getWidth()) {\n        String text = \"Too many elements\";\n        Font sfont = new Font(\"dialog\", Font.BOLD, 10);\n        g2.setFont(sfont);\n        FontMetrics fm = g2.getFontMetrics(sfont);\n        int stringWidth = fm.stringWidth(text);\n\n        g2.drawString(text, (int) (plotArea.getX() + (plotArea.getWidth() - stringWidth) / 2), (int) (plotArea.getY() + (plotArea.getHeight() / 2)));\n        return;\n    }\n\n    // If we are drawing a perfect circle, we need to readjust the top left coordinates of the drawing area for the arcs to arrive at this effect.\n    if (isCircular()) {\n        double min = Math.min(plotArea.getWidth(), plotArea.getHeight()) / 2;\n        plotArea = new Rectangle2D.Double(plotArea.getCenterX() - min, plotArea.getCenterY() - min, 2 * min, 2 * min);\n    }\n\n    // Get a list of keys...\n    List sectionKeys = dataset.getKeys();\n\n    if (sectionKeys.size() == 0) {\n        return;\n    }\n\n    // Establish the coordinates of the top left corner of the drawing area\n    double arcX = pieArea.getX();\n    double arcY = pieArea.getY();\n\n    // g2.clip(clipArea);\n    Composite originalComposite = g2.getComposite();\n    g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, getForegroundAlpha()));\n\n    double totalValue = DatasetUtilities.calculatePieDatasetTotal(dataset);\n    double runningTotal = 0;\n    if (depth < 0) {\n        return;  // If depth is negative don't draw anything\n    }\n\n    ArrayList arcList = new ArrayList();\n    Arc2D.Double arc;\n    Paint paint;\n    Paint outlinePaint;\n    Stroke outlineStroke;\n\n    Iterator iterator = sectionKeys.iterator();\n    while (iterator.hasNext()) {\n\n        Comparable currentKey = (Comparable) iterator.next();\n        Number dataValue = dataset.getValue(currentKey);\n        if (dataValue == null) {\n            arcList.add(null);\n            continue;\n        }\n        double value = dataValue.doubleValue();\n        if (value <= 0) {\n            arcList.add(null);\n            continue;\n        }\n        double startAngle = getStartAngle();\n        double direction = getDirection().getFactor();\n        double angle1 = startAngle + (direction * (runningTotal * 360)) / totalValue;\n        double angle2 = startAngle + (direction * (runningTotal + value) * 360) / totalValue;\n        if (Math.abs(angle2 - angle1) > getMinimumArcAngleToDraw()) {\n            arcList.add(new Arc2D.Double(arcX, arcY + depth, pieArea.getWidth(), pieArea.getHeight() - depth, angle1, angle2 - angle1, Arc2D.PIE));\n        } else {\n            arcList.add(null);\n        }\n        runningTotal += value;\n    }\n\n    Shape oldClip = g2.getClip();\n\n    Ellipse2D top = new Ellipse2D.Double(pieArea.getX(), pieArea.getY(), pieArea.getWidth(), pieArea.getHeight() - depth);\n\n    Ellipse2D bottom = new Ellipse2D.Double(pieArea.getX(), pieArea.getY() + depth, pieArea.getWidth(), pieArea.getHeight() - depth);\n\n    Rectangle2D lower = new Rectangle2D.Double(top.getX(), top.getCenterY(), pieArea.getWidth(), bottom.getMaxY() - top.getCenterY());\n\n    Rectangle2D upper = new Rectangle2D.Double(pieArea.getX(), top.getY(), pieArea.getWidth(), bottom.getCenterY() - top.getY());\n\n    Area a = new Area(top);\n    a.add(new Area(lower));\n    Area b = new Area(bottom);\n    b.add(new Area(upper));\n    Area pie = new Area(a);\n    pie.intersect(b);\n\n    Area front = new Area(pie);\n    front.subtract(new Area(top));\n\n    Area back = new Area(pie);\n    back.subtract(new Area(bottom));\n\n    // Draw the bottom circle\n    int[] xs;\n    int[] ys;\n    arc = new Arc2D.Double(arcX, arcY + depth, pieArea.getWidth(), pieArea.getHeight() - depth, 0, 360, Arc2D.PIE);\n\n    int categoryCount = arcList.size();\n    for (int categoryIndex = 0; categoryIndex < categoryCount; categoryIndex++) {\n        arc = (Arc2D.Double) arcList.get(categoryIndex);\n        if (arc == null) {\n            continue;\n        }\n        Comparable key = getSectionKey(categoryIndex);\n        paint = lookupSectionPaint(key, true);\n        outlinePaint = lookupSectionOutlinePaint(key);\n        outlineStroke = lookupSectionOutlineStroke(key);\n        g2.setPaint(paint);\n        g2.fill(arc);\n        g2.setPaint(outlinePaint);\n        g2.setStroke(outlineStroke);\n        g2.draw(arc);\n        g2.setPaint(paint);\n\n        Point2D p1 = arc.getStartPoint();\n\n        // Draw the height\n        xs = new int[] {(int) arc.getCenterX(), (int) arc.getCenterX(), (int) p1.getX(), (int) p1.getX()};\n        ys = new int[] {(int) arc.getCenterY(), (int) arc.getCenterY() - depth, (int) p1.getY() - depth, (int) p1.getY()};\n        Polygon polygon = new Polygon(xs, ys, 4);\n        g2.setPaint(java.awt.Color.lightGray);\n        g2.fill(polygon);\n        g2.setPaint(outlinePaint);\n        g2.setStroke(outlineStroke);\n        g2.draw(polygon);\n        g2.setPaint(paint);\n\n    }\n\n    g2.setPaint(Color.gray);\n    g2.fill(back);\n    g2.fill(front);\n\n    // Cycle through once drawing only the sides at the back...\n    int cat = 0;\n    iterator = arcList.iterator();\n    while (iterator.hasNext()) {\n        Arc2D segment = (Arc2D) iterator.next();\n        if (segment != null) {\n            Comparable key = getSectionKey(cat);\n            paint = lookupSectionPaint(key, true);\n            outlinePaint = lookupSectionOutlinePaint(key);\n            outlineStroke = lookupSectionOutlineStroke(key);\n            drawSide(g2, pieArea, segment, front, back, paint, outlinePaint, outlineStroke, false, true);\n        }\n        cat++;\n    }\n\n    // Cycle through again drawing only the sides at the front...\n    cat = 0;\n    iterator = arcList.iterator();\n    while (iterator.hasNext()) {\n        Arc2D segment = (Arc2D) iterator.next();\n        if (segment != null) {\n            Comparable key = getSectionKey(cat);\n            paint = lookupSectionPaint(key);\n            outlinePaint = lookupSectionOutlinePaint(key);\n            outlineStroke = lookupSectionOutlineStroke(key);\n            drawSide(g2, pieArea, segment, front, back, paint, outlinePaint, outlineStroke, true, false);\n        }\n        cat++;\n    }\n\n    g2.setClip(oldClip);\n\n    // Draw the sections at the top of the pie (and set up tooltips)...\n    Arc2D upperArc;\n    for (int sectionIndex = 0; sectionIndex < categoryCount; sectionIndex++) {\n        arc = (Arc2D.Double) arcList.get(sectionIndex);\n        if (arc == null) {\n            continue;\n        }\n        upperArc = new Arc2D.Double(arcX, arcY, pieArea.getWidth(), pieArea.getHeight() - depth, arc.getAngleStart(), arc.getAngleExtent(), Arc2D.PIE);\n\n        Comparable currentKey = (Comparable) sectionKeys.get(sectionIndex);\n        paint = lookupSectionPaint(currentKey, true);\n        outlinePaint = lookupSectionOutlinePaint(currentKey);\n        outlineStroke = lookupSectionOutlineStroke(currentKey);\n        g2.setPaint(paint);\n        g2.fill(upperArc);\n        g2.setStroke(outlineStroke);\n        g2.setPaint(outlinePaint);\n        g2.draw(upperArc);\n\n        // Add a tooltip for the section...\n        if (info != null) {\n            EntityCollection entities = info.getOwner().getEntityCollection();\n            if (entities != null) {\n                String tip = null;\n                PieToolTipGenerator tipster = getToolTipGenerator();\n                if (tipster != null) {\n                    // @mgs: using the method's return value was missing\n                    tip = tipster.generateToolTip(dataset, currentKey);\n                }\n                String url = null;\n                if (getURLGenerator() != null) {\n                    url = getURLGenerator().generateURL(dataset, currentKey, getPieIndex());\n                }\n                PieSectionEntity entity = new PieSectionEntity(upperArc, dataset, getPieIndex(), sectionIndex, currentKey, tip, url);\n                entities.add(entity);\n            }\n        }\n        List keys = dataset.getKeys();\n        Rectangle2D adjustedPlotArea = new Rectangle2D.Double(originalPlotArea.getX(), originalPlotArea.getY(), originalPlotArea.getWidth(), originalPlotArea.getHeight() - depth);\n        if (getSimpleLabels()) {\n            drawSimpleLabels(g2, keys, totalValue, adjustedPlotArea, linkArea, state);\n        } else {\n            drawLabels(g2, keys, totalValue, adjustedPlotArea, linkArea, state);\n        }\n    }\n\n    g2.setClip(savedClip);\n    g2.setComposite(originalComposite);\n    drawOutline(g2, originalPlotArea);\n\n}\n",
+            "start_line": 225
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-15/llm-0",
+        "failure_hash": "149d00bacc85f372fae23690f0904a99c4c6c31381f097a49d874b4fd1a2471f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "f8c732806a185a1e3d119230eb33b6c601d98bd2b00893776a2624ad5bbefd96",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 705,
+            "file": "source/org/jfree/chart/ChartFactory.java",
+            "replacement": "public static JFreeChart createPieChart3D(String title, PieDataset dataset, boolean legend, boolean tooltips, boolean urls) {\n    PiePlot3D plot = new PiePlot3D(dataset);\n    plot.setInsets(new RectangleInsets(0.0, 5.0, 5.0, 5.0));\n    if (tooltips) {\n        plot.setToolTipGenerator(new StandardPieToolTipGenerator());\n    }\n    if (urls) {\n        plot.setURLGenerator(new StandardPieURLGenerator());\n    }\n    return new JFreeChart(title, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);\n}",
+            "start_line": 688
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-15/spectrum-0",
+        "failure_hash": "149d00bacc85f372fae23690f0904a99c4c6c31381f097a49d874b4fd1a2471f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

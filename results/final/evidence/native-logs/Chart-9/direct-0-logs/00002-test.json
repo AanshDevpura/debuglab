@@ -1,0 +1,12 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "test",
+    "-t",
+    "org.jfree.data.time.junit.TimeSeriesTests::testBug1864222"
+  ],
+  "output": "Running ant (compile.tests)................................................ OK\nRunning ant (run.dev.tests)................................................ OK\nFailing tests: 1\n  - org.jfree.data.time.junit.TimeSeriesTests::testBug1864222\n",
+  "returncode": 0,
+  "seconds": 0.8965824579936452,
+  "timed_out": false
+}

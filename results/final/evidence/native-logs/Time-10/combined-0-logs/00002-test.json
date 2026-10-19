@@ -1,0 +1,12 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "test",
+    "-t",
+    "org.joda.time.TestDays::testFactory_daysBetween_RPartial_MonthDay"
+  ],
+  "output": "Running ant (compile.tests)................................................ OK\nRunning ant (run.dev.tests)................................................ OK\nFailing tests: 1\n  - org.joda.time.TestDays::testFactory_daysBetween_RPartial_MonthDay\n",
+  "returncode": 0,
+  "seconds": 2.239457791991299,
+  "timed_out": false
+}

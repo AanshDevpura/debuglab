@@ -1,0 +1,209 @@
+{
+  "bug": "Chart-6",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "9beab42e7c63cd47be110a5f96092a125f777ec5844e0e55d3e9a0202e6a6f52",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "beb457db7a5ab3375bc1d8f57a48081aa6e327f2a12b39217d0c6d28946c4952",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 10,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 2,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 2,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 50.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 7.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "9beab42e7c63cd47be110a5f96092a125f777ec5844e0e55d3e9a0202e6a6f52",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 147,
+            "file": "source/org/jfree/chart/util/ShapeList.java",
+            "replacement": "private void writeObject(ObjectOutputStream stream) throws IOException {\n    stream.defaultWriteObject();\n    int count = size();\n    stream.writeInt(count);\n    for (int i = 0; i < count; i++) {\n        Shape shape = getShape(i);\n        if (shape != null) {\n            stream.writeInt(i);\n            SerialUtilities.writeShape(shape, stream);\n        } else {\n            stream.writeInt(-1);\n        }\n    }\n}",
+            "start_line": 131
+          },
+          {
+            "end_line": 113,
+            "file": "source/org/jfree/chart/util/ShapeList.java",
+            "replacement": "public boolean equals(Object obj) {\n    if (obj == this) {\n        return true;\n    }\n    if (!(obj instanceof ShapeList)) {\n        return false;\n    }\n    ShapeList that = (ShapeList) obj;\n    int listSize = size();\n    if (listSize != that.size()) {\n        return false;\n    }\n    for (int i = 0; i < listSize; i++) {\n        Shape shape1 = getShape(i);\n        Shape shape2 = that.getShape(i);\n        if (shape1 == null && shape2 == null) {\n            continue;\n        }\n        if (shape1 == null || shape2 == null) {\n            return false;\n        }\n        if (!shape1.equals(shape2)) {\n            return false;\n        }\n    }\n    return true;\n}",
+            "start_line": 103
+          },
+          {
+            "end_line": 169,
+            "file": "source/org/jfree/chart/util/ShapeList.java",
+            "replacement": "private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {\n    stream.defaultReadObject();\n    int count = stream.readInt();\n    for (int i = 0; i < count; i++) {\n        int index = stream.readInt();\n        if (index != -1) {\n            setShape(index, SerialUtilities.readShape(stream));\n        }\n    }\n}",
+            "start_line": 157
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-6/combined-0",
+        "failure_hash": "beb457db7a5ab3375bc1d8f57a48081aa6e327f2a12b39217d0c6d28946c4952",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "9beab42e7c63cd47be110a5f96092a125f777ec5844e0e55d3e9a0202e6a6f52",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 147,
+            "file": "source/org/jfree/chart/util/ShapeList.java",
+            "replacement": "private void writeObject(ObjectOutputStream stream) throws IOException {\n    stream.defaultWriteObject();\n    int count = size();\n    stream.writeInt(count);\n    for (int i = 0; i < count; i++) {\n        Shape shape = getShape(i);\n        if (shape != null) {\n            stream.writeInt(i);\n            SerialUtilities.writeShape(shape, stream);\n        } else {\n            stream.writeInt(-1);\n        }\n    }\n}",
+            "start_line": 131
+          },
+          {
+            "end_line": 113,
+            "file": "source/org/jfree/chart/util/ShapeList.java",
+            "replacement": "public boolean equals(Object obj) {\n    if (obj == this) {\n        return true;\n    }\n    if (!(obj instanceof ShapeList)) {\n        return false;\n    }\n    ShapeList l2 = (ShapeList) obj;\n    if (size() != l2.size()) {\n        return false;\n    }\n    for (int i = 0; i < size(); i++) {\n        Shape shape1 = getShape(i);\n        Shape shape2 = l2.getShape(i);\n        if (shape1 == null && shape2 == null) {\n            continue;\n        }\n        if (shape1 == null || shape2 == null) {\n            return false;\n        }\n        if (!shape1.equals(shape2)) {\n            return false;\n        }\n    }\n    return true;\n}",
+            "start_line": 103
+          },
+          {
+            "end_line": 169,
+            "file": "source/org/jfree/chart/util/ShapeList.java",
+            "replacement": "private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {\n    stream.defaultReadObject();\n    int count = stream.readInt();\n    for (int i = 0; i < count; i++) {\n        int index = stream.readInt();\n        if (index != -1) {\n            setShape(index, SerialUtilities.readShape(stream));\n        }\n    }\n}",
+            "start_line": 157
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-6/direct-0",
+        "failure_hash": "beb457db7a5ab3375bc1d8f57a48081aa6e327f2a12b39217d0c6d28946c4952",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "9beab42e7c63cd47be110a5f96092a125f777ec5844e0e55d3e9a0202e6a6f52",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 147,
+            "file": "source/org/jfree/chart/util/ShapeList.java",
+            "replacement": "private void writeObject(ObjectOutputStream stream) throws IOException {\n    stream.defaultWriteObject();\n    int count = size();\n    stream.writeInt(count);\n    for (int i = 0; i < count; i++) {\n        Shape shape = getShape(i);\n        if (shape != null) {\n            stream.writeInt(i);\n            SerialUtilities.writeShape(shape, stream);\n        } else {\n            stream.writeInt(-1);\n        }\n    }\n}",
+            "start_line": 131
+          },
+          {
+            "end_line": 113,
+            "file": "source/org/jfree/chart/util/ShapeList.java",
+            "replacement": "public boolean equals(Object obj) {\n    if (obj == this) {\n        return true;\n    }\n    if (!(obj instanceof ShapeList)) {\n        return false;\n    }\n    ShapeList that = (ShapeList) obj;\n    if (this.size() != that.size()) {\n        return false;\n    }\n    for (int i = 0; i < this.size(); i++) {\n        if (!ObjectUtilities.equal(this.getShape(i), that.getShape(i))) {\n            return false;\n        }\n    }\n    return true;\n}",
+            "start_line": 103
+          },
+          {
+            "end_line": 169,
+            "file": "source/org/jfree/chart/util/ShapeList.java",
+            "replacement": "private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {\n    stream.defaultReadObject();\n    int count = stream.readInt();\n    for (int i = 0; i < count; i++) {\n        int index = stream.readInt();\n        if (index != -1) {\n            setShape(index, SerialUtilities.readShape(stream));\n        }\n    }\n}",
+            "start_line": 157
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-6/llm-0",
+        "failure_hash": "beb457db7a5ab3375bc1d8f57a48081aa6e327f2a12b39217d0c6d28946c4952",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "9beab42e7c63cd47be110a5f96092a125f777ec5844e0e55d3e9a0202e6a6f52",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 147,
+            "file": "source/org/jfree/chart/util/ShapeList.java",
+            "replacement": "private void writeObject(ObjectOutputStream stream) throws IOException {\n    stream.defaultWriteObject();\n    int count = size();\n    stream.writeInt(count);\n    for (int i = 0; i < count; i++) {\n        Shape shape = getShape(i);\n        if (shape != null) {\n            stream.writeInt(i);\n            SerialUtilities.writeShape(shape, stream);\n        } else {\n            stream.writeInt(-1);\n        }\n    }\n}\n",
+            "start_line": 131
+          },
+          {
+            "end_line": 113,
+            "file": "source/org/jfree/chart/util/ShapeList.java",
+            "replacement": "public boolean equals(Object obj) {\n    if (obj == this) {\n        return true;\n    }\n    if (!(obj instanceof ShapeList)) {\n        return false;\n    }\n    ShapeList that = (ShapeList) obj;\n    int count = size();\n    if (that.size() != count) {\n        return false;\n    }\n    for (int i = 0; i < count; i++) {\n        Shape shape1 = getShape(i);\n        Shape shape2 = that.getShape(i);\n        if (shape1 == null && shape2 == null) {\n            continue;\n        }\n        if (shape1 == null || shape2 == null) {\n            return false;\n        }\n        if (!shape1.equals(shape2)) {\n            return false;\n        }\n    }\n    return true;\n}\n",
+            "start_line": 103
+          },
+          {
+            "end_line": 169,
+            "file": "source/org/jfree/chart/util/ShapeList.java",
+            "replacement": "private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {\n    stream.defaultReadObject();\n    int count = stream.readInt();\n    for (int i = 0; i < count; i++) {\n        int index = stream.readInt();\n        if (index != -1) {\n            setShape(index, SerialUtilities.readShape(stream));\n        }\n    }\n}\n",
+            "start_line": 157
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-6/spectrum-0",
+        "failure_hash": "beb457db7a5ab3375bc1d8f57a48081aa6e327f2a12b39217d0c6d28946c4952",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

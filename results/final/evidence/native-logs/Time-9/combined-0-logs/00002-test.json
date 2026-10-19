@@ -1,0 +1,12 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "test",
+    "-t",
+    "org.joda.time.TestDateTimeZone::testForOffsetHoursMinutes_int_int"
+  ],
+  "output": "Running ant (compile.tests)................................................ OK\nRunning ant (run.dev.tests)................................................ OK\nFailing tests: 1\n  - org.joda.time.TestDateTimeZone::testForOffsetHoursMinutes_int_int\n",
+  "returncode": 0,
+  "seconds": 1.970969290996436,
+  "timed_out": false
+}

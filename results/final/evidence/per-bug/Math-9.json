@@ -1,0 +1,161 @@
+{
+  "bug": "Math-9",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "2365116c4249620eef56ade808e8870826af874d335229ded8c8897b5267f153",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "1922a824f3a636382da6f6d4a2c8753906a610825c57f90ba4bb6ae783de3caa",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 2,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 2,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 1.5,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1.0,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "2365116c4249620eef56ade808e8870826af874d335229ded8c8897b5267f153",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 89,
+            "file": "src/main/java/org/apache/commons/math3/geometry/euclidean/threed/Line.java",
+            "replacement": "public Line revert() {\n    final Line reverted = new Line(zero, direction.negate());\n    return reverted;\n}",
+            "start_line": 86
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-9/combined-0",
+        "failure_hash": "1922a824f3a636382da6f6d4a2c8753906a610825c57f90ba4bb6ae783de3caa",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "2365116c4249620eef56ade808e8870826af874d335229ded8c8897b5267f153",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 89,
+            "file": "src/main/java/org/apache/commons/math3/geometry/euclidean/threed/Line.java",
+            "replacement": "public Line revert() {\n    final Line reverted = new Line(zero, direction.negate());\n    return reverted;\n}",
+            "start_line": 86
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-9/direct-0",
+        "failure_hash": "1922a824f3a636382da6f6d4a2c8753906a610825c57f90ba4bb6ae783de3caa",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "2365116c4249620eef56ade808e8870826af874d335229ded8c8897b5267f153",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 89,
+            "file": "src/main/java/org/apache/commons/math3/geometry/euclidean/threed/Line.java",
+            "replacement": "public Line revert() {\n    final Line reverted = new Line(zero, direction.negate());\n    return reverted;\n}",
+            "start_line": 86
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-9/llm-0",
+        "failure_hash": "1922a824f3a636382da6f6d4a2c8753906a610825c57f90ba4bb6ae783de3caa",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "2365116c4249620eef56ade808e8870826af874d335229ded8c8897b5267f153",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 89,
+            "file": "src/main/java/org/apache/commons/math3/geometry/euclidean/threed/Line.java",
+            "replacement": "public Line revert() {\n    final Line reverted = new Line(zero, direction.negate());\n    return reverted;\n}",
+            "start_line": 86
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-9/spectrum-0",
+        "failure_hash": "1922a824f3a636382da6f6d4a2c8753906a610825c57f90ba4bb6ae783de3caa",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

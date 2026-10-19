@@ -1,0 +1,12 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "test",
+    "-t",
+    "org.apache.commons.math3.fitting.PolynomialFitterTest::testLargeSample"
+  ],
+  "output": "Running ant (compile.tests)................................................ OK\nRunning ant (run.dev.tests)................................................ OK\nFailing tests: 1\n  - org.apache.commons.math3.fitting.PolynomialFitterTest::testLargeSample\n",
+  "returncode": 0,
+  "seconds": 15.166136291984003,
+  "timed_out": false
+}

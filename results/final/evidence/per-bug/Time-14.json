@@ -1,0 +1,209 @@
+{
+  "bug": "Time-14",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "2d81157c3d5110400066f240fa846755731e621282754b5f7d95080a91e0e6d6",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": null,
+    "line_any": null,
+    "line_eligible": false,
+    "line_fraction": null,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "170c90bb406e494cb24daa9195193223a6a734e94944a7e5f971180891fa6f35",
+  "gold_eligibility": {
+    "line": false,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 5,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 5,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1.0,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "2d81157c3d5110400066f240fa846755731e621282754b5f7d95080a91e0e6d6",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 653,
+            "file": "src/main/java/org/joda/time/MonthDay.java",
+            "replacement": "public MonthDay minusMonths(int months) {\n        return withFieldAdded(DurationFieldType.months(), FieldUtils.safeNegate(months));\n    }",
+            "start_line": 651
+          },
+          {
+            "end_line": 593,
+            "file": "src/main/java/org/joda/time/MonthDay.java",
+            "replacement": "public MonthDay plusMonths(int months) {\n        return withFieldAdded(DurationFieldType.months(), months);\n    }",
+            "start_line": 591
+          },
+          {
+            "end_line": 521,
+            "file": "src/main/java/org/joda/time/MonthDay.java",
+            "replacement": "public MonthDay withFieldAdded(DurationFieldType fieldType, int amount) {\n        int index = indexOfSupported(fieldType);\n        if (amount == 0) {\n            return this;\n        }\n        int[] newValues = getValues();\n        newValues = getField(index).add(this, index, newValues, amount);\n        return new MonthDay(this, newValues);\n    }",
+            "start_line": 513
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-14/combined-0",
+        "failure_hash": "170c90bb406e494cb24daa9195193223a6a734e94944a7e5f971180891fa6f35",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "2d81157c3d5110400066f240fa846755731e621282754b5f7d95080a91e0e6d6",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 653,
+            "file": "src/main/java/org/joda/time/MonthDay.java",
+            "replacement": "public MonthDay minusMonths(int months) {\n        return withFieldAdded(DurationFieldType.months(), FieldUtils.safeNegate(months));\n    }",
+            "start_line": 651
+          },
+          {
+            "end_line": 593,
+            "file": "src/main/java/org/joda/time/MonthDay.java",
+            "replacement": "public MonthDay plusMonths(int months) {\n        return withFieldAdded(DurationFieldType.months(), months);\n    }",
+            "start_line": 591
+          },
+          {
+            "end_line": 521,
+            "file": "src/main/java/org/joda/time/MonthDay.java",
+            "replacement": "public MonthDay withFieldAdded(DurationFieldType fieldType, int amount) {\n        int index = indexOfSupported(fieldType);\n        if (amount == 0) {\n            return this;\n        }\n        int[] newValues = getValues();\n        newValues = getField(index).add(this, index, newValues, amount);\n        return new MonthDay(this, newValues);\n    }",
+            "start_line": 513
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-14/direct-0",
+        "failure_hash": "170c90bb406e494cb24daa9195193223a6a734e94944a7e5f971180891fa6f35",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "2d81157c3d5110400066f240fa846755731e621282754b5f7d95080a91e0e6d6",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 653,
+            "file": "src/main/java/org/joda/time/MonthDay.java",
+            "replacement": "public MonthDay minusMonths(int months) {\n        return withFieldAdded(DurationFieldType.months(), FieldUtils.safeNegate(months));\n    }",
+            "start_line": 651
+          },
+          {
+            "end_line": 593,
+            "file": "src/main/java/org/joda/time/MonthDay.java",
+            "replacement": "public MonthDay plusMonths(int months) {\n        return withFieldAdded(DurationFieldType.months(), months);\n    }",
+            "start_line": 591
+          },
+          {
+            "end_line": 521,
+            "file": "src/main/java/org/joda/time/MonthDay.java",
+            "replacement": "public MonthDay withFieldAdded(DurationFieldType fieldType, int amount) {\n        int index = indexOfSupported(fieldType);\n        if (amount == 0) {\n            return this;\n        }\n        int[] newValues = getValues();\n        newValues = getField(index).add(this, index, newValues, amount);\n        return new MonthDay(this, newValues);\n    }",
+            "start_line": 513
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-14/llm-0",
+        "failure_hash": "170c90bb406e494cb24daa9195193223a6a734e94944a7e5f971180891fa6f35",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "2d81157c3d5110400066f240fa846755731e621282754b5f7d95080a91e0e6d6",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 653,
+            "file": "src/main/java/org/joda/time/MonthDay.java",
+            "replacement": "public MonthDay minusMonths(int months) {\n        return withFieldAdded(DurationFieldType.months(), FieldUtils.safeNegate(months));\n    }",
+            "start_line": 651
+          },
+          {
+            "end_line": 593,
+            "file": "src/main/java/org/joda/time/MonthDay.java",
+            "replacement": "public MonthDay plusMonths(int months) {\n        return withFieldAdded(DurationFieldType.months(), months);\n    }",
+            "start_line": 591
+          },
+          {
+            "end_line": 521,
+            "file": "src/main/java/org/joda/time/MonthDay.java",
+            "replacement": "public MonthDay withFieldAdded(DurationFieldType fieldType, int amount) {\n        int index = indexOfSupported(fieldType);\n        if (amount == 0) {\n            return this;\n        }\n        int[] newValues = getValues();\n        newValues = getField(index).add(this, index, newValues, amount);\n        return new MonthDay(this, newValues);\n    }",
+            "start_line": 513
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-14/spectrum-0",
+        "failure_hash": "170c90bb406e494cb24daa9195193223a6a734e94944a7e5f971180891fa6f35",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

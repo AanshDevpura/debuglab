@@ -1,0 +1,209 @@
+{
+  "bug": "Chart-19",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "aa0df2d1aa5791f70077a3e4b7c01b64189efbc92b8ad2b87159fb4d33571d5b",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": null,
+    "line_any": null,
+    "line_eligible": false,
+    "line_fraction": null,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "5a65c87b06303f35bac64ae1166afaa587a9e5100f638ae6a0de2dbae9d290f0",
+  "gold_eligibility": {
+    "line": false,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1.5,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "aa0df2d1aa5791f70077a3e4b7c01b64189efbc92b8ad2b87159fb4d33571d5b",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 982,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "    public int getRangeAxisIndex(ValueAxis axis) {\n        int result = this.rangeAxes.indexOf(axis);\n        if (result < 0) {\n            Plot parent = getParent();\n            if (parent instanceof CategoryPlot) {\n                CategoryPlot p = (CategoryPlot) parent;\n                result = p.getRangeAxisIndex(axis);\n            }\n        }\n        return result;\n    }",
+            "start_line": 972
+          },
+          {
+            "end_line": 941,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "    public void setRangeAxis(int index, ValueAxis axis, boolean notify) {\n        ValueAxis existing = (ValueAxis) this.rangeAxes.get(index);\n        if (existing != null) {\n            existing.removeChangeListener(this);\n        }\n        if (axis != null) {\n            axis.setPlot(this);\n        }\n        this.rangeAxes.set(index, axis);\n        if (axis != null) {\n            axis.configure();\n            axis.addChangeListener(this);\n        }\n        if (notify) {\n            notifyListeners(new PlotChangeEvent(this));\n        }\n    }",
+            "start_line": 925
+          },
+          {
+            "end_line": 915,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "    public void setRangeAxis(int index, ValueAxis axis) {\n        setRangeAxis(index, axis, true);\n    }",
+            "start_line": 913
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-19/combined-0",
+        "failure_hash": "5a65c87b06303f35bac64ae1166afaa587a9e5100f638ae6a0de2dbae9d290f0",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "aa0df2d1aa5791f70077a3e4b7c01b64189efbc92b8ad2b87159fb4d33571d5b",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 982,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "    public int getRangeAxisIndex(ValueAxis axis) {\n        int result = this.rangeAxes.indexOf(axis);\n        if (result < 0) { // try the parent plot\n            Plot parent = getParent();\n            if (parent instanceof CategoryPlot) {\n                CategoryPlot p = (CategoryPlot) parent;\n                result = p.getRangeAxisIndex(axis);\n            }\n        }\n        return result;\n    }",
+            "start_line": 972
+          },
+          {
+            "end_line": 667,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "    public void setDomainAxis(int index, CategoryAxis axis, boolean notify) {\n        CategoryAxis existing = (CategoryAxis) this.domainAxes.get(index);\n        if (existing != null) {\n            existing.removeChangeListener(this);\n        }\n        if (axis != null) {\n            axis.setPlot(this);\n        }\n        this.domainAxes.set(index, axis);\n        if (axis != null) {\n            axis.configure();\n            axis.addChangeListener(this);\n        }\n        if (notify) {\n            notifyListeners(new PlotChangeEvent(this));\n        }\n    }",
+            "start_line": 651
+          },
+          {
+            "end_line": 641,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "    public void setDomainAxis(int index, CategoryAxis axis) {\n        setDomainAxis(index, axis, true);\n    }",
+            "start_line": 639
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-19/direct-0",
+        "failure_hash": "5a65c87b06303f35bac64ae1166afaa587a9e5100f638ae6a0de2dbae9d290f0",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "aa0df2d1aa5791f70077a3e4b7c01b64189efbc92b8ad2b87159fb4d33571d5b",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 982,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "    public int getRangeAxisIndex(ValueAxis axis) {\n        int result = this.rangeAxes.indexOf(axis);\n        if (result < 0) {\n            Plot parent = getParent();\n            if (parent instanceof CategoryPlot) {\n                CategoryPlot p = (CategoryPlot) parent;\n                result = p.getRangeAxisIndex(axis);\n            }\n        }\n        return result;\n    }",
+            "start_line": 972
+          },
+          {
+            "end_line": 941,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "    public void setRangeAxis(int index, ValueAxis axis, boolean notify) {\n        ValueAxis existing = (ValueAxis) this.rangeAxes.get(index);\n        if (existing != null) {\n            existing.removeChangeListener(this);\n        }\n        if (axis != null) {\n            axis.setPlot(this);\n        }\n        this.rangeAxes.set(index, axis);\n        if (axis != null) {\n            axis.configure();\n            axis.addChangeListener(this);\n        }\n        if (notify) {\n            notifyListeners(new PlotChangeEvent(this));\n        }\n    }",
+            "start_line": 925
+          },
+          {
+            "end_line": 915,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "    public void setRangeAxis(int index, ValueAxis axis) {\n        setRangeAxis(index, axis, true);\n    }",
+            "start_line": 913
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-19/llm-0",
+        "failure_hash": "5a65c87b06303f35bac64ae1166afaa587a9e5100f638ae6a0de2dbae9d290f0",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "aa0df2d1aa5791f70077a3e4b7c01b64189efbc92b8ad2b87159fb4d33571d5b",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 982,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "public int getRangeAxisIndex(ValueAxis axis) {\n    int result = this.rangeAxes.indexOf(axis);\n    if (result < 0) {\n        Plot parent = getParent();\n        if (parent instanceof CategoryPlot) {\n            CategoryPlot p = (CategoryPlot) parent;\n            result = p.getRangeAxisIndex(axis);\n        }\n    }\n    return result;\n}",
+            "start_line": 972
+          },
+          {
+            "end_line": 667,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "public void setDomainAxis(int index, CategoryAxis axis, boolean notify) {\n    CategoryAxis existing = (CategoryAxis) this.domainAxes.get(index);\n    if (existing != null) {\n        existing.removeChangeListener(this);\n    }\n    if (axis != null) {\n        axis.setPlot(this);\n    }\n    this.domainAxes.set(index, axis);\n    if (axis != null) {\n        axis.configure();\n        axis.addChangeListener(this);\n    }\n    if (notify) {\n        notifyListeners(new PlotChangeEvent(this));\n    }\n}",
+            "start_line": 651
+          },
+          {
+            "end_line": 641,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "public void setDomainAxis(int index, CategoryAxis axis) {\n    setDomainAxis(index, axis, true);\n}",
+            "start_line": 639
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-19/spectrum-0",
+        "failure_hash": "5a65c87b06303f35bac64ae1166afaa587a9e5100f638ae6a0de2dbae9d290f0",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

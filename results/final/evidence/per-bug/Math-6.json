@@ -1,0 +1,346 @@
+{
+  "bug": "Math-6",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "0ff06c9041f4b3cd3ef9f5a7650108cb6c4d05db0c311d3e0235a6579e2fb46e",
+  "context_recall": {
+    "file_all": false,
+    "file_any": true,
+    "line_all": false,
+    "line_any": false,
+    "line_eligible": true,
+    "line_fraction": 0.0,
+    "method_all": false,
+    "method_any": false,
+    "missing": [
+      {
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/LevenbergMarquardtOptimizer.java::org.apache.commons.math3.optim.nonlinear.vector.jacobian.LevenbergMarquardtOptimizer#doOptimize@283",
+        "not_executed_by_failing_test": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/PowellOptimizer.java::org.apache.commons.math3.optim.nonlinear.scalar.noderiv.PowellOptimizer#doOptimize@172",
+        "not_executed_by_failing_test": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/GaussNewtonOptimizer.java::org.apache.commons.math3.optim.nonlinear.vector.jacobian.GaussNewtonOptimizer#doOptimize@79",
+        "not_executed_by_failing_test": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "method_id": "src/main/java/org/apache/commons/math3/optim/BaseOptimizer.java::org.apache.commons.math3.optim.BaseOptimizer#BaseOptimizer@47",
+        "not_executed_by_failing_test": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/SimplexOptimizer.java::org.apache.commons.math3.optim.nonlinear.scalar.noderiv.SimplexOptimizer#doOptimize@126",
+        "not_executed_by_failing_test": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.java::org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer#doOptimize@191",
+        "not_executed_by_failing_test": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/CMAESOptimizer.java::org.apache.commons.math3.optim.nonlinear.scalar.noderiv.CMAESOptimizer#doOptimize@367",
+        "not_executed_by_failing_test": false,
+        "reason": "dropped_for_budget"
+      }
+    ],
+    "missing_lines": [
+      {
+        "id": "src/main/java/org/apache/commons/math3/optim/BaseOptimizer.java:51",
+        "method_id": "src/main/java/org/apache/commons/math3/optim/BaseOptimizer.java::org.apache.commons.math3.optim.BaseOptimizer#BaseOptimizer@47",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.java:214",
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.java::org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer#doOptimize@191",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.java:217",
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.java::org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer#doOptimize@191",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.java:223",
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.java::org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer#doOptimize@191",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.java:277",
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.java::org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer#doOptimize@191",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/PowellOptimizer.java:191",
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/PowellOptimizer.java::org.apache.commons.math3.optim.nonlinear.scalar.noderiv.PowellOptimizer#doOptimize@172",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/PowellOptimizer.java:193",
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/PowellOptimizer.java::org.apache.commons.math3.optim.nonlinear.scalar.noderiv.PowellOptimizer#doOptimize@172",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/PowellOptimizer.java:227",
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/PowellOptimizer.java::org.apache.commons.math3.optim.nonlinear.scalar.noderiv.PowellOptimizer#doOptimize@172",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/SimplexOptimizer.java:158",
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/SimplexOptimizer.java::org.apache.commons.math3.optim.nonlinear.scalar.noderiv.SimplexOptimizer#doOptimize@126",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/SimplexOptimizer.java:175",
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/SimplexOptimizer.java::org.apache.commons.math3.optim.nonlinear.scalar.noderiv.SimplexOptimizer#doOptimize@126",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "id": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/GaussNewtonOptimizer.java:106",
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/GaussNewtonOptimizer.java::org.apache.commons.math3.optim.nonlinear.vector.jacobian.GaussNewtonOptimizer#doOptimize@79",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "id": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/GaussNewtonOptimizer.java:108",
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/GaussNewtonOptimizer.java::org.apache.commons.math3.optim.nonlinear.vector.jacobian.GaussNewtonOptimizer#doOptimize@79",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "id": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/GaussNewtonOptimizer.java:160",
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/GaussNewtonOptimizer.java::org.apache.commons.math3.optim.nonlinear.vector.jacobian.GaussNewtonOptimizer#doOptimize@79",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "id": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/LevenbergMarquardtOptimizer.java:322",
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/LevenbergMarquardtOptimizer.java::org.apache.commons.math3.optim.nonlinear.vector.jacobian.LevenbergMarquardtOptimizer#doOptimize@283",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "id": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/LevenbergMarquardtOptimizer.java:325",
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/LevenbergMarquardtOptimizer.java::org.apache.commons.math3.optim.nonlinear.vector.jacobian.LevenbergMarquardtOptimizer#doOptimize@283",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      },
+      {
+        "id": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/LevenbergMarquardtOptimizer.java:489",
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/LevenbergMarquardtOptimizer.java::org.apache.commons.math3.optim.nonlinear.vector.jacobian.LevenbergMarquardtOptimizer#doOptimize@283",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      }
+    ]
+  },
+  "evaluated": true,
+  "failure_hash": "f2847a76c56919be31141cafda01f9e1eafdee4f6cad63fb0ae62ef19df67d6f",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": "Line outside method or duplicate"
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 658.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 16.5,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "0ff06c9041f4b3cd3ef9f5a7650108cb6c4d05db0c311d3e0235a6579e2fb46e",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 123,
+            "file": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/SimplexOptimizer.java",
+            "replacement": "    @Override\n    public PointValuePair optimize(OptimizationData... optData) {\n        // Set up base class and perform computation.\n        return super.optimize(optData);\n    }",
+            "start_line": 119
+          },
+          {
+            "end_line": 75,
+            "file": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/GradientMultivariateOptimizer.java",
+            "replacement": "    @Override\n    public PointValuePair optimize(OptimizationData... optData)\n        throws TooManyEvaluationsException {\n        // Set up base class and perform computation.\n        return super.optimize(optData);\n    }",
+            "start_line": 70
+          },
+          {
+            "end_line": 65,
+            "file": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/MultivariateOptimizer.java",
+            "replacement": "    @Override\n    public PointValuePair optimize(OptimizationData... optData)\n        throws TooManyEvaluationsException {\n        // Set up base class and perform computation.\n        return super.optimize(optData);\n    }",
+            "start_line": 60
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-6/combined-0",
+        "failure_hash": "f2847a76c56919be31141cafda01f9e1eafdee4f6cad63fb0ae62ef19df67d6f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "0ff06c9041f4b3cd3ef9f5a7650108cb6c4d05db0c311d3e0235a6579e2fb46e",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 123,
+            "file": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/SimplexOptimizer.java",
+            "replacement": "    @Override\n    public PointValuePair optimize(OptimizationData... optData) {\n        // Set up base class and perform computation.\n        return super.optimize(optData);\n    }",
+            "start_line": 119
+          },
+          {
+            "end_line": 75,
+            "file": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/GradientMultivariateOptimizer.java",
+            "replacement": "    @Override\n    public PointValuePair optimize(OptimizationData... optData)\n        throws TooManyEvaluationsException {\n        // Set up base class and perform computation.\n        return super.optimize(optData);\n    }",
+            "start_line": 70
+          },
+          {
+            "end_line": 65,
+            "file": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/MultivariateOptimizer.java",
+            "replacement": "    @Override\n    public PointValuePair optimize(OptimizationData... optData)\n        throws TooManyEvaluationsException {\n        // Set up base class and perform computation.\n        return super.optimize(optData);\n    }",
+            "start_line": 60
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-6/direct-0",
+        "failure_hash": "f2847a76c56919be31141cafda01f9e1eafdee4f6cad63fb0ae62ef19df67d6f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "0ff06c9041f4b3cd3ef9f5a7650108cb6c4d05db0c311d3e0235a6579e2fb46e",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 123,
+            "file": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/SimplexOptimizer.java",
+            "replacement": "    @Override\n    public PointValuePair optimize(OptimizationData... optData) {\n        // Set up base class and perform computation.\n        return super.optimize(optData);\n    }",
+            "start_line": 119
+          },
+          {
+            "end_line": 75,
+            "file": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/GradientMultivariateOptimizer.java",
+            "replacement": "    @Override\n    public PointValuePair optimize(OptimizationData... optData)\n        throws TooManyEvaluationsException {\n        // Set up base class and perform computation.\n        return super.optimize(optData);\n    }",
+            "start_line": 70
+          },
+          {
+            "end_line": 65,
+            "file": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/MultivariateOptimizer.java",
+            "replacement": "    @Override\n    public PointValuePair optimize(OptimizationData... optData)\n        throws TooManyEvaluationsException {\n        // Set up base class and perform computation.\n        return super.optimize(optData);\n    }",
+            "start_line": 60
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-6/llm-0",
+        "failure_hash": "f2847a76c56919be31141cafda01f9e1eafdee4f6cad63fb0ae62ef19df67d6f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "0ff06c9041f4b3cd3ef9f5a7650108cb6c4d05db0c311d3e0235a6579e2fb46e",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 364,
+            "file": "src/main/java/org/apache/commons/math3/optim/nonlinear/scalar/noderiv/CMAESOptimizer.java",
+            "replacement": "    @Override\n    public PointValuePair optimize(OptimizationData... optData) {\n        // Set up base class and perform computation.\n        return super.optimize(optData);\n    }",
+            "start_line": 358
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-6/spectrum-0",
+        "failure_hash": "f2847a76c56919be31141cafda01f9e1eafdee4f6cad63fb0ae62ef19df67d6f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

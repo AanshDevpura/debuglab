@@ -1,0 +1,209 @@
+{
+  "bug": "Time-25",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "1d54c4b0a261fed93c22e9085dee502f5a27e22f2dc2af62c925cf5ede3111f0",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": null,
+    "line_any": null,
+    "line_eligible": false,
+    "line_fraction": null,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "60a1239a4d90bfc908d1dd140a2a85063eb5be5d4a17878a443be884d484fa6f",
+  "gold_eligibility": {
+    "line": false,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 26.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "1d54c4b0a261fed93c22e9085dee502f5a27e22f2dc2af62c925cf5ede3111f0",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 425,
+            "file": "src/main/java/org/joda/time/base/AbstractInstant.java",
+            "replacement": "public String toString() {\n        return ISODateTimeFormat.dateTime().print(this);\n    }",
+            "start_line": 422
+          },
+          {
+            "end_line": 148,
+            "file": "src/main/java/org/joda/time/chrono/ZonedChronology.java",
+            "replacement": "private long localToUTC(long instant) {\n        DateTimeZone zone = getZone();\n        int offset = zone.getOffsetFromLocal(instant);\n        instant -= offset;\n        if (offset != zone.getOffset(instant)) {\n            throw new IllegalArgumentException\n                (\"Illegal instant due to time zone offset transition: \" +\n                    DateTimeFormat.forPattern(\"yyyy-MM-dd'T'HH:mm:ss.SSS\").print(new Instant(instant)));\n        }\n        return instant;\n    }",
+            "start_line": 138
+          },
+          {
+            "end_line": 630,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "private void printTo(StringBuffer buf, long instant, Chronology chrono) {\n        DateTimePrinter printer = requirePrinter();\n        chrono = selectChronology(chrono);\n        // Shift instant into local time (UTC) to avoid excessive offset\n        // calculations when printing multiple fields in a composite printer.\n        DateTimeZone zone = chrono.getZone();\n        int offset = zone.getOffset(instant);\n        long adjustedInstant = instant + offset;\n        if ((instant ^ adjustedInstant) < 0 && (instant ^ offset) >= 0) {\n            // Time zone offset overflow, so revert to UTC.\n            zone = DateTimeZone.UTC;\n            offset = 0;\n            adjustedInstant = instant;\n        }\n        printer.printTo(buf, adjustedInstant, chrono.withUTC(), offset, zone, iLocale);\n    }",
+            "start_line": 615
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-25/combined-0",
+        "failure_hash": "60a1239a4d90bfc908d1dd140a2a85063eb5be5d4a17878a443be884d484fa6f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "1d54c4b0a261fed93c22e9085dee502f5a27e22f2dc2af62c925cf5ede3111f0",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 425,
+            "file": "src/main/java/org/joda/time/base/AbstractInstant.java",
+            "replacement": "    @ToString\n    public String toString() {\n        return ISODateTimeFormat.dateTime().print(this);\n    }",
+            "start_line": 422
+          },
+          {
+            "end_line": 148,
+            "file": "src/main/java/org/joda/time/chrono/ZonedChronology.java",
+            "replacement": "    private long localToUTC(long instant) {\n        DateTimeZone zone = getZone();\n        int offset = zone.getOffsetFromLocal(instant);\n        instant -= offset;\n        if (offset != zone.getOffset(instant)) {\n            throw new IllegalArgumentException\n                (\"Illegal instant due to time zone offset transition: \" +\n                    DateTimeFormat.forPattern(\"yyyy-MM-dd'T'HH:mm:ss.SSS\").print(new Instant(instant)));\n        }\n        return instant;\n    }",
+            "start_line": 138
+          },
+          {
+            "end_line": 630,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "    private void printTo(StringBuffer buf, long instant, Chronology chrono) {\n        DateTimePrinter printer = requirePrinter();\n        chrono = selectChronology(chrono);\n        // Shift instant into local time (UTC) to avoid excessive offset\n        // calculations when printing multiple fields in a composite printer.\n        DateTimeZone zone = chrono.getZone();\n        int offset = zone.getOffset(instant);\n        long adjustedInstant = instant + offset;\n        if ((instant ^ adjustedInstant) < 0 && (instant ^ offset) >= 0) {\n            // Time zone offset overflow, so revert to UTC.\n            zone = DateTimeZone.UTC;\n            offset = 0;\n            adjustedInstant = instant;\n        }\n        printer.printTo(buf, adjustedInstant, chrono.withUTC(), offset, zone, iLocale);\n    }",
+            "start_line": 615
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-25/direct-0",
+        "failure_hash": "60a1239a4d90bfc908d1dd140a2a85063eb5be5d4a17878a443be884d484fa6f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "1d54c4b0a261fed93c22e9085dee502f5a27e22f2dc2af62c925cf5ede3111f0",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 425,
+            "file": "src/main/java/org/joda/time/base/AbstractInstant.java",
+            "replacement": "public String toString() {\n        return ISODateTimeFormat.dateTime().print(this);\n    }",
+            "start_line": 422
+          },
+          {
+            "end_line": 148,
+            "file": "src/main/java/org/joda/time/chrono/ZonedChronology.java",
+            "replacement": "private long localToUTC(long instant) {\n        DateTimeZone zone = getZone();\n        int offset = zone.getOffsetFromLocal(instant);\n        instant -= offset;\n        if (offset != zone.getOffset(instant)) {\n            throw new IllegalArgumentException\n                (\"Illegal instant due to time zone offset transition: \" +\n                    DateTimeFormat.forPattern(\"yyyy-MM-dd'T'HH:mm:ss.SSS\").print(new Instant(instant)));\n        }\n        return instant;\n    }",
+            "start_line": 138
+          },
+          {
+            "end_line": 630,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "private void printTo(StringBuffer buf, long instant, Chronology chrono) {\n        DateTimePrinter printer = requirePrinter();\n        chrono = selectChronology(chrono);\n        // Shift instant into local time (UTC) to avoid excessive offset\n        // calculations when printing multiple fields in a composite printer.\n        DateTimeZone zone = chrono.getZone();\n        int offset = zone.getOffset(instant);\n        long adjustedInstant = instant + offset;\n        if ((instant ^ adjustedInstant) < 0 && (instant ^ offset) >= 0) {\n            // Time zone offset overflow, so revert to UTC.\n            zone = DateTimeZone.UTC;\n            offset = 0;\n            adjustedInstant = instant;\n        }\n        printer.printTo(buf, adjustedInstant, chrono.withUTC(), offset, zone, iLocale);\n    }",
+            "start_line": 615
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-25/llm-0",
+        "failure_hash": "60a1239a4d90bfc908d1dd140a2a85063eb5be5d4a17878a443be884d484fa6f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "1d54c4b0a261fed93c22e9085dee502f5a27e22f2dc2af62c925cf5ede3111f0",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 425,
+            "file": "src/main/java/org/joda/time/base/AbstractInstant.java",
+            "replacement": "    @ToString\n    public String toString() {\n        return ISODateTimeFormat.dateTime().print(this);\n    }",
+            "start_line": 422
+          },
+          {
+            "end_line": 148,
+            "file": "src/main/java/org/joda/time/chrono/ZonedChronology.java",
+            "replacement": "    private long localToUTC(long instant) {\n        DateTimeZone zone = getZone();\n        int offset = zone.getOffsetFromLocal(instant);\n        instant -= offset;\n        if (offset != zone.getOffset(instant)) {\n            throw new IllegalArgumentException\n                (\"Illegal instant due to time zone offset transition: \" +\n                    DateTimeFormat.forPattern(\"yyyy-MM-dd'T'HH:mm:ss.SSS\").print(new Instant(instant)));\n        }\n        return instant;\n    }",
+            "start_line": 138
+          },
+          {
+            "end_line": 630,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "    private void printTo(StringBuffer buf, long instant, Chronology chrono) {\n        DateTimePrinter printer = requirePrinter();\n        chrono = selectChronology(chrono);\n        // Shift instant into local time (UTC) to avoid excessive offset\n        // calculations when printing multiple fields in a composite printer.\n        DateTimeZone zone = chrono.getZone();\n        int offset = zone.getOffset(instant);\n        long adjustedInstant = instant + offset;\n        if ((instant ^ adjustedInstant) < 0 && (instant ^ offset) >= 0) {\n            // Time zone offset overflow, so revert to UTC.\n            zone = DateTimeZone.UTC;\n            offset = 0;\n            adjustedInstant = instant;\n        }\n        printer.printTo(buf, adjustedInstant, chrono.withUTC(), offset, zone, iLocale);\n    }",
+            "start_line": 615
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-25/spectrum-0",
+        "failure_hash": "60a1239a4d90bfc908d1dd140a2a85063eb5be5d4a17878a443be884d484fa6f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

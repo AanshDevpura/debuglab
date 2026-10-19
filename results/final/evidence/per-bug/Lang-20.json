@@ -1,0 +1,197 @@
+{
+  "bug": "Lang-20",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "b7a359ffa1369dbdad6b772ba1681fbead1018656d3d1d31f723594d84101d54",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "c40a053848ab6f2cdf80e29935757ab9e937cd1be0d05a4229cd3e4cd9262475",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 3,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 3,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 8.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1.5,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "b7a359ffa1369dbdad6b772ba1681fbead1018656d3d1d31f723594d84101d54",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 3339,
+            "file": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+            "replacement": "public static String join(Object[] array, String separator) {\n    if (array == null) {\n        return null;\n    }\n    if (separator == null) {\n        separator = EMPTY;\n    }\n    int noOfItems = array.length;\n    if (noOfItems <= 0) {\n        return EMPTY;\n    }\n    StringBuilder buf = new StringBuilder(noOfItems * 16);\n    for (int i = 0; i < noOfItems; i++) {\n        if (i > 0) {\n            buf.append(separator);\n        }\n        if (array[i] != null) {\n            buf.append(array[i]);\n        }\n    }\n    return buf.toString();\n}",
+            "start_line": 3334
+          },
+          {
+            "end_line": 3309,
+            "file": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+            "replacement": "public static String join(Object[] array, char separator, int startIndex, int endIndex) {\n    if (array == null) {\n        return null;\n    }\n    int noOfItems = endIndex - startIndex;\n    if (noOfItems <= 0) {\n        return EMPTY;\n    }\n    StringBuilder buf = new StringBuilder(noOfItems * 16);\n    for (int i = startIndex; i < endIndex; i++) {\n        if (i > startIndex) {\n            buf.append(separator);\n        }\n        if (array[i] != null) {\n            buf.append(array[i]);\n        }\n    }\n    return buf.toString();\n}",
+            "start_line": 3289
+          },
+          {
+            "end_line": 3394,
+            "file": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+            "replacement": "public static String join(Object[] array, String separator, int startIndex, int endIndex) {\n    if (array == null) {\n        return null;\n    }\n    if (separator == null) {\n        separator = EMPTY;\n    }\n    int noOfItems = endIndex - startIndex;\n    if (noOfItems <= 0) {\n        return EMPTY;\n    }\n    StringBuilder buf = new StringBuilder(noOfItems * 16);\n    for (int i = startIndex; i < endIndex; i++) {\n        if (i > startIndex) {\n            buf.append(separator);\n        }\n        if (array[i] != null) {\n            buf.append(array[i]);\n        }\n    }\n    return buf.toString();\n}",
+            "start_line": 3368
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-20/combined-0",
+        "failure_hash": "c40a053848ab6f2cdf80e29935757ab9e937cd1be0d05a4229cd3e4cd9262475",
+        "sample": 0,
+        "status": "PLAUSIBLE"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "b7a359ffa1369dbdad6b772ba1681fbead1018656d3d1d31f723594d84101d54",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 3339,
+            "file": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+            "replacement": "public static String join(Object[] array, String separator) {\n    if (array == null) {\n        return null;\n    }\n    if (separator == null) {\n        separator = EMPTY;\n    }\n    int noOfItems = array.length;\n    if (noOfItems <= 0) {\n        return EMPTY;\n    }\n    StringBuilder buf = new StringBuilder((array[0] == null ? 16 : array[0].toString().length()) + separator.length() * (noOfItems - 1));\n    for (int i = 0; i < noOfItems; i++) {\n        if (i > 0) {\n            buf.append(separator);\n        }\n        if (array[i] != null) {\n            buf.append(array[i]);\n        }\n    }\n    return buf.toString();\n}",
+            "start_line": 3334
+          },
+          {
+            "end_line": 3309,
+            "file": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+            "replacement": "public static String join(Object[] array, char separator, int startIndex, int endIndex) {\n    if (array == null) {\n        return null;\n    }\n    int noOfItems = endIndex - startIndex;\n    if (noOfItems <= 0) {\n        return EMPTY;\n    }\n    StringBuilder buf = new StringBuilder((array[startIndex] == null ? 16 : array[startIndex].toString().length()) + separator + 1);\n    for (int i = startIndex; i < endIndex; i++) {\n        if (i > startIndex) {\n            buf.append(separator);\n        }\n        if (array[i] != null) {\n            buf.append(array[i]);\n        }\n    }\n    return buf.toString();\n}",
+            "start_line": 3289
+          },
+          {
+            "end_line": 3394,
+            "file": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+            "replacement": "public static String join(Object[] array, String separator, int startIndex, int endIndex) {\n    if (array == null) {\n        return null;\n    }\n    if (separator == null) {\n        separator = EMPTY;\n    }\n    int noOfItems = endIndex - startIndex;\n    if (noOfItems <= 0) {\n        return EMPTY;\n    }\n    StringBuilder buf = new StringBuilder((array[startIndex] == null ? 16 : array[startIndex].toString().length()) + separator.length() * (noOfItems - 1));\n    for (int i = startIndex; i < endIndex; i++) {\n        if (i > startIndex) {\n            buf.append(separator);\n        }\n        if (array[i] != null) {\n            buf.append(array[i]);\n        }\n    }\n    return buf.toString();\n}",
+            "start_line": 3368
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-20/direct-0",
+        "failure_hash": "c40a053848ab6f2cdf80e29935757ab9e937cd1be0d05a4229cd3e4cd9262475",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "b7a359ffa1369dbdad6b772ba1681fbead1018656d3d1d31f723594d84101d54",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 3339,
+            "file": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+            "replacement": "public static String join(Object[] array, String separator) {\n    if (array == null) {\n        return null;\n    }\n    if (separator == null) {\n        separator = EMPTY;\n    }\n    int noOfItems = array.length;\n    if (noOfItems <= 0) {\n        return EMPTY;\n    }\n    StringBuilder buf = new StringBuilder(noOfItems * 16);\n    for (int i = 0; i < noOfItems; i++) {\n        if (i > 0) {\n            buf.append(separator);\n        }\n        if (array[i] != null) {\n            buf.append(array[i]);\n        }\n    }\n    return buf.toString();\n}",
+            "start_line": 3334
+          },
+          {
+            "end_line": 3231,
+            "file": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+            "replacement": "public static <T> String join(T... elements) {\n    return join(elements, null);\n}",
+            "start_line": 3229
+          },
+          {
+            "end_line": 3309,
+            "file": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+            "replacement": "public static String join(Object[] array, char separator, int startIndex, int endIndex) {\n    if (array == null) {\n        return null;\n    }\n    int noOfItems = endIndex - startIndex;\n    if (noOfItems <= 0) {\n        return EMPTY;\n    }\n    StringBuilder buf = new StringBuilder(noOfItems * 16);\n    for (int i = startIndex; i < endIndex; i++) {\n        if (i > startIndex) {\n            buf.append(separator);\n        }\n        if (array[i] != null) {\n            buf.append(array[i]);\n        }\n    }\n    return buf.toString();\n}",
+            "start_line": 3289
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-20/llm-0",
+        "failure_hash": "c40a053848ab6f2cdf80e29935757ab9e937cd1be0d05a4229cd3e4cd9262475",
+        "sample": 0,
+        "status": "PLAUSIBLE"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "b7a359ffa1369dbdad6b772ba1681fbead1018656d3d1d31f723594d84101d54",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 3339,
+            "file": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+            "replacement": "public static String join(Object[] array, String separator) {\n    if (array == null) {\n        return null;\n    }\n    if (separator == null) {\n        separator = EMPTY;\n    }\n    int noOfItems = array.length;\n    if (noOfItems <= 0) {\n        return EMPTY;\n    }\n    StringBuilder buf = new StringBuilder((array[0] == null ? 16 : array[0].toString().length()) + separator.length() * (noOfItems - 1));\n    for (int i = 0; i < noOfItems; i++) {\n        if (i > 0) {\n            buf.append(separator);\n        }\n        if (array[i] != null) {\n            buf.append(array[i]);\n        }\n    }\n    return buf.toString();\n}",
+            "start_line": 3334
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-20/spectrum-0",
+        "failure_hash": "c40a053848ab6f2cdf80e29935757ab9e937cd1be0d05a4229cd3e4cd9262475",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

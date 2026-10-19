@@ -1,0 +1,161 @@
+{
+  "bug": "Lang-21",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "96f86050f314baec20cd340cbf14e4c3053630712d663bdc30b3b7ded2ee2632",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "72500946c0b515f9404a7197307ac781997fb78e32175d3536ab7a4e4f68ee7d",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 5,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 5.0,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1.0,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "96f86050f314baec20cd340cbf14e4c3053630712d663bdc30b3b7ded2ee2632",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 270,
+            "file": "src/main/java/org/apache/commons/lang3/time/DateUtils.java",
+            "replacement": "public static boolean isSameLocalTime(Calendar cal1, Calendar cal2) {\n    if (cal1 == null || cal2 == null) {\n        throw new IllegalArgumentException(\"The date must not be null\");\n    }\n    return (cal1.get(Calendar.MILLISECOND) == cal2.get(Calendar.MILLISECOND) &&\n            cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND) &&\n            cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&\n            cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&\n            cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&\n            cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&\n            cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA));\n}",
+            "start_line": 258
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-21/combined-0",
+        "failure_hash": "72500946c0b515f9404a7197307ac781997fb78e32175d3536ab7a4e4f68ee7d",
+        "sample": 0,
+        "status": "PLAUSIBLE"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "96f86050f314baec20cd340cbf14e4c3053630712d663bdc30b3b7ded2ee2632",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 270,
+            "file": "src/main/java/org/apache/commons/lang3/time/DateUtils.java",
+            "replacement": "public static boolean isSameLocalTime(Calendar cal1, Calendar cal2) {\n    if (cal1 == null || cal2 == null) {\n        throw new IllegalArgumentException(\"The date must not be null\");\n    }\n    return (cal1.get(Calendar.MILLISECOND) == cal2.get(Calendar.MILLISECOND) &&\n            cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND) &&\n            cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&\n            cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&\n            cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH) &&\n            cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&\n            cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&\n            cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA));\n}",
+            "start_line": 258
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-21/direct-0",
+        "failure_hash": "72500946c0b515f9404a7197307ac781997fb78e32175d3536ab7a4e4f68ee7d",
+        "sample": 0,
+        "status": "PLAUSIBLE"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "96f86050f314baec20cd340cbf14e4c3053630712d663bdc30b3b7ded2ee2632",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 270,
+            "file": "src/main/java/org/apache/commons/lang3/time/DateUtils.java",
+            "replacement": "public static boolean isSameLocalTime(Calendar cal1, Calendar cal2) {\n    if (cal1 == null || cal2 == null) {\n        throw new IllegalArgumentException(\"The date must not be null\");\n    }\n    return (cal1.get(Calendar.MILLISECOND) == cal2.get(Calendar.MILLISECOND) &&\n            cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND) &&\n            cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&\n            cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&\n            cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&\n            cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&\n            cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA));\n}",
+            "start_line": 258
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-21/llm-0",
+        "failure_hash": "72500946c0b515f9404a7197307ac781997fb78e32175d3536ab7a4e4f68ee7d",
+        "sample": 0,
+        "status": "PLAUSIBLE"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "96f86050f314baec20cd340cbf14e4c3053630712d663bdc30b3b7ded2ee2632",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 270,
+            "file": "src/main/java/org/apache/commons/lang3/time/DateUtils.java",
+            "replacement": "public static boolean isSameLocalTime(Calendar cal1, Calendar cal2) {\n    if (cal1 == null || cal2 == null) {\n        throw new IllegalArgumentException(\"The date must not be null\");\n    }\n    return (cal1.get(Calendar.MILLISECOND) == cal2.get(Calendar.MILLISECOND) &&\n            cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND) &&\n            cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&\n            cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&\n            cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH) &&\n            cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&\n            cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&\n            cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA));\n}",
+            "start_line": 258
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-21/spectrum-0",
+        "failure_hash": "72500946c0b515f9404a7197307ac781997fb78e32175d3536ab7a4e4f68ee7d",
+        "sample": 0,
+        "status": "PLAUSIBLE"
+      }
+    ]
+  }
+}

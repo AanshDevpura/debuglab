@@ -1,0 +1,12 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "test",
+    "-t",
+    "org.jfree.chart.plot.junit.CategoryPlotTests::testGetRangeAxisIndex"
+  ],
+  "output": "Running ant (compile.tests)................................................ OK\nRunning ant (run.dev.tests)................................................ OK\nFailing tests: 1\n  - org.jfree.chart.plot.junit.CategoryPlotTests::testGetRangeAxisIndex\n",
+  "returncode": 0,
+  "seconds": 0.9057616669742856,
+  "timed_out": false
+}

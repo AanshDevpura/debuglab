@@ -1,0 +1,161 @@
+{
+  "bug": "Lang-24",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "f79ed742b0409cd37e4204a6898f86bb3f105c9547a8b502c40d0ba12e41d622",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "dd02cea53abbbffe3dd11084fe82c43cbf32970f86b75f2b874ce6a04423e152",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 32.5,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1.0,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "f79ed742b0409cd37e4204a6898f86bb3f105c9547a8b502c40d0ba12e41d622",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 1421,
+            "file": "src/main/java/org/apache/commons/lang3/math/NumberUtils.java",
+            "replacement": "public static boolean isNumber(String str) {\n    if (StringUtils.isEmpty(str)) {\n        return false;\n    }\n    char[] chars = str.toCharArray();\n    int sz = chars.length;\n    boolean hasExp = false;\n    boolean hasDecPoint = false;\n    boolean allowSigns = false;\n    boolean foundDigit = false;\n    // deal with any possible sign up front\n    int start = (chars[0] == '-') ? 1 : 0;\n    if (sz > start + 1) {\n        if (chars[start] == '0' && chars[start + 1] == 'x') {\n            int i = start + 2;\n            if (i == sz) {\n                return false; // str == \"0x\"\n            }\n            // checking hex (it can't be anything else)\n            for (; i < chars.length; i++) {\n                if ((chars[i] < '0' || chars[i] > '9')\n                    && (chars[i] < 'a' || chars[i] > 'f')\n                    && (chars[i] < 'A' || chars[i] > 'F')) {\n                    return false;\n                }\n            }\n            return true;\n        }\n    }\n    sz--; // don't want to loop to the last char, check it afterwords\n          // for type qualifiers\n    int i = start;\n    // loop to the next to last char or to the last char if we need another digit to\n    // make a valid number (e.g. chars[0..5] = \"1234E\")\n    while (i < sz || (i < sz + 1 && allowSigns && !foundDigit)) {\n        if (chars[i] >= '0' && chars[i] <= '9') {\n            foundDigit = true;\n            allowSigns = false;\n        } else if (chars[i] == '.') {\n            if (hasDecPoint || hasExp) {\n                // two decimal points or dec in exponent\n                return false;\n            }\n            hasDecPoint = true;\n        } else if (chars[i] == 'e' || chars[i] == 'E') {\n            // we've already taken care of hex.\n            if (hasExp) {\n                // two E's\n                return false;\n            }\n            if (!foundDigit) {\n                return false;\n            }\n            hasExp = true;\n            allowSigns = true;\n        } else if (chars[i] == '+' || chars[i] == '-') {\n            if (!allowSigns) {\n                return false;\n            }\n            allowSigns = false;\n            foundDigit = false; // we need a digit after the E\n        } else {\n            return false;\n        }\n        i++;\n    }\n    if (i < chars.length) {\n        if (chars[i] >= '0' && chars[i] <= '9') {\n            // no type qualifier, OK\n            return true;\n        }\n        if (chars[i] == 'e' || chars[i] == 'E') {\n            // can't have an E at the last byte\n            return false;\n        }\n        if (chars[i] == '.') {\n            if (hasDecPoint || hasExp) {\n                // two decimal points or dec in exponent\n                return false;\n            }\n            // single trailing decimal point after non-exponent is ok\n            return foundDigit;\n        }\n        if (!allowSigns\n            && (chars[i] == 'd'\n                || chars[i] == 'D'\n                || chars[i] == 'f'\n                || chars[i] == 'F')) {\n            return foundDigit;\n        }\n        if (chars[i] == 'l'\n            || chars[i] == 'L') {\n            // not allowing L with an exponent or decimal point\n            return foundDigit && !hasExp;\n        }\n        // last character is illegal\n        return false;\n    }\n    // allowSigns is true iff the val ends in 'E'\n    // found digit it to make sure weird stuff like '.' and '1E-' doesn't pass\n    return !allowSigns && foundDigit;\n}",
+            "start_line": 1319
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-24/combined-0",
+        "failure_hash": "dd02cea53abbbffe3dd11084fe82c43cbf32970f86b75f2b874ce6a04423e152",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "f79ed742b0409cd37e4204a6898f86bb3f105c9547a8b502c40d0ba12e41d622",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 1421,
+            "file": "src/main/java/org/apache/commons/lang3/math/NumberUtils.java",
+            "replacement": "public static boolean isNumber(String str) {\n    if (StringUtils.isEmpty(str)) {\n        return false;\n    }\n    char[] chars = str.toCharArray();\n    int sz = chars.length;\n    boolean hasExp = false;\n    boolean hasDecPoint = false;\n    boolean allowSigns = false;\n    boolean foundDigit = false;\n    // deal with any possible sign up front\n    int start = (chars[0] == '-') ? 1 : 0;\n    if (sz > start + 1) {\n        if (chars[start] == '0' && chars[start + 1] == 'x') {\n            int i = start + 2;\n            if (i == sz) {\n                return false; // str == \"0x\"\n            }\n            // checking hex (it can't be anything else)\n            for (; i < chars.length; i++) {\n                if ((chars[i] < '0' || chars[i] > '9')\n                    && (chars[i] < 'a' || chars[i] > 'f')\n                    && (chars[i] < 'A' || chars[i] > 'F')) {\n                    return false;\n                }\n            }\n            return true;\n        }\n    }\n    sz--; // don't want to loop to the last char, check it afterwords\n          // for type qualifiers\n    int i = start;\n    // loop to the next to last char or to the last char if we need another digit to\n    // make a valid number (e.g. chars[0..5] = \"1234E\")\n    while (i < sz || (i < sz + 1 && allowSigns && !foundDigit)) {\n        if (chars[i] >= '0' && chars[i] <= '9') {\n            foundDigit = true;\n            allowSigns = false;\n        } else if (chars[i] == '.') {\n            if (hasDecPoint || hasExp) {\n                // two decimal points or dec in exponent\n                return false;\n            }\n            hasDecPoint = true;\n        } else if (chars[i] == 'e' || chars[i] == 'E') {\n            // we've already taken care of hex.\n            if (hasExp) {\n                // two E's\n                return false;\n            }\n            if (!foundDigit) {\n                return false;\n            }\n            hasExp = true;\n            allowSigns = true;\n        } else if (chars[i] == '+' || chars[i] == '-') {\n            if (!allowSigns) {\n                return false;\n            }\n            allowSigns = false;\n            foundDigit = false; // we need a digit after the E\n        } else {\n            return false;\n        }\n        i++;\n    }\n    if (i < chars.length) {\n        if (chars[i] >= '0' && chars[i] <= '9') {\n            // no type qualifier, OK\n            return true;\n        }\n        if (chars[i] == 'e' || chars[i] == 'E') {\n            // can't have an E at the last byte\n            return false;\n        }\n        if (chars[i] == '.') {\n            if (hasDecPoint || hasExp) {\n                // two decimal points or dec in exponent\n                return false;\n            }\n            // single trailing decimal point after non-exponent is ok\n            return foundDigit;\n        }\n        if (!allowSigns\n            && (chars[i] == 'd'\n                || chars[i] == 'D'\n                || chars[i] == 'f'\n                || chars[i] == 'F')) {\n            return foundDigit;\n        }\n        if (chars[i] == 'l'\n            || chars[i] == 'L') {\n            // not allowing L with an exponent or decimal point\n            return foundDigit && !hasExp;\n        }\n        // last character is illegal\n        return false;\n    }\n    // allowSigns is true iff the val ends in 'E'\n    // found digit it to make sure weird stuff like '.' and '1E-' doesn't pass\n    return !allowSigns && foundDigit;\n}",
+            "start_line": 1319
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-24/direct-0",
+        "failure_hash": "dd02cea53abbbffe3dd11084fe82c43cbf32970f86b75f2b874ce6a04423e152",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "f79ed742b0409cd37e4204a6898f86bb3f105c9547a8b502c40d0ba12e41d622",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 1421,
+            "file": "src/main/java/org/apache/commons/lang3/math/NumberUtils.java",
+            "replacement": "public static boolean isNumber(String str) {\n    if (StringUtils.isEmpty(str)) {\n        return false;\n    }\n    char[] chars = str.toCharArray();\n    int sz = chars.length;\n    boolean hasExp = false;\n    boolean hasDecPoint = false;\n    boolean allowSigns = false;\n    boolean foundDigit = false;\n    // deal with any possible sign up front\n    int start = (chars[0] == '-') ? 1 : 0;\n    if (sz > start + 1) {\n        if (chars[start] == '0' && chars[start + 1] == 'x') {\n            int i = start + 2;\n            if (i == sz) {\n                return false; // str == \"0x\"\n            }\n            // checking hex (it can't be anything else)\n            for (; i < chars.length; i++) {\n                if ((chars[i] < '0' || chars[i] > '9')\n                    && (chars[i] < 'a' || chars[i] > 'f')\n                    && (chars[i] < 'A' || chars[i] > 'F')) {\n                    return false;\n                }\n            }\n            return true;\n        }\n    }\n    sz--; // don't want to loop to the last char, check it afterwords\n          // for type qualifiers\n    int i = start;\n    // loop to the next to last char or to the last char if we need another digit to\n    // make a valid number (e.g. chars[0..5] = \"1234E\")\n    while (i < sz || (i < sz + 1 && allowSigns && !foundDigit)) {\n        if (chars[i] >= '0' && chars[i] <= '9') {\n            foundDigit = true;\n            allowSigns = false;\n        } else if (chars[i] == '.') {\n            if (hasDecPoint || hasExp) {\n                // two decimal points or dec in exponent\n                return false;\n            }\n            hasDecPoint = true;\n        } else if (chars[i] == 'e' || chars[i] == 'E') {\n            // we've already taken care of hex.\n            if (hasExp) {\n                // two E's\n                return false;\n            }\n            if (!foundDigit) {\n                return false;\n            }\n            hasExp = true;\n            allowSigns = true;\n        } else if (chars[i] == '+' || chars[i] == '-') {\n            if (!allowSigns) {\n                return false;\n            }\n            allowSigns = false;\n            foundDigit = false; // we need a digit after the E\n        } else {\n            return false;\n        }\n        i++;\n    }\n    if (i < chars.length) {\n        if (chars[i] >= '0' && chars[i] <= '9') {\n            // no type qualifier, OK\n            return true;\n        }\n        if (chars[i] == 'e' || chars[i] == 'E') {\n            // can't have an E at the last byte\n            return false;\n        }\n        if (chars[i] == '.') {\n            if (hasDecPoint || hasExp) {\n                // two decimal points or dec in exponent\n                return false;\n            }\n            // single trailing decimal point after non-exponent is ok\n            return foundDigit;\n        }\n        if (!allowSigns\n            && (chars[i] == 'd'\n                || chars[i] == 'D'\n                || chars[i] == 'f'\n                || chars[i] == 'F')) {\n            return foundDigit;\n        }\n        if (chars[i] == 'l'\n            || chars[i] == 'L') {\n            // not allowing L with an exponent or decimal point\n            return foundDigit && !hasExp;\n        }\n        // last character is illegal\n        return false;\n    }\n    // allowSigns is true iff the val ends in 'E'\n    // found digit it to make sure weird stuff like '.' and '1E-' doesn't pass\n    return !allowSigns && foundDigit;\n}",
+            "start_line": 1319
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-24/llm-0",
+        "failure_hash": "dd02cea53abbbffe3dd11084fe82c43cbf32970f86b75f2b874ce6a04423e152",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "f79ed742b0409cd37e4204a6898f86bb3f105c9547a8b502c40d0ba12e41d622",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 1421,
+            "file": "src/main/java/org/apache/commons/lang3/math/NumberUtils.java",
+            "replacement": "public static boolean isNumber(String str) {\n    if (StringUtils.isEmpty(str)) {\n        return false;\n    }\n    char[] chars = str.toCharArray();\n    int sz = chars.length;\n    boolean hasExp = false;\n    boolean hasDecPoint = false;\n    boolean allowSigns = false;\n    boolean foundDigit = false;\n    // deal with any possible sign up front\n    int start = (chars[0] == '-') ? 1 : 0;\n    if (sz > start + 1) {\n        if (chars[start] == '0' && chars[start + 1] == 'x') {\n            int i = start + 2;\n            if (i == sz) {\n                return false; // str == \"0x\"\n            }\n            // checking hex (it can't be anything else)\n            for (; i < chars.length; i++) {\n                if ((chars[i] < '0' || chars[i] > '9')\n                    && (chars[i] < 'a' || chars[i] > 'f')\n                    && (chars[i] < 'A' || chars[i] > 'F')) {\n                    return false;\n                }\n            }\n            return true;\n        }\n    }\n    sz--; // don't want to loop to the last char, check it afterwards\n          // for type qualifiers\n    int i = start;\n    // loop to the next to last char or to the last char if we need another digit to\n    // make a valid number (e.g. chars[0..5] = \"1234E\")\n    while (i < sz || (i < sz + 1 && allowSigns && !foundDigit)) {\n        if (chars[i] >= '0' && chars[i] <= '9') {\n            foundDigit = true;\n            allowSigns = false;\n        } else if (chars[i] == '.') {\n            if (hasDecPoint || hasExp) {\n                // two decimal points or dec in exponent\n                return false;\n            }\n            hasDecPoint = true;\n        } else if (chars[i] == 'e' || chars[i] == 'E') {\n            // we've already taken care of hex.\n            if (hasExp) {\n                // two E's\n                return false;\n            }\n            if (!foundDigit) {\n                return false;\n            }\n            hasExp = true;\n            allowSigns = true;\n        } else if (chars[i] == '+' || chars[i] == '-') {\n            if (!allowSigns) {\n                return false;\n            }\n            allowSigns = false;\n            foundDigit = false; // we need a digit after the E\n        } else {\n            return false;\n        }\n        i++;\n    }\n    if (i < chars.length) {\n        if (chars[i] >= '0' && chars[i] <= '9') {\n            // no type qualifier, OK\n            return true;\n        }\n        if (chars[i] == 'e' || chars[i] == 'E') {\n            // can't have an E at the last byte\n            return false;\n        }\n        if (chars[i] == '.') {\n            if (hasDecPoint || hasExp) {\n                // two decimal points or dec in exponent\n                return false;\n            }\n            // single trailing decimal point after non-exponent is ok\n            return foundDigit;\n        }\n        if (!allowSigns\n            && (chars[i] == 'd'\n                || chars[i] == 'D'\n                || chars[i] == 'f'\n                || chars[i] == 'F')) {\n            return foundDigit;\n        }\n        if (chars[i] == 'l'\n            || chars[i] == 'L') {\n            // not allowing L with an exponent or decimal point\n            return foundDigit && !hasExp;\n        }\n        // last character is illegal\n        return false;\n    }\n    // allowSigns is true iff the val ends in 'E'\n    // found digit it to make sure weird stuff like '.' and '1E-' doesn't pass\n    return !allowSigns && foundDigit;\n}",
+            "start_line": 1319
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-24/spectrum-0",
+        "failure_hash": "dd02cea53abbbffe3dd11084fe82c43cbf32970f86b75f2b874ce6a04423e152",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

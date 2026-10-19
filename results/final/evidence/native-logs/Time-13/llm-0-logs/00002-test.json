@@ -1,0 +1,12 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "test",
+    "-t",
+    "org.joda.time.format.TestISOPeriodFormat::testFormatStandard_negative"
+  ],
+  "output": "Running ant (compile.tests)................................................ OK\nRunning ant (run.dev.tests)................................................ OK\nFailing tests: 1\n  - org.joda.time.format.TestISOPeriodFormat::testFormatStandard_negative\n",
+  "returncode": 0,
+  "seconds": 1.9627472080173902,
+  "timed_out": false
+}

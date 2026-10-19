@@ -1,0 +1,12 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "test",
+    "-t",
+    "org.jfree.data.junit.KeyedObjects2DTests::testRemoveColumnByKey"
+  ],
+  "output": "Running ant (compile.tests)................................................ OK\nRunning ant (run.dev.tests)................................................ OK\nFailing tests: 1\n  - org.jfree.data.junit.KeyedObjects2DTests::testRemoveColumnByKey\n",
+  "returncode": 0,
+  "seconds": 0.7892765419965144,
+  "timed_out": false
+}

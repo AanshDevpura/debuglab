@@ -1,0 +1,209 @@
+{
+  "bug": "Lang-15",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "d5292cf423cd56a2c93e8e91285d1fda92cf5b586d629653dd4399502420fc2e",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "ceb0710895177073b555959bfaa95652e3a7a8502d6f2cd64351f5a1c529a30a",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 51.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 2.5,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "d5292cf423cd56a2c93e8e91285d1fda92cf5b586d629653dd4399502420fc2e",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 235,
+            "file": "src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java",
+            "replacement": "private static boolean isAssignable(Type type, ParameterizedType toParameterizedType, Map<TypeVariable<?>, Type> typeVarAssigns) {\n    if (type == null) {\n        return true;\n    }\n\n    // only a null type can be assigned to null type which\n    // would have cause the previous to return true\n    if (toParameterizedType == null) {\n        return false;\n    }\n\n    // all types are assignable to themselves\n    if (toParameterizedType.equals(type)) {\n        return true;\n    }\n\n    // get the target type's raw type\n    Class<?> toClass = getRawType(toParameterizedType);\n    // get the subject type's type arguments including owner type arguments\n    // and supertype arguments up to and including the target class.\n    Map<TypeVariable<?>, Type> fromTypeVarAssigns = getTypeArguments(type, toClass, null);\n\n    // null means the two types are not compatible\n    if (fromTypeVarAssigns == null) {\n        return false;\n    }\n\n    // compatible types, but there's no type arguments. this is equivalent\n    // to comparing Map< ?, ? > to Map, and raw types are always assignable\n    // to parameterized types.\n    if (fromTypeVarAssigns.isEmpty()) {\n        return true;\n    }\n\n    // get the target type's type arguments including owner type arguments\n    Map<TypeVariable<?>, Type> toTypeVarAssigns = getTypeArguments(toParameterizedType, toClass, typeVarAssigns);\n\n    // now to check each type argument\n    for (Map.Entry<TypeVariable<?>, Type> entry : toTypeVarAssigns.entrySet()) {\n        Type toTypeArg = entry.getValue();\n        Type fromTypeArg = fromTypeVarAssigns.get(entry.getKey());\n\n        // parameters must either be absent from the subject type, within\n        // the bounds of the wildcard type, or be an exact match to the\n        // parameters of the target type.\n        if (fromTypeArg != null\n                && !toTypeArg.equals(fromTypeArg)\n                && !(toTypeArg instanceof WildcardType && isAssignable(fromTypeArg, toTypeArg, typeVarAssigns))) {\n            return false;\n        }\n    }\n\n    return true;\n}",
+            "start_line": 179
+          },
+          {
+            "end_line": 168,
+            "file": "src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java",
+            "replacement": "private static boolean isAssignable(Type type, Class<?> toClass) {\n    if (type == null) {\n        // consistency with ClassUtils.isAssignable() behavior\n        return toClass == null || !toClass.isPrimitive();\n    }\n\n    // only a null type can be assigned to null type which\n    // would have cause the previous to return true\n    if (toClass == null) {\n        return false;\n    }\n\n    // all types are assignable to themselves\n    if (toClass.equals(type)) {\n        return true;\n    }\n\n    if (type instanceof Class<?>) {\n        // just comparing two classes\n        return ClassUtils.isAssignable((Class<?>) type, toClass);\n    }\n\n    if (type instanceof ParameterizedType) {\n        // only have to compare the raw type to the class\n        return isAssignable(getRawType((ParameterizedType) type), toClass);\n    }\n\n    // *\n    if (type instanceof TypeVariable<?>) {\n        // if any of the bounds are assignable to the class, then the\n        // type is assignable to the class.\n        for (Type bound : ((TypeVariable<?>) type).getBounds()) {\n            if (isAssignable(bound, toClass)) {\n                return true;\n            }\n        }\n\n        return false;\n    }\n\n    // the only classes to which a generic array type can be assigned\n    // are class Object and array classes\n    if (type instanceof GenericArrayType) {\n        return toClass.equals(Object.class)\n                || toClass.isArray()\n                && isAssignable(((GenericArrayType) type).getGenericComponentType(), toClass.getComponentType());\n    }\n\n    // wildcard types are not assignable to a class (though one would think\n    // \"? super Object\" would be assignable to Object)\n    if (type instanceof WildcardType) {\n        return false;\n    }\n\n    throw new IllegalStateException(\"found an unhandled type: \" + type);\n}",
+            "start_line": 112
+          },
+          {
+            "end_line": 587,
+            "file": "src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java",
+            "replacement": "private static Map<TypeVariable<?>, Type> getTypeArguments(Type type, Class<?> toClass, Map<TypeVariable<?>, Type> subtypeVarAssigns) {\n    if (type instanceof Class<?>) {\n        return getTypeArguments((Class<?>) type, toClass, subtypeVarAssigns);\n    }\n\n    if (type instanceof ParameterizedType) {\n        return getTypeArguments((ParameterizedType) type, toClass, subtypeVarAssigns);\n    }\n\n    if (type instanceof GenericArrayType) {\n        return getTypeArguments(((GenericArrayType) type).getGenericComponentType(), toClass.isArray() ? toClass.getComponentType() : toClass, subtypeVarAssigns);\n    }\n\n    // since wildcard types are not assignable to classes, should this just\n    // return null?\n    if (type instanceof WildcardType) {\n        for (Type bound : getImplicitUpperBounds((WildcardType) type)) {\n            // find the first bound that is assignable to the target class\n            if (isAssignable(bound, toClass)) {\n                return getTypeArguments(bound, toClass, subtypeVarAssigns);\n            }\n        }\n\n        return null;\n    }\n\n    // *\n    if (type instanceof TypeVariable<?>) {\n        for (Type bound : getImplicitBounds((TypeVariable<?>) type)) {\n            // find the first bound that is assignable to the target class\n            if (isAssignable(bound, toClass)) {\n                return getTypeArguments(bound, toClass, subtypeVarAssigns);\n            }\n        }\n\n        return null;\n    }\n\n    throw new IllegalStateException(\"found an unhandled type: \" + type);\n}",
+            "start_line": 545
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-15/combined-0",
+        "failure_hash": "ceb0710895177073b555959bfaa95652e3a7a8502d6f2cd64351f5a1c529a30a",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "d5292cf423cd56a2c93e8e91285d1fda92cf5b586d629653dd4399502420fc2e",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 235,
+            "file": "src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java",
+            "replacement": "private static boolean isAssignable(Type type, ParameterizedType toParameterizedType, Map<TypeVariable<?>, Type> typeVarAssigns) {\n    if (type == null) {\n        return true;\n    }\n\n    // only a null type can be assigned to null type which\n    // would have cause the previous to return true\n    if (toParameterizedType == null) {\n        return false;\n    }\n\n    // all types are assignable to themselves\n    if (toParameterizedType.equals(type)) {\n        return true;\n    }\n\n    // get the target type's raw type\n    Class<?> toClass = getRawType(toParameterizedType);\n    // get the subject type's type arguments including owner type arguments\n    // and supertype arguments up to and including the target class.\n    Map<TypeVariable<?>, Type> fromTypeVarAssigns = getTypeArguments(type, toClass, null);\n\n    // null means the two types are not compatible\n    if (fromTypeVarAssigns == null) {\n        return false;\n    }\n\n    // compatible types, but there's no type arguments. this is equivalent\n    // to comparing Map< ?, ? > to Map, and raw types are always assignable\n    // to parameterized types.\n    if (fromTypeVarAssigns.isEmpty()) {\n        return true;\n    }\n\n    // get the target type's type arguments including owner type arguments\n    Map<TypeVariable<?>, Type> toTypeVarAssigns = getTypeArguments(toParameterizedType,\n            toClass, typeVarAssigns);\n\n    // now to check each type argument\n    for (Map.Entry<TypeVariable<?>, Type> entry : toTypeVarAssigns.entrySet()) {\n        Type toTypeArg = entry.getValue();\n        Type fromTypeArg = fromTypeVarAssigns.get(entry.getKey());\n\n        // parameters must either be absent from the subject type, within\n        // the bounds of the wildcard type, or be an exact match to the\n        // parameters of the target type.\n        if (fromTypeArg != null\n                && !toTypeArg.equals(fromTypeArg)\n                && !(toTypeArg instanceof WildcardType && isAssignable(fromTypeArg, toTypeArg,\n                        typeVarAssigns))) {\n            return false;\n        }\n    }\n\n    return true;\n}",
+            "start_line": 179
+          },
+          {
+            "end_line": 168,
+            "file": "src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java",
+            "replacement": "private static boolean isAssignable(Type type, Class<?> toClass) {\n    if (type == null) {\n        // consistency with ClassUtils.isAssignable() behavior\n        return toClass == null || !toClass.isPrimitive();\n    }\n\n    // only a null type can be assigned to null type which\n    // would have cause the previous to return true\n    if (toClass == null) {\n        return false;\n    }\n\n    // all types are assignable to themselves\n    if (toClass.equals(type)) {\n        return true;\n    }\n\n    if (type instanceof Class<?>) {\n        // just comparing two classes\n        return ClassUtils.isAssignable((Class<?>) type, toClass);\n    }\n\n    if (type instanceof ParameterizedType) {\n        // only have to compare the raw type to the class\n        return isAssignable(getRawType((ParameterizedType) type), toClass);\n    }\n\n    // *\n    if (type instanceof TypeVariable<?>) {\n        // if any of the bounds are assignable to the class, then the\n        // type is assignable to the class.\n        for (Type bound : ((TypeVariable<?>) type).getBounds()) {\n            if (isAssignable(bound, toClass)) {\n                return true;\n            }\n        }\n\n        return false;\n    }\n\n    // the only classes to which a generic array type can be assigned\n    // are class Object and array classes\n    if (type instanceof GenericArrayType) {\n        return toClass.equals(Object.class)\n                || toClass.isArray()\n                && isAssignable(((GenericArrayType) type).getGenericComponentType(), toClass\n                        .getComponentType());\n    }\n\n    // wildcard types are not assignable to a class (though one would think\n    // \"? super Object\" would be assignable to Object)\n    if (type instanceof WildcardType) {\n        return false;\n    }\n\n    throw new IllegalStateException(\"found an unhandled type: \" + type);\n}",
+            "start_line": 112
+          },
+          {
+            "end_line": 587,
+            "file": "src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java",
+            "replacement": "private static Map<TypeVariable<?>, Type> getTypeArguments(Type type, Class<?> toClass, Map<TypeVariable<?>, Type> subtypeVarAssigns) {\n    if (type instanceof Class<?>) {\n        return getTypeArguments((Class<?>) type, toClass, subtypeVarAssigns);\n    }\n\n    if (type instanceof ParameterizedType) {\n        return getTypeArguments((ParameterizedType) type, toClass, subtypeVarAssigns);\n    }\n\n    if (type instanceof GenericArrayType) {\n        return getTypeArguments(((GenericArrayType) type).getGenericComponentType(), toClass\n                .isArray() ? toClass.getComponentType() : toClass, subtypeVarAssigns);\n    }\n\n    // since wildcard types are not assignable to classes, should this just\n    // return null?\n    if (type instanceof WildcardType) {\n        for (Type bound : getImplicitUpperBounds((WildcardType) type)) {\n            // find the first bound that is assignable to the target class\n            if (isAssignable(bound, toClass)) {\n                return getTypeArguments(bound, toClass, subtypeVarAssigns);\n            }\n        }\n\n        return null;\n    }\n\n    // *\n    if (type instanceof TypeVariable<?>) {\n        for (Type bound : getImplicitBounds((TypeVariable<?>) type)) {\n            // find the first bound that is assignable to the target class\n            if (isAssignable(bound, toClass)) {\n                return getTypeArguments(bound, toClass, subtypeVarAssigns);\n            }\n        }\n\n        return null;\n    }\n    // */\n\n    throw new IllegalStateException(\"found an unhandled type: \" + type);\n}",
+            "start_line": 545
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-15/direct-0",
+        "failure_hash": "ceb0710895177073b555959bfaa95652e3a7a8502d6f2cd64351f5a1c529a30a",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "d5292cf423cd56a2c93e8e91285d1fda92cf5b586d629653dd4399502420fc2e",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 235,
+            "file": "src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java",
+            "replacement": "private static boolean isAssignable(Type type, ParameterizedType toParameterizedType, Map<TypeVariable<?>, Type> typeVarAssigns) {\n    if (type == null) {\n        return true;\n    }\n\n    // only a null type can be assigned to null type which\n    // would have cause the previous to return true\n    if (toParameterizedType == null) {\n        return false;\n    }\n\n    // all types are assignable to themselves\n    if (toParameterizedType.equals(type)) {\n        return true;\n    }\n\n    // get the target type's raw type\n    Class<?> toClass = getRawType(toParameterizedType);\n    // get the subject type's type arguments including owner type arguments\n    // and supertype arguments up to and including the target class.\n    Map<TypeVariable<?>, Type> fromTypeVarAssigns = getTypeArguments(type, toClass, null);\n\n    // null means the two types are not compatible\n    if (fromTypeVarAssigns == null) {\n        return false;\n    }\n\n    // compatible types, but there's no type arguments. this is equivalent\n    // to comparing Map< ?, ? > to Map, and raw types are always assignable\n    // to parameterized types.\n    if (fromTypeVarAssigns.isEmpty()) {\n        return true;\n    }\n\n    // get the target type's type arguments including owner type arguments\n    Map<TypeVariable<?>, Type> toTypeVarAssigns = getTypeArguments(toParameterizedType, toClass, typeVarAssigns);\n\n    // now to check each type argument\n    for (Map.Entry<TypeVariable<?>, Type> entry : toTypeVarAssigns.entrySet()) {\n        Type toTypeArg = entry.getValue();\n        Type fromTypeArg = fromTypeVarAssigns.get(entry.getKey());\n\n        // parameters must either be absent from the subject type, within\n        // the bounds of the wildcard type, or be an exact match to the\n        // parameters of the target type.\n        if (fromTypeArg != null\n                && !toTypeArg.equals(fromTypeArg)\n                && !(toTypeArg instanceof WildcardType && isAssignable(fromTypeArg, toTypeArg, typeVarAssigns))) {\n            return false;\n        }\n    }\n\n    return true;\n}",
+            "start_line": 179
+          },
+          {
+            "end_line": 168,
+            "file": "src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java",
+            "replacement": "private static boolean isAssignable(Type type, Class<?> toClass) {\n    if (type == null) {\n        // consistency with ClassUtils.isAssignable() behavior\n        return toClass == null || !toClass.isPrimitive();\n    }\n\n    // only a null type can be assigned to null type which\n    // would have cause the previous to return true\n    if (toClass == null) {\n        return false;\n    }\n\n    // all types are assignable to themselves\n    if (toClass.equals(type)) {\n        return true;\n    }\n\n    if (type instanceof Class<?>) {\n        // just comparing two classes\n        return ClassUtils.isAssignable((Class<?>) type, toClass);\n    }\n\n    if (type instanceof ParameterizedType) {\n        // only have to compare the raw type to the class\n        return isAssignable(getRawType((ParameterizedType) type), toClass);\n    }\n\n    // *\n    if (type instanceof TypeVariable<?>) {\n        // if any of the bounds are assignable to the class, then the\n        // type is assignable to the class.\n        for (Type bound : ((TypeVariable<?>) type).getBounds()) {\n            if (isAssignable(bound, toClass)) {\n                return true;\n            }\n        }\n\n        return false;\n    }\n\n    // the only classes to which a generic array type can be assigned\n    // are class Object and array classes\n    if (type instanceof GenericArrayType) {\n        return toClass.equals(Object.class)\n                || toClass.isArray()\n                && isAssignable(((GenericArrayType) type).getGenericComponentType(), toClass.getComponentType());\n    }\n\n    // wildcard types are not assignable to a class (though one would think\n    // \"? super Object\" would be assignable to Object)\n    if (type instanceof WildcardType) {\n        return false;\n    }\n\n    throw new IllegalStateException(\"found an unhandled type: \" + type);\n}",
+            "start_line": 112
+          },
+          {
+            "end_line": 587,
+            "file": "src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java",
+            "replacement": "private static Map<TypeVariable<?>, Type> getTypeArguments(Type type, Class<?> toClass, Map<TypeVariable<?>, Type> subtypeVarAssigns) {\n    if (type instanceof Class<?>) {\n        return getTypeArguments((Class<?>) type, toClass, subtypeVarAssigns);\n    }\n\n    if (type instanceof ParameterizedType) {\n        return getTypeArguments((ParameterizedType) type, toClass, subtypeVarAssigns);\n    }\n\n    if (type instanceof GenericArrayType) {\n        return getTypeArguments(((GenericArrayType) type).getGenericComponentType(), toClass.isArray() ? toClass.getComponentType() : toClass, subtypeVarAssigns);\n    }\n\n    // since wildcard types are not assignable to classes, should this just\n    // return null?\n    if (type instanceof WildcardType) {\n        for (Type bound : getImplicitUpperBounds((WildcardType) type)) {\n            // find the first bound that is assignable to the target class\n            if (isAssignable(bound, toClass)) {\n                return getTypeArguments(bound, toClass, subtypeVarAssigns);\n            }\n        }\n\n        return null;\n    }\n\n    // *\n    if (type instanceof TypeVariable<?>) {\n        for (Type bound : getImplicitBounds((TypeVariable<?>) type)) {\n            // find the first bound that is assignable to the target class\n            if (isAssignable(bound, toClass)) {\n                return getTypeArguments(bound, toClass, subtypeVarAssigns);\n            }\n        }\n\n        return null;\n    }\n\n    throw new IllegalStateException(\"found an unhandled type: \" + type);\n}",
+            "start_line": 545
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-15/llm-0",
+        "failure_hash": "ceb0710895177073b555959bfaa95652e3a7a8502d6f2cd64351f5a1c529a30a",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "d5292cf423cd56a2c93e8e91285d1fda92cf5b586d629653dd4399502420fc2e",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 235,
+            "file": "src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java",
+            "replacement": "private static boolean isAssignable(Type type, ParameterizedType toParameterizedType, Map<TypeVariable<?>, Type> typeVarAssigns) {\n    if (type == null) {\n        return true;\n    }\n\n    // only a null type can be assigned to null type which\n    // would have cause the previous to return true\n    if (toParameterizedType == null) {\n        return false;\n    }\n\n    // all types are assignable to themselves\n    if (toParameterizedType.equals(type)) {\n        return true;\n    }\n\n    // get the target type's raw type\n    Class<?> toClass = getRawType(toParameterizedType);\n    // get the subject type's type arguments including owner type arguments\n    // and supertype arguments up to and including the target class.\n    Map<TypeVariable<?>, Type> fromTypeVarAssigns = getTypeArguments(type, toClass, null);\n\n    // null means the two types are not compatible\n    if (fromTypeVarAssigns == null) {\n        return false;\n    }\n\n    // compatible types, but there's no type arguments. this is equivalent\n    // to comparing Map< ?, ? > to Map, and raw types are always assignable\n    // to parameterized types.\n    if (fromTypeVarAssigns.isEmpty()) {\n        return true;\n    }\n\n    // get the target type's type arguments including owner type arguments\n    Map<TypeVariable<?>, Type> toTypeVarAssigns = getTypeArguments(toParameterizedType, toClass, typeVarAssigns);\n\n    // now to check each type argument\n    for (Map.Entry<TypeVariable<?>, Type> entry : toTypeVarAssigns.entrySet()) {\n        Type toTypeArg = entry.getValue();\n        Type fromTypeArg = fromTypeVarAssigns.get(entry.getKey());\n\n        // parameters must either be absent from the subject type, within\n        // the bounds of the wildcard type, or be an exact match to the\n        // parameters of the target type.\n        if (fromTypeArg != null\n                && !toTypeArg.equals(fromTypeArg)\n                && !(toTypeArg instanceof WildcardType && isAssignable(fromTypeArg, toTypeArg, typeVarAssigns))) {\n            return false;\n        }\n    }\n\n    return true;\n}",
+            "start_line": 179
+          },
+          {
+            "end_line": 168,
+            "file": "src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java",
+            "replacement": "private static boolean isAssignable(Type type, Class<?> toClass) {\n    if (type == null) {\n        // consistency with ClassUtils.isAssignable() behavior\n        return toClass == null || !toClass.isPrimitive();\n    }\n\n    // only a null type can be assigned to null type which\n    // would have cause the previous to return true\n    if (toClass == null) {\n        return false;\n    }\n\n    // all types are assignable to themselves\n    if (toClass.equals(type)) {\n        return true;\n    }\n\n    if (type instanceof Class<?>) {\n        // just comparing two classes\n        return ClassUtils.isAssignable((Class<?>) type, toClass);\n    }\n\n    if (type instanceof ParameterizedType) {\n        // only have to compare the raw type to the class\n        return isAssignable(getRawType((ParameterizedType) type), toClass);\n    }\n\n    // *\n    if (type instanceof TypeVariable<?>) {\n        // if any of the bounds are assignable to the class, then the\n        // type is assignable to the class.\n        for (Type bound : ((TypeVariable<?>) type).getBounds()) {\n            if (isAssignable(bound, toClass)) {\n                return true;\n            }\n        }\n\n        return false;\n    }\n\n    // the only classes to which a generic array type can be assigned\n    // are class Object and array classes\n    if (type instanceof GenericArrayType) {\n        return toClass.equals(Object.class)\n                || toClass.isArray()\n                && isAssignable(((GenericArrayType) type).getGenericComponentType(), toClass.getComponentType());\n    }\n\n    // wildcard types are not assignable to a class (though one would think\n    // \"? super Object\" would be assignable to Object)\n    if (type instanceof WildcardType) {\n        return false;\n    }\n\n    throw new IllegalStateException(\"found an unhandled type: \" + type);\n}",
+            "start_line": 112
+          },
+          {
+            "end_line": 587,
+            "file": "src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java",
+            "replacement": "private static Map<TypeVariable<?>, Type> getTypeArguments(Type type, Class<?> toClass, Map<TypeVariable<?>, Type> subtypeVarAssigns) {\n    if (type instanceof Class<?>) {\n        return getTypeArguments((Class<?>) type, toClass, subtypeVarAssigns);\n    }\n\n    if (type instanceof ParameterizedType) {\n        return getTypeArguments((ParameterizedType) type, toClass, subtypeVarAssigns);\n    }\n\n    if (type instanceof GenericArrayType) {\n        return getTypeArguments(((GenericArrayType) type).getGenericComponentType(), toClass.isArray() ? toClass.getComponentType() : toClass, subtypeVarAssigns);\n    }\n\n    // since wildcard types are not assignable to classes, should this just\n    // return null?\n    if (type instanceof WildcardType) {\n        for (Type bound : getImplicitUpperBounds((WildcardType) type)) {\n            // find the first bound that is assignable to the target class\n            if (isAssignable(bound, toClass)) {\n                return getTypeArguments(bound, toClass, subtypeVarAssigns);\n            }\n        }\n\n        return null;\n    }\n\n    // *\n    if (type instanceof TypeVariable<?>) {\n        for (Type bound : getImplicitBounds((TypeVariable<?>) type)) {\n            // find the first bound that is assignable to the target class\n            if (isAssignable(bound, toClass)) {\n                return getTypeArguments(bound, toClass, subtypeVarAssigns);\n            }\n        }\n\n        return null;\n    }\n\n    throw new IllegalStateException(\"found an unhandled type: \" + type);\n}",
+            "start_line": 545
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-15/spectrum-0",
+        "failure_hash": "ceb0710895177073b555959bfaa95652e3a7a8502d6f2cd64351f5a1c529a30a",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

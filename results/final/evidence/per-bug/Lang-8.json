@@ -1,0 +1,209 @@
+{
+  "bug": "Lang-8",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "b10a590af49c156e566e9cf193a00d2eb6eb9b0907c5128bddf23c775ecac937",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "344edd37e70797f68e6f020449812d774216e9ffb37f1d48d9989800fd70d131",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 41.5,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 2.5,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "b10a590af49c156e566e9cf193a00d2eb6eb9b0907c5128bddf23c775ecac937",
+        "detail": "Running ant (compile)...................................................... FAIL\nExecuted command:  cd <REPO>/work/final/attempts/Lang-8/combined-0 && <REPO>/work/tools/defects4j/major/bin/ant -f <REPO>/work/tools/defects4j/framework/projects/defects4j.build.xml -Dd4j.home=<REPO>/work/tools/defects4j -Dd4j.dir.projects=<REPO>/work/tools/defects4j/framework/projects -Dbasedir=<REPO>/work/final/attempts/Lang-8/combined-0  compile 2>&1\nBuildfile: <REPO>/work/tools/defects4j/framework/projects/defects4j.build.xml\n\ninit:\n     [echo] -------- commons-lang3 3.2-SNAPSHOT --------\n\ncompile:\n    [javac] Compiling 3 source files to <REPO>/work/final/attempts/Lang-8/combined-0/target/classes\n    [javac] warning: [options] bootstrap class path not set in conjunction with -source 6\n    [javac] warning: [options] source value 6 is obsolete and will be removed in a future release\n    [javac] warning: [options] target value 1.6 is obsolete and will be removed in a future release\n    [javac] warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.\n    [javac] <REPO>/work/final/attempts/Lang-8/combined-0/src/main/java/org/apache/commons/lang3/time/FastDateFormat.java:164: error: method getInstance(String,TimeZone,Locale) is already defined in class FastDateFormat\n    [javac]     public static FastDateFormat getInstance(String pattern, TimeZone timeZone, Locale locale) {\n    [javac]                                  ^\n    [javac] 1 error\n    [javac] 4 warnings\n\nBUILD FAILED\n<REPO>/work/final/attempts/Lang-8/combined-0/build.xml:63: Compile failed; see the compiler error output for details.\n\nTotal time: 0 seconds\nCannot compile sources! at <REPO>/work/tools/defects4j/framework/bin/d4j/d4j-compile line 82.\nCompilation failed in require at <REPO>/work/tools/defects4j/framework/bin/defects4j line 195.\n",
+        "edits": [
+          {
+            "end_line": 91,
+            "file": "src/main/java/org/apache/commons/lang3/time/FormatCache.java",
+            "replacement": "    public F getInstance(String pattern, TimeZone timeZone, Locale locale) {\n        if (pattern == null) {\n            throw new NullPointerException(\"pattern must not be null\");\n        }\n        if (timeZone == null) {\n            timeZone = TimeZone.getDefault();\n        }\n        if (locale == null) {\n            locale = Locale.getDefault();\n        }\n        MultipartKey key = new MultipartKey(pattern, timeZone, locale);\n        F format = cInstanceCache.get(key);\n        if (format == null) {\n            format = createInstance(pattern, timeZone, locale);\n            F previousValue = cInstanceCache.putIfAbsent(key, format);\n            if (previousValue != null) {\n                format = previousValue;\n            }\n        }\n        return format;\n    }",
+            "start_line": 69
+          },
+          {
+            "end_line": 1249,
+            "file": "src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java",
+            "replacement": "    @Override\n    public boolean equals(Object obj) {\n        if (this == obj) {\n            return true;\n        }\n        if (obj instanceof TimeZoneDisplayKey) {\n            TimeZoneDisplayKey other = (TimeZoneDisplayKey) obj;\n            return mTimeZone.equals(other.mTimeZone) && mStyle == other.mStyle && mLocale.equals(other.mLocale);\n        }\n        return false;\n    }",
+            "start_line": 1236
+          },
+          {
+            "end_line": 120,
+            "file": "src/main/java/org/apache/commons/lang3/time/FastDateFormat.java",
+            "replacement": "    public static FastDateFormat getInstance(String pattern, TimeZone timeZone, Locale locale) {\n        return cache.getInstance(pattern, timeZone, locale);\n    }",
+            "start_line": 118
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-8/combined-0",
+        "failure_hash": "344edd37e70797f68e6f020449812d774216e9ffb37f1d48d9989800fd70d131",
+        "sample": 0,
+        "status": "COMPILE_ERROR"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "b10a590af49c156e566e9cf193a00d2eb6eb9b0907c5128bddf23c775ecac937",
+        "detail": "Running ant (compile)...................................................... FAIL\nExecuted command:  cd <REPO>/work/final/attempts/Lang-8/direct-0 && <REPO>/work/tools/defects4j/major/bin/ant -f <REPO>/work/tools/defects4j/framework/projects/defects4j.build.xml -Dd4j.home=<REPO>/work/tools/defects4j -Dd4j.dir.projects=<REPO>/work/tools/defects4j/framework/projects -Dbasedir=<REPO>/work/final/attempts/Lang-8/direct-0  compile 2>&1\nBuildfile: <REPO>/work/tools/defects4j/framework/projects/defects4j.build.xml\n\ninit:\n     [echo] -------- commons-lang3 3.2-SNAPSHOT --------\n\ncompile:\n    [javac] Compiling 3 source files to <REPO>/work/final/attempts/Lang-8/direct-0/target/classes\n    [javac] warning: [options] bootstrap class path not set in conjunction with -source 6\n    [javac] warning: [options] source value 6 is obsolete and will be removed in a future release\n    [javac] warning: [options] target value 1.6 is obsolete and will be removed in a future release\n    [javac] warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.\n    [javac] <REPO>/work/final/attempts/Lang-8/direct-0/src/main/java/org/apache/commons/lang3/time/FastDateFormat.java:147: error: method getInstance(String,Locale) is already defined in class FastDateFormat\n    [javac]     public static FastDateFormat getInstance(String pattern, Locale locale) {\n    [javac]                                  ^\n    [javac] 1 error\n    [javac] 4 warnings\n\nBUILD FAILED\n<REPO>/work/final/attempts/Lang-8/direct-0/build.xml:63: Compile failed; see the compiler error output for details.\n\nTotal time: 0 seconds\nCannot compile sources! at <REPO>/work/tools/defects4j/framework/bin/d4j/d4j-compile line 82.\nCompilation failed in require at <REPO>/work/tools/defects4j/framework/bin/defects4j line 195.\n",
+        "edits": [
+          {
+            "end_line": 91,
+            "file": "src/main/java/org/apache/commons/lang3/time/FormatCache.java",
+            "replacement": "    public F getInstance(String pattern, TimeZone timeZone, Locale locale) {\n        if (pattern == null) {\n            throw new NullPointerException(\"pattern must not be null\");\n        }\n        if (timeZone == null) {\n            timeZone = TimeZone.getDefault();\n        }\n        if (locale == null) {\n            locale = Locale.getDefault();\n        }\n        MultipartKey key = new MultipartKey(pattern, timeZone, locale);\n        F format = cInstanceCache.get(key);\n        if (format == null) {\n            format = createInstance(pattern, timeZone, locale);\n            F previousValue = cInstanceCache.putIfAbsent(key, format);\n            if (previousValue != null) {\n                format = previousValue;\n            }\n        }\n        return format;\n    }",
+            "start_line": 69
+          },
+          {
+            "end_line": 1249,
+            "file": "src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java",
+            "replacement": "    @Override\n    public boolean equals(Object obj) {\n        if (this == obj) {\n            return true;\n        }\n        if (obj instanceof TimeZoneDisplayKey) {\n            TimeZoneDisplayKey other = (TimeZoneDisplayKey) obj;\n            return mTimeZone.equals(other.mTimeZone) &&\n                   mStyle == other.mStyle &&\n                   mLocale.equals(other.mLocale);\n        }\n        return false;\n    }",
+            "start_line": 1236
+          },
+          {
+            "end_line": 120,
+            "file": "src/main/java/org/apache/commons/lang3/time/FastDateFormat.java",
+            "replacement": "    public static FastDateFormat getInstance(String pattern, Locale locale) {\n        return cache.getInstance(pattern, null, locale);\n    }",
+            "start_line": 118
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-8/direct-0",
+        "failure_hash": "344edd37e70797f68e6f020449812d774216e9ffb37f1d48d9989800fd70d131",
+        "sample": 0,
+        "status": "COMPILE_ERROR"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "b10a590af49c156e566e9cf193a00d2eb6eb9b0907c5128bddf23c775ecac937",
+        "detail": "Running ant (compile)...................................................... FAIL\nExecuted command:  cd <REPO>/work/final/attempts/Lang-8/llm-0 && <REPO>/work/tools/defects4j/major/bin/ant -f <REPO>/work/tools/defects4j/framework/projects/defects4j.build.xml -Dd4j.home=<REPO>/work/tools/defects4j -Dd4j.dir.projects=<REPO>/work/tools/defects4j/framework/projects -Dbasedir=<REPO>/work/final/attempts/Lang-8/llm-0  compile 2>&1\nBuildfile: <REPO>/work/tools/defects4j/framework/projects/defects4j.build.xml\n\ninit:\n     [echo] -------- commons-lang3 3.2-SNAPSHOT --------\n\ncompile:\n    [javac] Compiling 3 source files to <REPO>/work/final/attempts/Lang-8/llm-0/target/classes\n    [javac] warning: [options] bootstrap class path not set in conjunction with -source 6\n    [javac] warning: [options] source value 6 is obsolete and will be removed in a future release\n    [javac] warning: [options] target value 1.6 is obsolete and will be removed in a future release\n    [javac] warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.\n    [javac] <REPO>/work/final/attempts/Lang-8/llm-0/src/main/java/org/apache/commons/lang3/time/FastDateFormat.java:164: error: method getInstance(String,TimeZone,Locale) is already defined in class FastDateFormat\n    [javac]     public static FastDateFormat getInstance(String pattern, TimeZone timeZone, Locale locale) {\n    [javac]                                  ^\n    [javac] 1 error\n    [javac] 4 warnings\n\nBUILD FAILED\n<REPO>/work/final/attempts/Lang-8/llm-0/build.xml:63: Compile failed; see the compiler error output for details.\n\nTotal time: 0 seconds\nCannot compile sources! at <REPO>/work/tools/defects4j/framework/bin/d4j/d4j-compile line 82.\nCompilation failed in require at <REPO>/work/tools/defects4j/framework/bin/defects4j line 195.\n",
+        "edits": [
+          {
+            "end_line": 91,
+            "file": "src/main/java/org/apache/commons/lang3/time/FormatCache.java",
+            "replacement": "    public F getInstance(String pattern, TimeZone timeZone, Locale locale) {\n        if (pattern == null) {\n            throw new NullPointerException(\"pattern must not be null\");\n        }\n        if (timeZone == null) {\n            timeZone = TimeZone.getDefault();\n        }\n        if (locale == null) {\n            locale = Locale.getDefault();\n        }\n        MultipartKey key = new MultipartKey(pattern, timeZone, locale);\n        F format = cInstanceCache.get(key);\n        if (format == null) {\n            format = createInstance(pattern, timeZone, locale);\n            F previousValue = cInstanceCache.putIfAbsent(key, format);\n            if (previousValue != null) {\n                format = previousValue;\n            }\n        }\n        return format;\n    }",
+            "start_line": 69
+          },
+          {
+            "end_line": 1249,
+            "file": "src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java",
+            "replacement": "    @Override\n    public boolean equals(Object obj) {\n        if (this == obj) {\n            return true;\n        }\n        if (obj instanceof TimeZoneDisplayKey) {\n            TimeZoneDisplayKey other = (TimeZoneDisplayKey) obj;\n            return mTimeZone.equals(other.mTimeZone) && mStyle == other.mStyle && mLocale.equals(other.mLocale);\n        }\n        return false;\n    }",
+            "start_line": 1236
+          },
+          {
+            "end_line": 120,
+            "file": "src/main/java/org/apache/commons/lang3/time/FastDateFormat.java",
+            "replacement": "    public static FastDateFormat getInstance(String pattern, TimeZone timeZone, Locale locale) {\n        return cache.getInstance(pattern, timeZone, locale);\n    }",
+            "start_line": 118
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-8/llm-0",
+        "failure_hash": "344edd37e70797f68e6f020449812d774216e9ffb37f1d48d9989800fd70d131",
+        "sample": 0,
+        "status": "COMPILE_ERROR"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "b10a590af49c156e566e9cf193a00d2eb6eb9b0907c5128bddf23c775ecac937",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 91,
+            "file": "src/main/java/org/apache/commons/lang3/time/FormatCache.java",
+            "replacement": "    public F getInstance(String pattern, TimeZone timeZone, Locale locale) {\n        if (pattern == null) {\n            throw new NullPointerException(\"pattern must not be null\");\n        }\n        if (timeZone == null) {\n            timeZone = TimeZone.getDefault();\n        }\n        if (locale == null) {\n            locale = Locale.getDefault();\n        }\n        MultipartKey key = new MultipartKey(pattern, timeZone, locale);\n        F format = cInstanceCache.get(key);\n        if (format == null) {\n            format = createInstance(pattern, timeZone, locale);\n            F previousValue = cInstanceCache.putIfAbsent(key, format);\n            if (previousValue != null) {\n                format = previousValue;\n            }\n        }\n        return format;\n    }",
+            "start_line": 69
+          },
+          {
+            "end_line": 1249,
+            "file": "src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java",
+            "replacement": "    @Override\n    public boolean equals(Object obj) {\n        if (this == obj) {\n            return true;\n        }\n        if (obj instanceof TimeZoneDisplayKey) {\n            TimeZoneDisplayKey other = (TimeZoneDisplayKey) obj;\n            return\n                mTimeZone.equals(other.mTimeZone) &&\n                mStyle == other.mStyle &&\n                mLocale.equals(other.mLocale);\n        }\n        return false;\n    }",
+            "start_line": 1236
+          },
+          {
+            "end_line": 120,
+            "file": "src/main/java/org/apache/commons/lang3/time/FastDateFormat.java",
+            "replacement": "    public static FastDateFormat getInstance(String pattern) {\n        return cache.getInstance(pattern, null, null);\n    }",
+            "start_line": 118
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-8/spectrum-0",
+        "failure_hash": "344edd37e70797f68e6f020449812d774216e9ffb37f1d48d9989800fd70d131",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

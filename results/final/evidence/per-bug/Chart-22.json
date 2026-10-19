@@ -1,0 +1,209 @@
+{
+  "bug": "Chart-22",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "4ac77e0b7fbc7ba43cff76a5565392c13482bcb0acf78c9c8b9e2e08ebd8a3a0",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "a9c11071e0d88daab5bfe009f285d9c9b082930ac287c3f17803fc535fb12400",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 32.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1.0,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "4ac77e0b7fbc7ba43cff76a5565392c13482bcb0acf78c9c8b9e2e08ebd8a3a0",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 381,
+            "file": "source/org/jfree/data/KeyedObjects2D.java",
+            "replacement": "public void removeColumn(Comparable columnKey) {\n    int index = getColumnIndex(columnKey);\n    if (index < 0) {\n        throw new UnknownKeyException(\"Column key (\" + columnKey + \") not recognised.\");\n    }\n    Iterator iterator = this.rows.iterator();\n    while (iterator.hasNext()) {\n        KeyedObjects rowData = (KeyedObjects) iterator.next();\n        rowData.removeValue(columnKey);\n    }\n    this.columnKeys.remove(columnKey);\n}",
+            "start_line": 369
+          },
+          {
+            "end_line": 238,
+            "file": "source/org/jfree/data/KeyedObjects2D.java",
+            "replacement": "public Object getObject(Comparable rowKey, Comparable columnKey) {\n    if (rowKey == null) {\n        throw new IllegalArgumentException(\"Null 'rowKey' argument.\");\n    }\n    if (columnKey == null) {\n        throw new IllegalArgumentException(\"Null 'columnKey' argument.\");\n    }\n    int row = this.rowKeys.indexOf(rowKey);\n    if (row < 0) {\n        throw new UnknownKeyException(\"Row key (\" + rowKey + \") not recognised.\");\n    }\n    int column = this.columnKeys.indexOf(columnKey);\n    if (column < 0) {\n        throw new UnknownKeyException(\"Column key (\" + columnKey + \") not recognised.\");\n    }\n    if (row >= 0) {\n        KeyedObjects rowData = (KeyedObjects) this.rows.get(row);\n        return rowData.getObject(columnKey);\n    } else {\n        return null;\n    }\n}",
+            "start_line": 214
+          },
+          {
+            "end_line": 175,
+            "file": "source/org/jfree/data/KeyedObjects.java",
+            "replacement": "public Object getObject(Comparable key) {\n    int index = getIndex(key);\n    if (index < 0) {\n        throw new UnknownKeyException(\"The key (\" + key + \") is not recognised.\");\n    }\n    return getObject(index);\n}",
+            "start_line": 168
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-22/combined-0",
+        "failure_hash": "a9c11071e0d88daab5bfe009f285d9c9b082930ac287c3f17803fc535fb12400",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "4ac77e0b7fbc7ba43cff76a5565392c13482bcb0acf78c9c8b9e2e08ebd8a3a0",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 381,
+            "file": "source/org/jfree/data/KeyedObjects2D.java",
+            "replacement": "public void removeColumn(Comparable columnKey) {\n    int index = getColumnIndex(columnKey);\n    if (index < 0) {\n        throw new UnknownKeyException(\"Column key (\" + columnKey + \") not recognised.\");\n    }\n    Iterator iterator = this.rows.iterator();\n    while (iterator.hasNext()) {\n        KeyedObjects rowData = (KeyedObjects) iterator.next();\n        rowData.removeValue(columnKey);\n    }\n    this.columnKeys.remove(columnKey);\n}",
+            "start_line": 369
+          },
+          {
+            "end_line": 238,
+            "file": "source/org/jfree/data/KeyedObjects2D.java",
+            "replacement": "public Object getObject(Comparable rowKey, Comparable columnKey) {\n    if (rowKey == null) {\n        throw new IllegalArgumentException(\"Null 'rowKey' argument.\");\n    }\n    if (columnKey == null) {\n        throw new IllegalArgumentException(\"Null 'columnKey' argument.\");\n    }\n    int row = this.rowKeys.indexOf(rowKey);\n    if (row < 0) {\n        throw new UnknownKeyException(\"Row key (\" + rowKey + \") not recognised.\");\n    }\n    int column = this.columnKeys.indexOf(columnKey);\n    if (column < 0) {\n        throw new UnknownKeyException(\"Column key (\" + columnKey + \") not recognised.\");\n    }\n    if (row >= 0) {\n        KeyedObjects rowData = (KeyedObjects) this.rows.get(row);\n        return rowData.getObject(columnKey);\n    } else {\n        return null;\n    }\n}",
+            "start_line": 214
+          },
+          {
+            "end_line": 175,
+            "file": "source/org/jfree/data/KeyedObjects.java",
+            "replacement": "public Object getObject(Comparable key) {\n    int index = getIndex(key);\n    if (index < 0) {\n        throw new UnknownKeyException(\"The key (\" + key + \") is not recognised.\");\n    }\n    return getObject(index);\n}",
+            "start_line": 168
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-22/direct-0",
+        "failure_hash": "a9c11071e0d88daab5bfe009f285d9c9b082930ac287c3f17803fc535fb12400",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "4ac77e0b7fbc7ba43cff76a5565392c13482bcb0acf78c9c8b9e2e08ebd8a3a0",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 381,
+            "file": "source/org/jfree/data/KeyedObjects2D.java",
+            "replacement": "public void removeColumn(Comparable columnKey) {\n    int index = getColumnIndex(columnKey);\n    if (index < 0) {\n        throw new UnknownKeyException(\"Column key (\" + columnKey + \") is not recognised.\");\n    }\n    Iterator iterator = this.rows.iterator();\n    while (iterator.hasNext()) {\n        KeyedObjects rowData = (KeyedObjects) iterator.next();\n        rowData.removeValue(columnKey);\n    }\n    this.columnKeys.remove(columnKey);\n}",
+            "start_line": 369
+          },
+          {
+            "end_line": 238,
+            "file": "source/org/jfree/data/KeyedObjects2D.java",
+            "replacement": "public Object getObject(Comparable rowKey, Comparable columnKey) {\n    if (rowKey == null) {\n        throw new IllegalArgumentException(\"Null 'rowKey' argument.\");\n    }\n    if (columnKey == null) {\n        throw new IllegalArgumentException(\"Null 'columnKey' argument.\");\n    }\n    int row = this.rowKeys.indexOf(rowKey);\n    if (row < 0) {\n        throw new UnknownKeyException(\"Row key (\" + rowKey + \") not recognised.\");\n    }\n    int column = this.columnKeys.indexOf(columnKey);\n    if (column < 0) {\n        throw new UnknownKeyException(\"Column key (\" + columnKey + \") not recognised.\");\n    }\n    if (row >= 0) {\n        KeyedObjects rowData = (KeyedObjects) this.rows.get(row);\n        return rowData.getObject(columnKey);\n    } else {\n        return null;\n    }\n}",
+            "start_line": 214
+          },
+          {
+            "end_line": 175,
+            "file": "source/org/jfree/data/KeyedObjects.java",
+            "replacement": "public Object getObject(Comparable key) {\n    int index = getIndex(key);\n    if (index < 0) {\n        throw new UnknownKeyException(\"The key (\" + key + \") is not recognised.\");\n    }\n    return getObject(index);\n}",
+            "start_line": 168
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-22/llm-0",
+        "failure_hash": "a9c11071e0d88daab5bfe009f285d9c9b082930ac287c3f17803fc535fb12400",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "4ac77e0b7fbc7ba43cff76a5565392c13482bcb0acf78c9c8b9e2e08ebd8a3a0",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 381,
+            "file": "source/org/jfree/data/KeyedObjects2D.java",
+            "replacement": "public void removeColumn(Comparable columnKey) {\n    int index = getColumnIndex(columnKey);\n    if (index < 0) {\n        throw new UnknownKeyException(\"Column key (\" + columnKey + \") is not recognised.\");\n    }\n    Iterator iterator = this.rows.iterator();\n    while (iterator.hasNext()) {\n        KeyedObjects rowData = (KeyedObjects) iterator.next();\n        rowData.removeValue(columnKey);\n    }\n    this.columnKeys.remove(columnKey);\n}\n",
+            "start_line": 369
+          },
+          {
+            "end_line": 238,
+            "file": "source/org/jfree/data/KeyedObjects2D.java",
+            "replacement": "public Object getObject(Comparable rowKey, Comparable columnKey) {\n    if (rowKey == null) {\n        throw new IllegalArgumentException(\"Null 'rowKey' argument.\");\n    }\n    if (columnKey == null) {\n        throw new IllegalArgumentException(\"Null 'columnKey' argument.\");\n    }\n    int row = this.rowKeys.indexOf(rowKey);\n    if (row < 0) {\n        throw new UnknownKeyException(\"Row key (\" + rowKey + \") is not recognised.\");\n    }\n    int column = this.columnKeys.indexOf(columnKey);\n    if (column < 0) {\n        throw new UnknownKeyException(\"Column key (\" + columnKey + \") is not recognised.\");\n    }\n    if (row >= 0) {\n        KeyedObjects rowData = (KeyedObjects) this.rows.get(row);\n        return rowData.getObject(columnKey);\n    } else {\n        return null;\n    }\n}\n",
+            "start_line": 214
+          },
+          {
+            "end_line": 175,
+            "file": "source/org/jfree/data/KeyedObjects.java",
+            "replacement": "public Object getObject(Comparable key) {\n    int index = getIndex(key);\n    if (index < 0) {\n        throw new UnknownKeyException(\"The key (\" + key + \") is not recognised.\");\n    }\n    return getObject(index);\n}\n",
+            "start_line": 168
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-22/spectrum-0",
+        "failure_hash": "a9c11071e0d88daab5bfe009f285d9c9b082930ac287c3f17803fc535fb12400",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

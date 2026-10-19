@@ -1,0 +1,215 @@
+{
+  "bug": "Time-24",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "4bc09b5476c0c8f6176072f0210984c17e0dfebe7a70761518342570f68a3b9e",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": null,
+    "line_any": null,
+    "line_eligible": false,
+    "line_fraction": null,
+    "method_all": false,
+    "method_any": false,
+    "missing": [
+      {
+        "method_id": "src/main/java/org/joda/time/format/DateTimeParserBucket.java::org.joda.time.format.DateTimeParserBucket#computeMillis@331",
+        "not_executed_by_failing_test": false,
+        "reason": "dropped_for_budget"
+      }
+    ],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "c29fa12a2d3ec0344800f388c8b19eb111a41487fadbec27c650f18cad8c9eac",
+  "gold_eligibility": {
+    "line": false,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 76.5,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "4bc09b5476c0c8f6176072f0210984c17e0dfebe7a70761518342570f68a3b9e",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 260,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "public DateTimeFormatter withChronology(Chronology chrono) {\n    if (iChrono == chrono) {\n        return this;\n    }\n    return new DateTimeFormatter(iPrinter, iParser, iLocale,\n            iOffsetParsed, chrono, iZone, iPivotYear, iDefaultYear);\n}",
+            "start_line": 254
+          },
+          {
+            "end_line": 184,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static void setDefault(DateTimeZone zone) throws SecurityException {\n    SecurityManager sm = System.getSecurityManager();\n    if (sm != null) {\n        sm.checkPermission(new JodaTimePermission(\"DateTimeZone.setDefault\"));\n    }\n    if (zone == null) {\n        throw new IllegalArgumentException(\"The datetime zone must not be null\");\n    }\n    synchronized(DateTimeZone.class) {\n        cDefault = zone;\n    }\n}",
+            "start_line": 173
+          },
+          {
+            "end_line": 760,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "public LocalDate parseLocalDate(String text) {\n    DateTimeParser parser = requireParser();\n    Chronology chrono = selectChronology(null).withUTC();  // always use UTC, avoiding DST gaps\n    DateTimeParserBucket bucket = new DateTimeParserBucket(0, chrono, iLocale, iPivotYear, iDefaultYear);\n    int newPos = parser.parseInto(bucket, text, 0);\n    if (newPos >= 0) {\n        if (newPos >= text.length()) {\n            long millis = bucket.computeMillis(true, text);\n            if (bucket.getZone() == null) {  // treat withOffsetParsed() as being true\n                int parsedOffset = bucket.getOffset();\n                DateTimeZone parsedZone = DateTimeZone.forOffsetMillis(parsedOffset);\n                chrono = chrono.withZone(parsedZone);\n            }\n            return new LocalDate(millis, chrono);\n        }\n    } else {\n        newPos = ~newPos;\n    }\n    throw new IllegalArgumentException(FormatUtils.createErrorMessage(text, newPos));\n}",
+            "start_line": 758
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-24/combined-0",
+        "failure_hash": "c29fa12a2d3ec0344800f388c8b19eb111a41487fadbec27c650f18cad8c9eac",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "4bc09b5476c0c8f6176072f0210984c17e0dfebe7a70761518342570f68a3b9e",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 260,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "public DateTimeFormatter withChronology(Chronology chrono) {\n    if (iChrono == chrono) {\n        return this;\n    }\n    return new DateTimeFormatter(iPrinter, iParser, iLocale,\n            iOffsetParsed, chrono, iZone, iPivotYear, iDefaultYear);\n}",
+            "start_line": 254
+          },
+          {
+            "end_line": 184,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static void setDefault(DateTimeZone zone) throws SecurityException {\n    SecurityManager sm = System.getSecurityManager();\n    if (sm != null) {\n        sm.checkPermission(new JodaTimePermission(\"DateTimeZone.setDefault\"));\n    }\n    if (zone == null) {\n        throw new IllegalArgumentException(\"The datetime zone must not be null\");\n    }\n    synchronized(DateTimeZone.class) {\n        cDefault = zone;\n    }\n}",
+            "start_line": 173
+          },
+          {
+            "end_line": 760,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "public LocalDate parseLocalDate(String text) {\n    DateTimeParser parser = requireParser();\n    Chronology chrono = selectChronology(null).withUTC();  // always use UTC, avoiding DST gaps\n    DateTimeParserBucket bucket = new DateTimeParserBucket(0, chrono, iLocale, iPivotYear, iDefaultYear);\n    int newPos = parser.parseInto(bucket, text, 0);\n    if (newPos >= 0) {\n        if (newPos >= text.length()) {\n            long millis = bucket.computeMillis(true, text);\n            if (bucket.getZone() == null) {  // treat withOffsetParsed() as being true\n                int parsedOffset = bucket.getOffset();\n                DateTimeZone parsedZone = DateTimeZone.forOffsetMillis(parsedOffset);\n                chrono = chrono.withZone(parsedZone);\n            }\n            return new LocalDate(millis, chrono);\n        }\n    } else {\n        newPos = ~newPos;\n    }\n    throw new IllegalArgumentException(FormatUtils.createErrorMessage(text, newPos));\n}",
+            "start_line": 758
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-24/direct-0",
+        "failure_hash": "c29fa12a2d3ec0344800f388c8b19eb111a41487fadbec27c650f18cad8c9eac",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "4bc09b5476c0c8f6176072f0210984c17e0dfebe7a70761518342570f68a3b9e",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 260,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "public DateTimeFormatter withChronology(Chronology chrono) {\n    if (iChrono == chrono) {\n        return this;\n    }\n    return new DateTimeFormatter(iPrinter, iParser, iLocale,\n            iOffsetParsed, chrono, iZone, iPivotYear, iDefaultYear);\n}",
+            "start_line": 254
+          },
+          {
+            "end_line": 184,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static void setDefault(DateTimeZone zone) throws SecurityException {\n    SecurityManager sm = System.getSecurityManager();\n    if (sm != null) {\n        sm.checkPermission(new JodaTimePermission(\"DateTimeZone.setDefault\"));\n    }\n    if (zone == null) {\n        throw new IllegalArgumentException(\"The datetime zone must not be null\");\n    }\n    synchronized(DateTimeZone.class) {\n        cDefault = zone;\n    }\n}",
+            "start_line": 173
+          },
+          {
+            "end_line": 760,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "public LocalDate parseLocalDate(String text) {\n    DateTimeParser parser = requireParser();\n    Chronology chrono = selectChronology(null).withUTC();  // always use UTC, avoiding DST gaps\n    DateTimeParserBucket bucket = new DateTimeParserBucket(0, chrono, iLocale, iPivotYear, iDefaultYear);\n    int newPos = parser.parseInto(bucket, text, 0);\n    if (newPos >= 0) {\n        if (newPos >= text.length()) {\n            long millis = bucket.computeMillis(true, text);\n            if (bucket.getZone() == null) {  // treat withOffsetParsed() as being true\n                int parsedOffset = bucket.getOffset();\n                DateTimeZone parsedZone = DateTimeZone.forOffsetMillis(parsedOffset);\n                chrono = chrono.withZone(parsedZone);\n            }\n            return new LocalDate(millis, chrono);\n        }\n    } else {\n        newPos = ~newPos;\n    }\n    throw new IllegalArgumentException(FormatUtils.createErrorMessage(text, newPos));\n}",
+            "start_line": 758
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-24/llm-0",
+        "failure_hash": "c29fa12a2d3ec0344800f388c8b19eb111a41487fadbec27c650f18cad8c9eac",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "4bc09b5476c0c8f6176072f0210984c17e0dfebe7a70761518342570f68a3b9e",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 260,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "public DateTimeFormatter withChronology(Chronology chrono) {\n    if (iChrono == chrono) {\n        return this;\n    }\n    return new DateTimeFormatter(iPrinter, iParser, iLocale,\n            iOffsetParsed, chrono, iZone, iPivotYear, iDefaultYear);\n}",
+            "start_line": 254
+          },
+          {
+            "end_line": 184,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static void setDefault(DateTimeZone zone) throws SecurityException {\n    SecurityManager sm = System.getSecurityManager();\n    if (sm != null) {\n        sm.checkPermission(new JodaTimePermission(\"DateTimeZone.setDefault\"));\n    }\n    if (zone == null) {\n        throw new IllegalArgumentException(\"The datetime zone must not be null\");\n    }\n    synchronized(DateTimeZone.class) {\n        cDefault = zone;\n    }\n}",
+            "start_line": 173
+          },
+          {
+            "end_line": 760,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "public LocalDate parseLocalDate(String text) {\n    DateTimeParser parser = requireParser();\n    Chronology chrono = selectChronology(null).withUTC();  // always use UTC, avoiding DST gaps\n    DateTimeParserBucket bucket = new DateTimeParserBucket(0, chrono, iLocale, iPivotYear, iDefaultYear);\n    int newPos = parser.parseInto(bucket, text, 0);\n    if (newPos >= 0) {\n        if (newPos >= text.length()) {\n            long millis = bucket.computeMillis(true, text);\n            if (bucket.getZone() == null) {  // treat withOffsetParsed() as being true\n                int parsedOffset = bucket.getOffset();\n                DateTimeZone parsedZone = DateTimeZone.forOffsetMillis(parsedOffset);\n                chrono = chrono.withZone(parsedZone);\n            }\n            return new LocalDate(millis, chrono);\n        }\n    } else {\n        newPos = ~newPos;\n    }\n    throw new IllegalArgumentException(FormatUtils.createErrorMessage(text, newPos));\n}",
+            "start_line": 758
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-24/spectrum-0",
+        "failure_hash": "c29fa12a2d3ec0344800f388c8b19eb111a41487fadbec27c650f18cad8c9eac",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

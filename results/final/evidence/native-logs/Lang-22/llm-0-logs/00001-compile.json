@@ -1,0 +1,10 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "compile"
+  ],
+  "output": "Running ant (compile)...................................................... OK\nRunning ant (compile.tests)................................................ OK\n",
+  "returncode": 0,
+  "seconds": 1.2055775829940103,
+  "timed_out": false
+}

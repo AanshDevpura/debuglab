@@ -1,0 +1,175 @@
+{
+  "bug": "Math-16",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "d2b129b1359f5a2bf64c285475c3ed112088e023aaa3d482220b36c9d8e9a90e",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": false,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 0.5,
+    "method_all": false,
+    "method_any": true,
+    "missing": [
+      {
+        "method_id": "src/main/java/org/apache/commons/math3/util/FastMath.java::org.apache.commons.math3.util.FastMath#sinh@443",
+        "not_executed_by_failing_test": true,
+        "reason": "dropped_for_budget"
+      }
+    ],
+    "missing_lines": [
+      {
+        "id": "src/main/java/org/apache/commons/math3/util/FastMath.java:458",
+        "method_id": "src/main/java/org/apache/commons/math3/util/FastMath.java::org.apache.commons.math3.util.FastMath#sinh@443",
+        "not_executed_by_failing_test": true,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      }
+    ]
+  },
+  "evaluated": true,
+  "failure_hash": "f95858f5a2dfb9a26a73bfd416145a2e6aeeefce9ab41e5e02025e638bc3d53a",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 216.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1.0,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "d2b129b1359f5a2bf64c285475c3ed112088e023aaa3d482220b36c9d8e9a90e",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 437,
+            "file": "src/main/java/org/apache/commons/math3/util/FastMath.java",
+            "replacement": "public static double cosh(double x) {\n    if (x != x) {\n        return x;\n    }\n\n    // cosh[z] = (exp(z) + exp(-z))/2\n\n    // for numbers with magnitude 20 or so,\n    // exp(-z) can be ignored in comparison with exp(z)\n\n    if (x > 20) {\n        // Avoid overflow (MATH-905).\n        return 0.5 * exp(x);\n    }\n    if (x < -20) {\n        // Avoid overflow (MATH-905).\n        return 0.5 * exp(-x);\n    }\n\n    final double hiPrec[] = new double[2];\n    if (x < 0.0) {\n        x = -x;\n    }\n    exp(x, 0.0, hiPrec);\n\n    double ya = hiPrec[0] + hiPrec[1];\n    double yb = -(ya - hiPrec[0] - hiPrec[1]);\n\n    double temp = ya * HEX_40000000;\n    double yaa = ya + temp - temp;\n    double yab = ya - yaa;\n\n    // recip = 1/y\n    double recip = 1.0/ya;\n    temp = recip * HEX_40000000;\n    double recipa = recip + temp - temp;\n    double recipb = recip - recipa;\n\n    // Correct for rounding in division\n    recipb += (1.0 - yaa*recipa - yaa*recipb - yab*recipa - yab*recipb) * recip;\n    // Account for yb\n    recipb += -yb * recip * recip;\n\n    // y = y + 1/y\n    temp = ya + recipa;\n    yb += -(temp - ya - recipa);\n    ya = temp;\n    temp = ya + recipb;\n    yb += -(temp - ya - recipb);\n    ya = temp;\n\n    double result = ya + yb;\n    result *= 0.5;\n    return result;\n}",
+            "start_line": 383
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-16/combined-0",
+        "failure_hash": "f95858f5a2dfb9a26a73bfd416145a2e6aeeefce9ab41e5e02025e638bc3d53a",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "d2b129b1359f5a2bf64c285475c3ed112088e023aaa3d482220b36c9d8e9a90e",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 437,
+            "file": "src/main/java/org/apache/commons/math3/util/FastMath.java",
+            "replacement": "public static double cosh(double x) {\n  if (x != x) {\n    return x;\n  }\n\n  // cosh[z] = (exp(z) + exp(-z))/2\n\n  // for numbers with magnitude 20 or so,\n  // exp(-z) can be ignored in comparison with exp(z)\n\n  if (x > 20) {\n    // Avoid overflow (MATH-905).\n    return 0.5 * exp(x);\n  }\n  if (x < -20) {\n    // Avoid overflow (MATH-905).\n    return 0.5 * exp(-x);\n  }\n\n  final double hiPrec[] = new double[2];\n  if (x < 0.0) {\n    x = -x;\n  }\n  exp(x, 0.0, hiPrec);\n\n  double ya = hiPrec[0] + hiPrec[1];\n  double yb = -(ya - hiPrec[0] - hiPrec[1]);\n\n  double temp = ya * HEX_40000000;\n  double yaa = ya + temp - temp;\n  double yab = ya - yaa;\n\n  // recip = 1/y\n  double recip = 1.0/ya;\n  temp = recip * HEX_40000000;\n  double recipa = recip + temp - temp;\n  double recipb = recip - recipa;\n\n  // Correct for rounding in division\n  recipb += (1.0 - yaa*recipa - yaa*recipb - yab*recipa - yab*recipb) * recip;\n  // Account for yb\n  recipb += -yb * recip * recip;\n\n  // y = y + 1/y\n  temp = ya + recipa;\n  yb += -(temp - ya - recipa);\n  ya = temp;\n  temp = ya + recipb;\n  yb += -(temp - ya - recipb);\n  ya = temp;\n\n  double result = ya + yb;\n  result *= 0.5;\n  return result;\n}",
+            "start_line": 383
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-16/direct-0",
+        "failure_hash": "f95858f5a2dfb9a26a73bfd416145a2e6aeeefce9ab41e5e02025e638bc3d53a",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "d2b129b1359f5a2bf64c285475c3ed112088e023aaa3d482220b36c9d8e9a90e",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 437,
+            "file": "src/main/java/org/apache/commons/math3/util/FastMath.java",
+            "replacement": "public static double cosh(double x) {\n    if (x != x) {\n        return x;\n    }\n\n    // cosh[z] = (exp(z) + exp(-z))/2\n\n    // for numbers with magnitude 20 or so,\n    // exp(-z) can be ignored in comparison with exp(z)\n\n    if (x > 20) {\n        // Avoid overflow (MATH-905).\n        return 0.5 * exp(x);\n    }\n    if (x < -20) {\n        // Avoid overflow (MATH-905).\n        return 0.5 * exp(-x);\n    }\n\n    final double hiPrec[] = new double[2];\n    if (x < 0.0) {\n        x = -x;\n    }\n    exp(x, 0.0, hiPrec);\n\n    double ya = hiPrec[0] + hiPrec[1];\n    double yb = -(ya - hiPrec[0] - hiPrec[1]);\n\n    double temp = ya * HEX_40000000;\n    double yaa = ya + temp - temp;\n    double yab = ya - yaa;\n\n    // recip = 1/y\n    double recip = 1.0/ya;\n    temp = recip * HEX_40000000;\n    double recipa = recip + temp - temp;\n    double recipb = recip - recipa;\n\n    // Correct for rounding in division\n    recipb += (1.0 - yaa*recipa - yaa*recipb - yab*recipa - yab*recipb) * recip;\n    // Account for yb\n    recipb += -yb * recip * recip;\n\n    // y = y + 1/y\n    temp = ya + recipa;\n    yb += -(temp - ya - recipa);\n    ya = temp;\n    temp = ya + recipb;\n    yb += -(temp - ya - recipb);\n    ya = temp;\n\n    double result = ya + yb;\n    result *= 0.5;\n    return result;\n}",
+            "start_line": 383
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-16/llm-0",
+        "failure_hash": "f95858f5a2dfb9a26a73bfd416145a2e6aeeefce9ab41e5e02025e638bc3d53a",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "d2b129b1359f5a2bf64c285475c3ed112088e023aaa3d482220b36c9d8e9a90e",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 437,
+            "file": "src/main/java/org/apache/commons/math3/util/FastMath.java",
+            "replacement": "public static double cosh(double x) {\n    if (x != x) {\n        return x;\n    }\n\n    // cosh[z] = (exp(z) + exp(-z))/2\n\n    // for numbers with magnitude 20 or so,\n    // exp(-z) can be ignored in comparison with exp(z)\n\n    if (x > 20) {\n        // Avoid overflow (MATH-905).\n        return 0.5 * exp(x);\n    }\n    if (x < -20) {\n        // Avoid overflow (MATH-905).\n        return 0.5 * exp(-x);\n    }\n\n    final double hiPrec[] = new double[2];\n    if (x < 0.0) {\n        x = -x;\n    }\n    exp(x, 0.0, hiPrec);\n\n    double ya = hiPrec[0] + hiPrec[1];\n    double yb = -(ya - hiPrec[0] - hiPrec[1]);\n\n    double temp = ya * HEX_40000000;\n    double yaa = ya + temp - temp;\n    double yab = ya - yaa;\n\n    // recip = 1/y\n    double recip = 1.0/ya;\n    temp = recip * HEX_40000000;\n    double recipa = recip + temp - temp;\n    double recipb = recip - recipa;\n\n    // Correct for rounding in division\n    recipb += (1.0 - yaa*recipa - yaa*recipb - yab*recipa - yab*recipb) * recip;\n    // Account for yb\n    recipb += -yb * recip * recip;\n\n    // y = y + 1/y\n    temp = ya + recipa;\n    yb += -(temp - ya - recipa);\n    ya = temp;\n    temp = ya + recipb;\n    yb += -(temp - ya - recipb);\n    ya = temp;\n\n    double result = ya + yb;\n    result *= 0.5;\n    return result;\n}",
+            "start_line": 383
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-16/spectrum-0",
+        "failure_hash": "f95858f5a2dfb9a26a73bfd416145a2e6aeeefce9ab41e5e02025e638bc3d53a",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

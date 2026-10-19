@@ -1,0 +1,209 @@
+{
+  "bug": "Chart-25",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "059ed10264a0a6c4186eea1d3432097dd77e12057a149047a58ffa4ccf3b01f0",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "8dd12bf2397c10d1ea9172b4170edffd2b3f67e7b9c13766e6dbb6c1d8cd9beb",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 54.5,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 13.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "059ed10264a0a6c4186eea1d3432097dd77e12057a149047a58ffa4ccf3b01f0",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 1396,
+            "file": "source/org/jfree/chart/JFreeChart.java",
+            "replacement": "public BufferedImage createBufferedImage(int width, int height, int imageType, ChartRenderingInfo info) {\n    BufferedImage image = new BufferedImage(width, height, imageType);\n    Graphics2D g2 = image.createGraphics();\n    try {\n        draw(g2, new Rectangle2D.Double(0, 0, width, height), null, info);\n    } catch (NullPointerException e) {\n        e.printStackTrace();\n    } finally {\n        g2.dispose();\n    }\n    return image;\n}",
+            "start_line": 1388
+          },
+          {
+            "end_line": 340,
+            "file": "source/org/jfree/data/statistics/DefaultStatisticalCategoryDataset.java",
+            "replacement": "public void add(Number mean, Number standardDeviation, Comparable rowKey, Comparable columnKey) {\n    MeanAndStandardDeviation item = new MeanAndStandardDeviation(mean, standardDeviation);\n    this.data.addObject(item, rowKey, columnKey);\n    double m = 0.0;\n    double sd = 0.0;\n    if (mean != null) {\n        m = mean.doubleValue();\n    }\n    if (standardDeviation != null) {\n        sd = standardDeviation.doubleValue();\n    }\n    if (!Double.isNaN(m)) {\n        if (Double.isNaN(this.maximumRangeValue) || m > this.maximumRangeValue) {\n            this.maximumRangeValue = m;\n        }\n    }\n    if (!Double.isNaN(m + sd)) {\n        if (Double.isNaN(this.maximumRangeValueIncStdDev) || (m + sd) > this.maximumRangeValueIncStdDev) {\n            this.maximumRangeValueIncStdDev = m + sd;\n        }\n    }\n    if (!Double.isNaN(m)) {\n        if (Double.isNaN(this.minimumRangeValue) || m < this.minimumRangeValue) {\n            this.minimumRangeValue = m;\n        }\n    }\n    if (!Double.isNaN(m - sd)) {\n        if (Double.isNaN(this.minimumRangeValueIncStdDev) || (m - sd) < this.minimumRangeValueIncStdDev) {\n            this.minimumRangeValueIncStdDev = m - sd;\n        }\n    }\n    fireDatasetChanged();\n}",
+            "start_line": 297
+          },
+          {
+            "end_line": 287,
+            "file": "source/org/jfree/data/statistics/DefaultStatisticalCategoryDataset.java",
+            "replacement": "public void add(double mean, double standardDeviation, Comparable rowKey, Comparable columnKey) {\n    add(new Double(mean), new Double(standardDeviation), rowKey, columnKey);\n}",
+            "start_line": 284
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-25/combined-0",
+        "failure_hash": "8dd12bf2397c10d1ea9172b4170edffd2b3f67e7b9c13766e6dbb6c1d8cd9beb",
+        "sample": 0,
+        "status": "PLAUSIBLE"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "059ed10264a0a6c4186eea1d3432097dd77e12057a149047a58ffa4ccf3b01f0",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 1396,
+            "file": "source/org/jfree/chart/JFreeChart.java",
+            "replacement": "public BufferedImage createBufferedImage(int width, int height, int imageType, ChartRenderingInfo info) {\n    BufferedImage image = new BufferedImage(width, height, imageType);\n    Graphics2D g2 = image.createGraphics();\n    try {\n        draw(g2, new Rectangle2D.Double(0, 0, width, height), null, info);\n    } catch (NullPointerException e) {\n        e.printStackTrace();\n    }\n    g2.dispose();\n    return image;\n}",
+            "start_line": 1388
+          },
+          {
+            "end_line": 340,
+            "file": "source/org/jfree/data/statistics/DefaultStatisticalCategoryDataset.java",
+            "replacement": "public void add(Number mean, Number standardDeviation, Comparable rowKey, Comparable columnKey) {\n    MeanAndStandardDeviation item = new MeanAndStandardDeviation(mean, standardDeviation);\n    this.data.addObject(item, rowKey, columnKey);\n    double m = 0.0;\n    double sd = 0.0;\n    if (mean != null) {\n        m = mean.doubleValue();\n    }\n    if (standardDeviation != null) {\n        sd = standardDeviation.doubleValue();\n    }\n    if (!Double.isNaN(m)) {\n        if (Double.isNaN(this.maximumRangeValue) || m > this.maximumRangeValue) {\n            this.maximumRangeValue = m;\n        }\n        if (Double.isNaN(this.minimumRangeValue) || m < this.minimumRangeValue) {\n            this.minimumRangeValue = m;\n        }\n    }\n    if (!Double.isNaN(m + sd)) {\n        if (Double.isNaN(this.maximumRangeValueIncStdDev) || (m + sd) > this.maximumRangeValueIncStdDev) {\n            this.maximumRangeValueIncStdDev = m + sd;\n        }\n    }\n    if (!Double.isNaN(m - sd)) {\n        if (Double.isNaN(this.minimumRangeValueIncStdDev) || (m - sd) < this.minimumRangeValueIncStdDev) {\n            this.minimumRangeValueIncStdDev = m - sd;\n        }\n    }\n    fireDatasetChanged();\n}",
+            "start_line": 297
+          },
+          {
+            "end_line": 287,
+            "file": "source/org/jfree/data/statistics/DefaultStatisticalCategoryDataset.java",
+            "replacement": "public void add(double mean, double standardDeviation, Comparable rowKey, Comparable columnKey) {\n    add(new Double(mean), new Double(standardDeviation), rowKey, columnKey);\n}",
+            "start_line": 284
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-25/direct-0",
+        "failure_hash": "8dd12bf2397c10d1ea9172b4170edffd2b3f67e7b9c13766e6dbb6c1d8cd9beb",
+        "sample": 0,
+        "status": "PLAUSIBLE"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "059ed10264a0a6c4186eea1d3432097dd77e12057a149047a58ffa4ccf3b01f0",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 1396,
+            "file": "source/org/jfree/chart/JFreeChart.java",
+            "replacement": "public BufferedImage createBufferedImage(int width, int height, int imageType, ChartRenderingInfo info) {\n    BufferedImage image = new BufferedImage(width, height, imageType);\n    Graphics2D g2 = image.createGraphics();\n    try {\n        draw(g2, new Rectangle2D.Double(0, 0, width, height), null, info);\n    } catch (NullPointerException e) {\n        e.printStackTrace();\n    } finally {\n        g2.dispose();\n    }\n    return image;\n}",
+            "start_line": 1388
+          },
+          {
+            "end_line": 340,
+            "file": "source/org/jfree/data/statistics/DefaultStatisticalCategoryDataset.java",
+            "replacement": "public void add(Number mean, Number standardDeviation, Comparable rowKey, Comparable columnKey) {\n    MeanAndStandardDeviation item = new MeanAndStandardDeviation(mean, standardDeviation);\n    this.data.addObject(item, rowKey, columnKey);\n    double m = 0.0;\n    double sd = 0.0;\n    if (mean != null) {\n        m = mean.doubleValue();\n    }\n    if (standardDeviation != null) {\n        sd = standardDeviation.doubleValue();\n    }\n    if (!Double.isNaN(m)) {\n        if (Double.isNaN(this.maximumRangeValue) || m > this.maximumRangeValue) {\n            this.maximumRangeValue = m;\n        }\n    }\n    if (!Double.isNaN(m + sd)) {\n        if (Double.isNaN(this.maximumRangeValueIncStdDev) || (m + sd) > this.maximumRangeValueIncStdDev) {\n            this.maximumRangeValueIncStdDev = m + sd;\n        }\n    }\n    if (!Double.isNaN(m)) {\n        if (Double.isNaN(this.minimumRangeValue) || m < this.minimumRangeValue) {\n            this.minimumRangeValue = m;\n        }\n    }\n    if (!Double.isNaN(m - sd)) {\n        if (Double.isNaN(this.minimumRangeValueIncStdDev) || (m - sd) < this.minimumRangeValueIncStdDev) {\n            this.minimumRangeValueIncStdDev = m - sd;\n        }\n    }\n    fireDatasetChanged();\n}",
+            "start_line": 297
+          },
+          {
+            "end_line": 287,
+            "file": "source/org/jfree/data/statistics/DefaultStatisticalCategoryDataset.java",
+            "replacement": "public void add(double mean, double standardDeviation, Comparable rowKey, Comparable columnKey) {\n    add(new Double(mean), new Double(standardDeviation), rowKey, columnKey);\n}",
+            "start_line": 284
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-25/llm-0",
+        "failure_hash": "8dd12bf2397c10d1ea9172b4170edffd2b3f67e7b9c13766e6dbb6c1d8cd9beb",
+        "sample": 0,
+        "status": "PLAUSIBLE"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "059ed10264a0a6c4186eea1d3432097dd77e12057a149047a58ffa4ccf3b01f0",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 1396,
+            "file": "source/org/jfree/chart/JFreeChart.java",
+            "replacement": "public BufferedImage createBufferedImage(int width, int height, int imageType, ChartRenderingInfo info) {\n    BufferedImage image = new BufferedImage(width, height, imageType);\n    Graphics2D g2 = image.createGraphics();\n    try {\n        draw(g2, new Rectangle2D.Double(0, 0, width, height), null, info);\n    } catch (NullPointerException e) {\n        e.printStackTrace();\n    } finally {\n        g2.dispose();\n    }\n    return image;\n}",
+            "start_line": 1388
+          },
+          {
+            "end_line": 340,
+            "file": "source/org/jfree/data/statistics/DefaultStatisticalCategoryDataset.java",
+            "replacement": "public void add(Number mean, Number standardDeviation, Comparable rowKey, Comparable columnKey) {\n    MeanAndStandardDeviation item = new MeanAndStandardDeviation(mean, standardDeviation);\n    this.data.addObject(item, rowKey, columnKey);\n    double m = 0.0;\n    double sd = 0.0;\n    if (mean != null) {\n        m = mean.doubleValue();\n    }\n    if (standardDeviation != null) {\n        sd = standardDeviation.doubleValue();\n    }\n    if (!Double.isNaN(m)) {\n        if (Double.isNaN(this.maximumRangeValue) || m > this.maximumRangeValue) {\n            this.maximumRangeValue = m;\n        }\n        if (!Double.isNaN(m - sd)) {\n            if (Double.isNaN(this.minimumRangeValueIncStdDev) || (m - sd) < this.minimumRangeValueIncStdDev) {\n                this.minimumRangeValueIncStdDev = m - sd;\n            }\n        }\n    }\n    if (!Double.isNaN(m + sd)) {\n        if (Double.isNaN(this.maximumRangeValueIncStdDev) || (m + sd) > this.maximumRangeValueIncStdDev) {\n            this.maximumRangeValueIncStdDev = m + sd;\n        }\n    }\n    if (!Double.isNaN(m)) {\n        if (Double.isNaN(this.minimumRangeValue) || m < this.minimumRangeValue) {\n            this.minimumRangeValue = m;\n        }\n    }\n    fireDatasetChanged();\n}",
+            "start_line": 297
+          },
+          {
+            "end_line": 287,
+            "file": "source/org/jfree/data/statistics/DefaultStatisticalCategoryDataset.java",
+            "replacement": "public void add(double mean, double standardDeviation, Comparable rowKey, Comparable columnKey) {\n    add(new Double(mean), new Double(standardDeviation), rowKey, columnKey);\n}",
+            "start_line": 284
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-25/spectrum-0",
+        "failure_hash": "8dd12bf2397c10d1ea9172b4170edffd2b3f67e7b9c13766e6dbb6c1d8cd9beb",
+        "sample": 0,
+        "status": "PLAUSIBLE"
+      }
+    ]
+  }
+}

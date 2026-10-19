@@ -1,0 +1,12 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "test",
+    "-t",
+    "org.jfree.chart.util.junit.ShapeListTests::testSerialization"
+  ],
+  "output": "Running ant (compile.tests)................................................ OK\nRunning ant (run.dev.tests)................................................ OK\nFailing tests: 1\n  - org.jfree.chart.util.junit.ShapeListTests::testSerialization\n",
+  "returncode": 0,
+  "seconds": 0.8743684999935795,
+  "timed_out": false
+}

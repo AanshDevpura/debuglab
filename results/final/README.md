@@ -159,8 +159,32 @@ All 360 actual prompts contained the full frozen per-bug context and fit the
 configured input budget. Frozen-context hashes, source/configuration fingerprints
 and canonical original-source mappings passed integrity checks. All 14 plausible
 native full-suite proofs were reverified, and disposable checkouts were removed.
-Raw prompts, responses, patches and native logs remain locally in
-`outputs/final/`; the [README](../../README.md) explains reproduction and reporting.
+The [README](../../README.md) explains reproduction and reporting.
+
+### Supporting run output
+
+This page is the single narrative report. The [evidence folder](evidence/) contains
+saved machine-readable output for checking the tables and individual outcomes:
+
+| Evidence | What it establishes |
+|---|---|
+| [Localization CSV](evidence/localization.csv) | Overall and context-conditional ranks, Top-1/3/5 and eligibility |
+| [Repair CSV](evidence/repair.csv) | Per-condition counts, rates and validation statuses |
+| [Per-bug CSV](evidence/per-bug.csv) | Individual bug outcomes and retrieval eligibility |
+| [Context recall CSV](evidence/context-recall.csv) | Aggregate retrieval coverage |
+| [Per-bug records](evidence/per-bug/) | Saved metrics, retrieval flags, generated edits and repair statuses for all 60 bugs |
+| [Native validation logs](evidence/native-logs/) | Recorded compilation and test commands, output, exit codes and timeouts across all repair attempts |
+| [Repair failure analysis](evidence/failure-analysis.csv) and [localization failure analysis](evidence/localization-failure-analysis.csv) | Per-attempt and per-ranker diagnostic classifications |
+| [Final audit](evidence/final-audit.json) | Run counts, context hashes and original full-suite proof hashes |
+| [Verification output](evidence/VERIFICATION.txt) | Evaluation-time test, lint and formatting output |
+| [Evidence manifest](evidence/manifest.json) | SHA-256 hashes for published files and their original source artifacts |
+
+Machine-specific paths are normalized in published records. The manifest records
+both original and published hashes and identifies transformations. Per-bug records
+retain measured metrics and repair records, while the full ranking arrays and raw
+model prompts/responses remain locally in `outputs/final/`. These files document
+the recorded run; no model generations or native tests were repeated to create
+this evidence bundle.
 
 The evaluated release passed 63 checks (61 portable and 2 native integration
 checks), plus lint and formatting. This is evaluation-time validation; the current

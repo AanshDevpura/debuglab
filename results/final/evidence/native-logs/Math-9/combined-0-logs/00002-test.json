@@ -1,0 +1,12 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "test",
+    "-t",
+    "org.apache.commons.math3.geometry.euclidean.threed.LineTest::testRevert"
+  ],
+  "output": "Running ant (compile.tests)................................................ OK\nRunning ant (run.dev.tests)................................................ OK\nFailing tests: 1\n  - org.apache.commons.math3.geometry.euclidean.threed.LineTest::testRevert\n",
+  "returncode": 0,
+  "seconds": 1.4911751250037923,
+  "timed_out": false
+}

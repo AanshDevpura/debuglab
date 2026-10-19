@@ -1,0 +1,161 @@
+{
+  "bug": "Lang-14",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "5b60a0b2ddb7a43e13d66aa3ea8ced589929e2e863837b2201aa34babf7c2c31",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": null,
+    "line_any": null,
+    "line_eligible": false,
+    "line_fraction": null,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "b9f4d5fd2f6d4e0743b0761fc69144eeed6e9002fadac986bb41e3ed2638db8f",
+  "gold_eligibility": {
+    "line": false,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1.0,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "5b60a0b2ddb7a43e13d66aa3ea8ced589929e2e863837b2201aa34babf7c2c31",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 789,
+            "file": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+            "replacement": "public static boolean equals(CharSequence cs1, CharSequence cs2) {\n    if (cs1 == cs2) {\n        return true;\n    }\n    if (cs1 == null || cs2 == null) {\n        return false;\n    }\n    return cs1.equals(cs2);\n}",
+            "start_line": 781
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-14/combined-0",
+        "failure_hash": "b9f4d5fd2f6d4e0743b0761fc69144eeed6e9002fadac986bb41e3ed2638db8f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "5b60a0b2ddb7a43e13d66aa3ea8ced589929e2e863837b2201aa34babf7c2c31",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 789,
+            "file": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+            "replacement": "public static boolean equals(CharSequence cs1, CharSequence cs2) {\n    if (cs1 == cs2) {\n        return true;\n    }\n    if (cs1 == null || cs2 == null) {\n        return false;\n    }\n    return cs1.equals(cs2);\n}",
+            "start_line": 781
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-14/direct-0",
+        "failure_hash": "b9f4d5fd2f6d4e0743b0761fc69144eeed6e9002fadac986bb41e3ed2638db8f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "5b60a0b2ddb7a43e13d66aa3ea8ced589929e2e863837b2201aa34babf7c2c31",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 789,
+            "file": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+            "replacement": "public static boolean equals(CharSequence cs1, CharSequence cs2) {\n    if (cs1 == cs2) {\n        return true;\n    }\n    if (cs1 == null || cs2 == null) {\n        return false;\n    }\n    return cs1.equals(cs2);\n}",
+            "start_line": 781
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-14/llm-0",
+        "failure_hash": "b9f4d5fd2f6d4e0743b0761fc69144eeed6e9002fadac986bb41e3ed2638db8f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "5b60a0b2ddb7a43e13d66aa3ea8ced589929e2e863837b2201aa34babf7c2c31",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 789,
+            "file": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+            "replacement": "public static boolean equals(CharSequence cs1, CharSequence cs2) {\n    if (cs1 == cs2) {\n        return true;\n    }\n    if (cs1 == null || cs2 == null) {\n        return false;\n    }\n    if (cs1 instanceof String && cs2 instanceof String) {\n        return ((String) cs1).equals((String) cs2);\n    }\n    return cs1.equals(cs2);\n}",
+            "start_line": 781
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-14/spectrum-0",
+        "failure_hash": "b9f4d5fd2f6d4e0743b0761fc69144eeed6e9002fadac986bb41e3ed2638db8f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

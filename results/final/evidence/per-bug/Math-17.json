@@ -1,0 +1,161 @@
+{
+  "bug": "Math-17",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "62a721e5ae98ae8ab1a0df9aa886035a27b9265985609f4751f18f2f1e1de615",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": null,
+    "line_any": null,
+    "line_eligible": false,
+    "line_fraction": null,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "bfeb456cdc6cd6274061c5c82da637ecc2acb4dd099a4e10105471832a5f7990",
+  "gold_eligibility": {
+    "line": false,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 2,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 2,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 3.5,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "62a721e5ae98ae8ab1a0df9aa886035a27b9265985609f4751f18f2f1e1de615",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 1604,
+            "file": "src/main/java/org/apache/commons/math3/dfp/Dfp.java",
+            "replacement": "public Dfp multiply(final int x) {\n    Dfp result = newInstance(this);\n    int rh = 0;\n    for (int i = 0; i < mant.length; i++) {\n        final int r = mant[i] * x + rh;\n        rh = r / RADIX;\n        result.mant[i] = r - rh * RADIX;\n    }\n    if (rh != 0) {\n        result.shiftRight();\n        result.mant[mant.length-1] = rh;\n    }\n    if (result.mant[mant.length-1] == 0) {\n        result.exp = 0;\n    }\n    final int excp = result.round(0);\n    if (excp != 0) {\n        result = dotrap(excp, MULTIPLY_TRAP, result, result);\n    }\n    return result;\n}",
+            "start_line": 1602
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-17/combined-0",
+        "failure_hash": "bfeb456cdc6cd6274061c5c82da637ecc2acb4dd099a4e10105471832a5f7990",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "62a721e5ae98ae8ab1a0df9aa886035a27b9265985609f4751f18f2f1e1de615",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 1604,
+            "file": "src/main/java/org/apache/commons/math3/dfp/Dfp.java",
+            "replacement": "public Dfp multiply(final int x) {\n    Dfp result = newInstance(this);\n    if (nans != FINITE) {\n        if (isNaN()) {\n            return this;\n        }\n        if (nans == INFINITE && x != 0) {\n            return result;\n        }\n        if (nans == INFINITE && x == 0) {\n            field.setIEEEFlagsBits(DfpField.FLAG_INVALID);\n            result = newInstance(getZero());\n            result.nans = QNAN;\n            result = dotrap(DfpField.FLAG_INVALID, MULTIPLY_TRAP, newInstance(getZero()), result);\n            return result;\n        }\n    }\n    if (x < 0 || x >= RADIX) {\n        field.setIEEEFlagsBits(DfpField.FLAG_INVALID);\n        result = newInstance(getZero());\n        result.nans = QNAN;\n        result = dotrap(DfpField.FLAG_INVALID, MULTIPLY_TRAP, result, result);\n        return result;\n    }\n    int rh = 0;\n    for (int i = 0; i < mant.length; i++) {\n        final int r = mant[i] * x + rh;\n        rh = r / RADIX;\n        result.mant[i] = r - rh * RADIX;\n    }\n    int lostdigit = 0;\n    if (rh != 0) {\n        lostdigit = result.mant[0];\n        result.shiftRight();\n        result.mant[mant.length-1] = rh;\n    }\n    if (result.mant[mant.length-1] == 0) {\n        result.exp = 0;\n    }\n    final int excp = result.round(lostdigit);\n    if (excp != 0) {\n        result = dotrap(excp, MULTIPLY_TRAP, result, result);\n    }\n    return result;\n}",
+            "start_line": 1602
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-17/direct-0",
+        "failure_hash": "bfeb456cdc6cd6274061c5c82da637ecc2acb4dd099a4e10105471832a5f7990",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "62a721e5ae98ae8ab1a0df9aa886035a27b9265985609f4751f18f2f1e1de615",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 1604,
+            "file": "src/main/java/org/apache/commons/math3/dfp/Dfp.java",
+            "replacement": "public Dfp multiply(final int x) {\n    return multiplyFast(x);\n}\n",
+            "start_line": 1602
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-17/llm-0",
+        "failure_hash": "bfeb456cdc6cd6274061c5c82da637ecc2acb4dd099a4e10105471832a5f7990",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "62a721e5ae98ae8ab1a0df9aa886035a27b9265985609f4751f18f2f1e1de615",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 1604,
+            "file": "src/main/java/org/apache/commons/math3/dfp/Dfp.java",
+            "replacement": "public Dfp multiply(final int x) {\n    return multiplyFast(x);\n}\n",
+            "start_line": 1602
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-17/spectrum-0",
+        "failure_hash": "bfeb456cdc6cd6274061c5c82da637ecc2acb4dd099a4e10105471832a5f7990",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

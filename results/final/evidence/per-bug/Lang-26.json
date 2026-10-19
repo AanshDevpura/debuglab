@@ -1,0 +1,173 @@
+{
+  "bug": "Lang-26",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "c28a1eca7970c0890fdfb6430410563ecd12a47e54562a91ffbba4a02eb49233",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "3137a8acf4220a6b1d1e4b33e4510796d06ecb6f73a909dd0a48f742078c44b8",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 10,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 3,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 10,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 3,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 113.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 17.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "c28a1eca7970c0890fdfb6430410563ecd12a47e54562a91ffbba4a02eb49233",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 221,
+            "file": "src/main/java/org/apache/commons/lang3/time/FastDateFormat.java",
+            "replacement": "public static synchronized FastDateFormat getInstance(String pattern, TimeZone timeZone, Locale locale) {\n    FastDateFormat emptyFormat = new FastDateFormat(pattern, timeZone, locale);\n    FastDateFormat format = cInstanceCache.get(emptyFormat);\n    if (format == null) {\n        format = emptyFormat;\n        format.init();  // convert shell format into usable one\n        cInstanceCache.put(format, format);  // this is OK!\n    }\n    return format;\n}",
+            "start_line": 212
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-26/combined-0",
+        "failure_hash": "3137a8acf4220a6b1d1e4b33e4510796d06ecb6f73a909dd0a48f742078c44b8",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "c28a1eca7970c0890fdfb6430410563ecd12a47e54562a91ffbba4a02eb49233",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 221,
+            "file": "src/main/java/org/apache/commons/lang3/time/FastDateFormat.java",
+            "replacement": "    public static synchronized FastDateFormat getInstance(String pattern, TimeZone timeZone, Locale locale) {\n        FastDateFormat emptyFormat = new FastDateFormat(pattern, timeZone, locale);\n        FastDateFormat format = cInstanceCache.get(emptyFormat);\n        if (format == null) {\n            format = emptyFormat;\n            format.init();  // convert shell format into usable one\n            cInstanceCache.put(format, format);  // this is OK!\n        }\n        return format;\n    }",
+            "start_line": 212
+          },
+          {
+            "end_line": 197,
+            "file": "src/main/java/org/apache/commons/lang3/time/FastDateFormat.java",
+            "replacement": "    public static FastDateFormat getInstance(String pattern, Locale locale) {\n        return getInstance(pattern, null, locale);\n    }",
+            "start_line": 195
+          },
+          {
+            "end_line": 823,
+            "file": "src/main/java/org/apache/commons/lang3/time/FastDateFormat.java",
+            "replacement": "    public String format(Date date) {\n        Calendar c = new GregorianCalendar(mTimeZone);\n        c.setTime(date);\n        return applyRules(c, new StringBuffer(mMaxLengthEstimate)).toString();\n    }",
+            "start_line": 819
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-26/direct-0",
+        "failure_hash": "3137a8acf4220a6b1d1e4b33e4510796d06ecb6f73a909dd0a48f742078c44b8",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "c28a1eca7970c0890fdfb6430410563ecd12a47e54562a91ffbba4a02eb49233",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 221,
+            "file": "src/main/java/org/apache/commons/lang3/time/FastDateFormat.java",
+            "replacement": "public static synchronized FastDateFormat getInstance(String pattern, TimeZone timeZone, Locale locale) {\n    FastDateFormat emptyFormat = new FastDateFormat(pattern, timeZone, locale);\n    FastDateFormat format = cInstanceCache.get(emptyFormat);\n    if (format == null) {\n        format = emptyFormat;\n        format.init();  // convert shell format into usable one\n        cInstanceCache.put(format, format);  // this is OK!\n    }\n    return format;\n}",
+            "start_line": 212
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-26/llm-0",
+        "failure_hash": "3137a8acf4220a6b1d1e4b33e4510796d06ecb6f73a909dd0a48f742078c44b8",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "c28a1eca7970c0890fdfb6430410563ecd12a47e54562a91ffbba4a02eb49233",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 221,
+            "file": "src/main/java/org/apache/commons/lang3/time/FastDateFormat.java",
+            "replacement": "public static synchronized FastDateFormat getInstance(String pattern, TimeZone timeZone, Locale locale) {\n    FastDateFormat emptyFormat = new FastDateFormat(pattern, timeZone, locale);\n    FastDateFormat format = cInstanceCache.get(emptyFormat);\n    if (format == null) {\n        format = emptyFormat;\n        format.init();  // convert shell format into usable one\n        cInstanceCache.put(format, format);  // this is OK!\n    }\n    return format;\n}",
+            "start_line": 212
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-26/spectrum-0",
+        "failure_hash": "3137a8acf4220a6b1d1e4b33e4510796d06ecb6f73a909dd0a48f742078c44b8",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

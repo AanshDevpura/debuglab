@@ -1,0 +1,185 @@
+{
+  "bug": "Math-22",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "a42b1c25b2c349bcfee9455f81e2594489aa0c231091474fbad9dd2f14161f86",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "a7ee620683d0a009b87b1f0db539e8188bacc1d2da8aa2c794dcd858a6079488",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 2,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 2,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 1.5,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1.5,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "a42b1c25b2c349bcfee9455f81e2594489aa0c231091474fbad9dd2f14161f86",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 276,
+            "file": "src/main/java/org/apache/commons/math3/distribution/FDistribution.java",
+            "replacement": "    public boolean isSupportLowerBoundInclusive() {\n        return false;\n    }",
+            "start_line": 274
+          },
+          {
+            "end_line": 185,
+            "file": "src/main/java/org/apache/commons/math3/distribution/UniformRealDistribution.java",
+            "replacement": "    public boolean isSupportUpperBoundInclusive() {\n        return true;\n    }",
+            "start_line": 183
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-22/combined-0",
+        "failure_hash": "a7ee620683d0a009b87b1f0db539e8188bacc1d2da8aa2c794dcd858a6079488",
+        "sample": 0,
+        "status": "PLAUSIBLE"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "a42b1c25b2c349bcfee9455f81e2594489aa0c231091474fbad9dd2f14161f86",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 276,
+            "file": "src/main/java/org/apache/commons/math3/distribution/FDistribution.java",
+            "replacement": "    public boolean isSupportLowerBoundInclusive() {\n        return false;\n    }",
+            "start_line": 274
+          },
+          {
+            "end_line": 185,
+            "file": "src/main/java/org/apache/commons/math3/distribution/UniformRealDistribution.java",
+            "replacement": "    public boolean isSupportUpperBoundInclusive() {\n        return true;\n    }",
+            "start_line": 183
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-22/direct-0",
+        "failure_hash": "a7ee620683d0a009b87b1f0db539e8188bacc1d2da8aa2c794dcd858a6079488",
+        "sample": 0,
+        "status": "PLAUSIBLE"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "a42b1c25b2c349bcfee9455f81e2594489aa0c231091474fbad9dd2f14161f86",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 276,
+            "file": "src/main/java/org/apache/commons/math3/distribution/FDistribution.java",
+            "replacement": "    public boolean isSupportLowerBoundInclusive() {\n        return false;\n    }",
+            "start_line": 274
+          },
+          {
+            "end_line": 185,
+            "file": "src/main/java/org/apache/commons/math3/distribution/UniformRealDistribution.java",
+            "replacement": "    public boolean isSupportUpperBoundInclusive() {\n        return true;\n    }",
+            "start_line": 183
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-22/llm-0",
+        "failure_hash": "a7ee620683d0a009b87b1f0db539e8188bacc1d2da8aa2c794dcd858a6079488",
+        "sample": 0,
+        "status": "PLAUSIBLE"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "a42b1c25b2c349bcfee9455f81e2594489aa0c231091474fbad9dd2f14161f86",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 276,
+            "file": "src/main/java/org/apache/commons/math3/distribution/FDistribution.java",
+            "replacement": "    public boolean isSupportLowerBoundInclusive() {\n        return false;\n    }",
+            "start_line": 274
+          },
+          {
+            "end_line": 185,
+            "file": "src/main/java/org/apache/commons/math3/distribution/UniformRealDistribution.java",
+            "replacement": "    public boolean isSupportUpperBoundInclusive() {\n        return true;\n    }",
+            "start_line": 183
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-22/spectrum-0",
+        "failure_hash": "a7ee620683d0a009b87b1f0db539e8188bacc1d2da8aa2c794dcd858a6079488",
+        "sample": 0,
+        "status": "PLAUSIBLE"
+      }
+    ]
+  }
+}

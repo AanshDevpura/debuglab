@@ -1,0 +1,209 @@
+{
+  "bug": "Chart-20",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "547b47a8c53479e1b37319a299a16d6d0decea2f61ef7b8319dab42d42ac00e7",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "78ca79784f84de6e321183ae05f287d6dc7cf66a068f949c8d8b5e62d09e0d37",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 15,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 5,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 15,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 5,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 6.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 5.0,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "547b47a8c53479e1b37319a299a16d6d0decea2f61ef7b8319dab42d42ac00e7",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 239,
+            "file": "source/org/jfree/chart/plot/Marker.java",
+            "replacement": "public Stroke getStroke() {\n    return this.stroke;\n}",
+            "start_line": 237
+          },
+          {
+            "end_line": 266,
+            "file": "source/org/jfree/chart/plot/Marker.java",
+            "replacement": "public Paint getOutlinePaint() {\n    return this.outlinePaint;\n}",
+            "start_line": 264
+          },
+          {
+            "end_line": 108,
+            "file": "source/org/jfree/chart/plot/ValueMarker.java",
+            "replacement": "public double getValue() {\n    return this.value;\n}",
+            "start_line": 106
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-20/combined-0",
+        "failure_hash": "78ca79784f84de6e321183ae05f287d6dc7cf66a068f949c8d8b5e62d09e0d37",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "547b47a8c53479e1b37319a299a16d6d0decea2f61ef7b8319dab42d42ac00e7",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 239,
+            "file": "source/org/jfree/chart/plot/Marker.java",
+            "replacement": "public Stroke getStroke() {\n    return this.stroke;\n}",
+            "start_line": 237
+          },
+          {
+            "end_line": 266,
+            "file": "source/org/jfree/chart/plot/Marker.java",
+            "replacement": "public Paint getOutlinePaint() {\n    return this.outlinePaint;\n}",
+            "start_line": 264
+          },
+          {
+            "end_line": 108,
+            "file": "source/org/jfree/chart/plot/ValueMarker.java",
+            "replacement": "public double getValue() {\n    return this.value;\n}",
+            "start_line": 106
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-20/direct-0",
+        "failure_hash": "78ca79784f84de6e321183ae05f287d6dc7cf66a068f949c8d8b5e62d09e0d37",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "547b47a8c53479e1b37319a299a16d6d0decea2f61ef7b8319dab42d42ac00e7",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 239,
+            "file": "source/org/jfree/chart/plot/Marker.java",
+            "replacement": "public Stroke getStroke() {\n    return this.stroke;\n}",
+            "start_line": 237
+          },
+          {
+            "end_line": 266,
+            "file": "source/org/jfree/chart/plot/Marker.java",
+            "replacement": "public Paint getOutlinePaint() {\n    return this.outlinePaint;\n}",
+            "start_line": 264
+          },
+          {
+            "end_line": 108,
+            "file": "source/org/jfree/chart/plot/ValueMarker.java",
+            "replacement": "public double getValue() {\n    return this.value;\n}",
+            "start_line": 106
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-20/llm-0",
+        "failure_hash": "78ca79784f84de6e321183ae05f287d6dc7cf66a068f949c8d8b5e62d09e0d37",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "547b47a8c53479e1b37319a299a16d6d0decea2f61ef7b8319dab42d42ac00e7",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 239,
+            "file": "source/org/jfree/chart/plot/Marker.java",
+            "replacement": "public Stroke getStroke() {\n    return this.stroke;\n}\n",
+            "start_line": 237
+          },
+          {
+            "end_line": 266,
+            "file": "source/org/jfree/chart/plot/Marker.java",
+            "replacement": "public Paint getOutlinePaint() {\n    return this.outlinePaint;\n}\n",
+            "start_line": 264
+          },
+          {
+            "end_line": 108,
+            "file": "source/org/jfree/chart/plot/ValueMarker.java",
+            "replacement": "public double getValue() {\n    return this.value;\n}\n",
+            "start_line": 106
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-20/spectrum-0",
+        "failure_hash": "78ca79784f84de6e321183ae05f287d6dc7cf66a068f949c8d8b5e62d09e0d37",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

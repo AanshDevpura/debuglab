@@ -1,0 +1,12 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "test",
+    "-t",
+    "org.jfree.chart.renderer.category.junit.MinMaxCategoryRendererTests::testEquals"
+  ],
+  "output": "Running ant (compile.tests)................................................ OK\nRunning ant (run.dev.tests)................................................ OK\nFailing tests: 1\n  - org.jfree.chart.renderer.category.junit.MinMaxCategoryRendererTests::testEquals\n",
+  "returncode": 0,
+  "seconds": 1.3945209590019658,
+  "timed_out": false
+}

@@ -1,0 +1,12 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "test",
+    "-t",
+    "org.apache.commons.math3.distribution.GammaDistributionTest::testDistributionClone"
+  ],
+  "output": "Running ant (compile.tests)................................................ OK\nRunning ant (run.dev.tests)................................................ OK\nFailing tests: 1\n  - org.apache.commons.math3.distribution.GammaDistributionTest::testDistributionClone\n",
+  "returncode": 0,
+  "seconds": 1.2871657500218134,
+  "timed_out": false
+}

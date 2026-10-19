@@ -1,0 +1,209 @@
+{
+  "bug": "Time-12",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "2938cfb0af9f69b67f0d23e21bcb60185399e6f52249358f55d550cb5d3955d8",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "c330ca3af9303b68a44f3af836d14a2f0f79e4ffa4425ef6a4da23b7614ad4df",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 4.5,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "2938cfb0af9f69b67f0d23e21bcb60185399e6f52249358f55d550cb5d3955d8",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 209,
+            "file": "src/main/java/org/joda/time/LocalDateTime.java",
+            "replacement": "public static LocalDateTime fromCalendarFields(Calendar calendar) {\n        if (calendar == null) {\n            throw new IllegalArgumentException(\"The calendar must not be null\");\n        }\n        int yearOfEra = calendar.get(Calendar.YEAR);\n        int era = calendar.get(Calendar.ERA);\n        if (era == GregorianCalendar.BC) {\n            yearOfEra = -yearOfEra;\n        }\n        return new LocalDateTime(\n            yearOfEra,\n            calendar.get(Calendar.MONTH) + 1,\n            calendar.get(Calendar.DAY_OF_MONTH),\n            calendar.get(Calendar.HOUR_OF_DAY),\n            calendar.get(Calendar.MINUTE),\n            calendar.get(Calendar.SECOND),\n            calendar.get(Calendar.MILLISECOND)\n        );\n    }",
+            "start_line": 195
+          },
+          {
+            "end_line": 216,
+            "file": "src/main/java/org/joda/time/LocalDate.java",
+            "replacement": "public static LocalDate fromCalendarFields(Calendar calendar) {\n        if (calendar == null) {\n            throw new IllegalArgumentException(\"The calendar must not be null\");\n        }\n        int yearOfEra = calendar.get(Calendar.YEAR);\n        int era = calendar.get(Calendar.ERA);\n        if (era == GregorianCalendar.BC) {\n            yearOfEra = -yearOfEra;\n        }\n        return new LocalDate(\n            yearOfEra,\n            calendar.get(Calendar.MONTH) + 1,\n            calendar.get(Calendar.DAY_OF_MONTH)\n        );\n    }",
+            "start_line": 206
+          },
+          {
+            "end_line": 246,
+            "file": "src/main/java/org/joda/time/LocalDateTime.java",
+            "replacement": "public static LocalDateTime fromDateFields(Date date) {\n        if (date == null) {\n            throw new IllegalArgumentException(\"The date must not be null\");\n        }\n        // handle years in era BC\n        int year = date.getYear() + 1900;\n        int era = date.getYear() < 0 ? GregorianCalendar.BC : GregorianCalendar.AD;\n        if (era == GregorianCalendar.BC) {\n            year = -year;\n        }\n        return new LocalDateTime(\n            year,\n            date.getMonth() + 1,\n            date.getDate(),\n            date.getHours(),\n            date.getMinutes(),\n            date.getSeconds(),\n            (((int) (date.getTime() % 1000)) + 1000) % 1000\n        );\n    }",
+            "start_line": 231
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-12/combined-0",
+        "failure_hash": "c330ca3af9303b68a44f3af836d14a2f0f79e4ffa4425ef6a4da23b7614ad4df",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "2938cfb0af9f69b67f0d23e21bcb60185399e6f52249358f55d550cb5d3955d8",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 209,
+            "file": "src/main/java/org/joda/time/LocalDateTime.java",
+            "replacement": "public static LocalDateTime fromCalendarFields(Calendar calendar) {\n        if (calendar == null) {\n            throw new IllegalArgumentException(\"The calendar must not be null\");\n        }\n        int yearOfEra = calendar.get(Calendar.YEAR);\n        int era = calendar.get(Calendar.ERA);\n        if (era == GregorianCalendar.BC) {\n            yearOfEra = -yearOfEra;\n        }\n        return new LocalDateTime(yearOfEra, calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND));\n    }",
+            "start_line": 195
+          },
+          {
+            "end_line": 216,
+            "file": "src/main/java/org/joda/time/LocalDate.java",
+            "replacement": "public static LocalDate fromCalendarFields(Calendar calendar) {\n        if (calendar == null) {\n            throw new IllegalArgumentException(\"The calendar must not be null\");\n        }\n        int yearOfEra = calendar.get(Calendar.YEAR);\n        int era = calendar.get(Calendar.ERA);\n        if (era == GregorianCalendar.BC) {\n            yearOfEra = -yearOfEra;\n        }\n        return new LocalDate(yearOfEra, calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));\n    }",
+            "start_line": 206
+          },
+          {
+            "end_line": 246,
+            "file": "src/main/java/org/joda/time/LocalDateTime.java",
+            "replacement": "public static LocalDateTime fromDateFields(Date date) {\n        if (date == null) {\n            throw new IllegalArgumentException(\"The date must not be null\");\n        }\n        int yearOfEra = date.getYear() + 1900;\n        int era = date.getYear() < 0 ? GregorianCalendar.BC : GregorianCalendar.AD;\n        if (era == GregorianCalendar.BC) {\n            yearOfEra = -yearOfEra;\n        }\n        return new LocalDateTime(yearOfEra, date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), (((int) (date.getTime() % 1000)) + 1000) % 1000);\n    }",
+            "start_line": 231
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-12/direct-0",
+        "failure_hash": "c330ca3af9303b68a44f3af836d14a2f0f79e4ffa4425ef6a4da23b7614ad4df",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "2938cfb0af9f69b67f0d23e21bcb60185399e6f52249358f55d550cb5d3955d8",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 209,
+            "file": "src/main/java/org/joda/time/LocalDateTime.java",
+            "replacement": "public static LocalDateTime fromCalendarFields(Calendar calendar) {\n        if (calendar == null) {\n            throw new IllegalArgumentException(\"The calendar must not be null\");\n        }\n        int yearOfEra = calendar.get(Calendar.YEAR);\n        int era = calendar.get(Calendar.ERA);\n        if (era == GregorianCalendar.BC) {\n            yearOfEra = -yearOfEra;\n        }\n        return new LocalDateTime(\n            yearOfEra,\n            calendar.get(Calendar.MONTH) + 1,\n            calendar.get(Calendar.DAY_OF_MONTH),\n            calendar.get(Calendar.HOUR_OF_DAY),\n            calendar.get(Calendar.MINUTE),\n            calendar.get(Calendar.SECOND),\n            calendar.get(Calendar.MILLISECOND)\n        );\n    }",
+            "start_line": 195
+          },
+          {
+            "end_line": 216,
+            "file": "src/main/java/org/joda/time/LocalDate.java",
+            "replacement": "public static LocalDate fromCalendarFields(Calendar calendar) {\n        if (calendar == null) {\n            throw new IllegalArgumentException(\"The calendar must not be null\");\n        }\n        int yearOfEra = calendar.get(Calendar.YEAR);\n        int era = calendar.get(Calendar.ERA);\n        if (era == GregorianCalendar.BC) {\n            yearOfEra = -yearOfEra;\n        }\n        return new LocalDate(\n            yearOfEra,\n            calendar.get(Calendar.MONTH) + 1,\n            calendar.get(Calendar.DAY_OF_MONTH)\n        );\n    }",
+            "start_line": 206
+          },
+          {
+            "end_line": 246,
+            "file": "src/main/java/org/joda/time/LocalDateTime.java",
+            "replacement": "public static LocalDateTime fromDateFields(Date date) {\n        if (date == null) {\n            throw new IllegalArgumentException(\"The date must not be null\");\n        }\n        // handle years in era BC\n        int year = date.getYear() + 1900;\n        int era = date.getYear() < 0 ? GregorianCalendar.BC : GregorianCalendar.AD;\n        if (era == GregorianCalendar.BC) {\n            year = -year;\n        }\n        return new LocalDateTime(\n            year,\n            date.getMonth() + 1,\n            date.getDate(),\n            date.getHours(),\n            date.getMinutes(),\n            date.getSeconds(),\n            (((int) (date.getTime() % 1000)) + 1000) % 1000\n        );\n    }",
+            "start_line": 231
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-12/llm-0",
+        "failure_hash": "c330ca3af9303b68a44f3af836d14a2f0f79e4ffa4425ef6a4da23b7614ad4df",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "2938cfb0af9f69b67f0d23e21bcb60185399e6f52249358f55d550cb5d3955d8",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 209,
+            "file": "src/main/java/org/joda/time/LocalDateTime.java",
+            "replacement": "public static LocalDateTime fromCalendarFields(Calendar calendar) {\n        if (calendar == null) {\n            throw new IllegalArgumentException(\"The calendar must not be null\");\n        }\n        int yearOfEra = calendar.get(Calendar.YEAR);\n        int era = calendar.get(Calendar.ERA);\n        if (era == GregorianCalendar.BC) {\n            yearOfEra = -yearOfEra;\n        }\n        return new LocalDateTime(\n            yearOfEra,\n            calendar.get(Calendar.MONTH) + 1,\n            calendar.get(Calendar.DAY_OF_MONTH),\n            calendar.get(Calendar.HOUR_OF_DAY),\n            calendar.get(Calendar.MINUTE),\n            calendar.get(Calendar.SECOND),\n            calendar.get(Calendar.MILLISECOND)\n        );\n    }",
+            "start_line": 195
+          },
+          {
+            "end_line": 216,
+            "file": "src/main/java/org/joda/time/LocalDate.java",
+            "replacement": "public static LocalDate fromCalendarFields(Calendar calendar) {\n        if (calendar == null) {\n            throw new IllegalArgumentException(\"The calendar must not be null\");\n        }\n        int yearOfEra = calendar.get(Calendar.YEAR);\n        int era = calendar.get(Calendar.ERA);\n        if (era == GregorianCalendar.BC) {\n            yearOfEra = -yearOfEra;\n        }\n        return new LocalDate(\n            yearOfEra,\n            calendar.get(Calendar.MONTH) + 1,\n            calendar.get(Calendar.DAY_OF_MONTH)\n        );\n    }",
+            "start_line": 206
+          },
+          {
+            "end_line": 246,
+            "file": "src/main/java/org/joda/time/LocalDateTime.java",
+            "replacement": "public static LocalDateTime fromDateFields(Date date) {\n        if (date == null) {\n            throw new IllegalArgumentException(\"The date must not be null\");\n        }\n        // handle years in era BC\n        int year = date.getYear() + 1900;\n        int era = date.getYear() < 0 ? GregorianCalendar.BC : GregorianCalendar.AD;\n        if (era == GregorianCalendar.BC) {\n            year = -year;\n        }\n        return new LocalDateTime(\n            year,\n            date.getMonth() + 1,\n            date.getDate(),\n            date.getHours(),\n            date.getMinutes(),\n            date.getSeconds(),\n            (((int) (date.getTime() % 1000)) + 1000) % 1000\n        );\n    }",
+            "start_line": 231
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-12/spectrum-0",
+        "failure_hash": "c330ca3af9303b68a44f3af836d14a2f0f79e4ffa4425ef6a4da23b7614ad4df",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

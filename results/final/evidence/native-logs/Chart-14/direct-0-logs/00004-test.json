@@ -1,0 +1,12 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "test",
+    "-t",
+    "org.jfree.chart.plot.junit.XYPlotTests::testRemoveRangeMarker"
+  ],
+  "output": "Running ant (compile.tests)................................................ OK\nRunning ant (run.dev.tests)................................................ OK\nFailing tests: 1\n  - org.jfree.chart.plot.junit.XYPlotTests::testRemoveRangeMarker\n",
+  "returncode": 0,
+  "seconds": 0.8516598330170382,
+  "timed_out": false
+}

@@ -1,0 +1,209 @@
+{
+  "bug": "Chart-14",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "54d1c9cab7a04ca62344fcb06433f7104be1b0d478584550d8984ee19b8b92de",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": null,
+    "line_any": null,
+    "line_eligible": false,
+    "line_fraction": null,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "840acaefb5b5d5b2ab2b39027b89569105b1eded48e242147f1eb6da5a083a26",
+  "gold_eligibility": {
+    "line": false,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 2.5,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "54d1c9cab7a04ca62344fcb06433f7104be1b0d478584550d8984ee19b8b92de",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 2171,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "public boolean removeDomainMarker(int index, Marker marker, Layer layer, boolean notify) {\n    ArrayList markers;\n    if (layer == Layer.FOREGROUND) {\n        markers = (ArrayList) this.foregroundDomainMarkers.get(new Integer(index));\n    } else {\n        markers = (ArrayList) this.backgroundDomainMarkers.get(new Integer(index));\n    }\n    if (markers == null) {\n        return false;\n    }\n    boolean removed = markers.remove(marker);\n    if (removed && notify) {\n        fireChangeEvent();\n    }\n    return removed;\n}",
+            "start_line": 2155
+          },
+          {
+            "end_line": 2298,
+            "file": "source/org/jfree/chart/plot/XYPlot.java",
+            "replacement": "public boolean removeDomainMarker(int index, Marker marker, Layer layer, boolean notify) {\n    ArrayList markers;\n    if (layer == Layer.FOREGROUND) {\n        markers = (ArrayList) this.foregroundDomainMarkers.get(new Integer(index));\n    } else {\n        markers = (ArrayList) this.backgroundDomainMarkers.get(new Integer(index));\n    }\n    if (markers == null) {\n        return false;\n    }\n    boolean removed = markers.remove(marker);\n    if (removed && notify) {\n        fireChangeEvent();\n    }\n    return removed;\n}",
+            "start_line": 2282
+          },
+          {
+            "end_line": 2453,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "public boolean removeRangeMarker(int index, Marker marker, Layer layer, boolean notify) {\n    ArrayList markers;\n    if (layer == Layer.FOREGROUND) {\n        markers = (ArrayList) this.foregroundRangeMarkers.get(new Integer(index));\n    } else {\n        markers = (ArrayList) this.backgroundRangeMarkers.get(new Integer(index));\n    }\n    if (markers == null) {\n        return false;\n    }\n    boolean removed = markers.remove(marker);\n    if (removed && notify) {\n        fireChangeEvent();\n    }\n    return removed;\n}",
+            "start_line": 2434
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-14/combined-0",
+        "failure_hash": "840acaefb5b5d5b2ab2b39027b89569105b1eded48e242147f1eb6da5a083a26",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "54d1c9cab7a04ca62344fcb06433f7104be1b0d478584550d8984ee19b8b92de",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 2171,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "public boolean removeDomainMarker(int index, Marker marker, Layer layer, boolean notify) {\n    ArrayList markers;\n    if (layer == Layer.FOREGROUND) {\n        markers = (ArrayList) this.foregroundDomainMarkers.get(new Integer(index));\n    } else {\n        markers = (ArrayList) this.backgroundDomainMarkers.get(new Integer(index));\n    }\n    if (markers == null) {\n        return false;\n    }\n    boolean removed = markers.remove(marker);\n    if (removed && notify) {\n        fireChangeEvent();\n    }\n    return removed;\n}",
+            "start_line": 2155
+          },
+          {
+            "end_line": 2298,
+            "file": "source/org/jfree/chart/plot/XYPlot.java",
+            "replacement": "public boolean removeDomainMarker(int index, Marker marker, Layer layer, boolean notify) {\n    ArrayList markers;\n    if (layer == Layer.FOREGROUND) {\n        markers = (ArrayList) this.foregroundDomainMarkers.get(new Integer(index));\n    } else {\n        markers = (ArrayList) this.backgroundDomainMarkers.get(new Integer(index));\n    }\n    if (markers == null) {\n        return false;\n    }\n    boolean removed = markers.remove(marker);\n    if (removed && notify) {\n        fireChangeEvent();\n    }\n    return removed;\n}",
+            "start_line": 2282
+          },
+          {
+            "end_line": 2453,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "public boolean removeRangeMarker(int index, Marker marker, Layer layer, boolean notify) {\n    ArrayList markers;\n    if (layer == Layer.FOREGROUND) {\n        markers = (ArrayList) this.foregroundRangeMarkers.get(new Integer(index));\n    } else {\n        markers = (ArrayList) this.backgroundRangeMarkers.get(new Integer(index));\n    }\n    if (markers == null) {\n        return false;\n    }\n    boolean removed = markers.remove(marker);\n    if (removed && notify) {\n        fireChangeEvent();\n    }\n    return removed;\n}",
+            "start_line": 2434
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-14/direct-0",
+        "failure_hash": "840acaefb5b5d5b2ab2b39027b89569105b1eded48e242147f1eb6da5a083a26",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "54d1c9cab7a04ca62344fcb06433f7104be1b0d478584550d8984ee19b8b92de",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 2171,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "public boolean removeDomainMarker(int index, Marker marker, Layer layer, boolean notify) {\n    ArrayList markers;\n    if (layer == Layer.FOREGROUND) {\n        markers = (ArrayList) this.foregroundDomainMarkers.get(new Integer(index));\n    } else {\n        markers = (ArrayList) this.backgroundDomainMarkers.get(new Integer(index));\n    }\n    if (markers == null) {\n        return false;\n    }\n    boolean removed = markers.remove(marker);\n    if (removed && notify) {\n        fireChangeEvent();\n    }\n    return removed;\n}",
+            "start_line": 2155
+          },
+          {
+            "end_line": 2298,
+            "file": "source/org/jfree/chart/plot/XYPlot.java",
+            "replacement": "public boolean removeDomainMarker(int index, Marker marker, Layer layer, boolean notify) {\n    ArrayList markers;\n    if (layer == Layer.FOREGROUND) {\n        markers = (ArrayList) this.foregroundDomainMarkers.get(new Integer(index));\n    } else {\n        markers = (ArrayList) this.backgroundDomainMarkers.get(new Integer(index));\n    }\n    if (markers == null) {\n        return false;\n    }\n    boolean removed = markers.remove(marker);\n    if (removed && notify) {\n        fireChangeEvent();\n    }\n    return removed;\n}",
+            "start_line": 2282
+          },
+          {
+            "end_line": 2453,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "public boolean removeRangeMarker(int index, Marker marker, Layer layer, boolean notify) {\n    ArrayList markers;\n    if (layer == Layer.FOREGROUND) {\n        markers = (ArrayList) this.foregroundRangeMarkers.get(new Integer(index));\n    } else {\n        markers = (ArrayList) this.backgroundRangeMarkers.get(new Integer(index));\n    }\n    if (markers == null) {\n        return false;\n    }\n    boolean removed = markers.remove(marker);\n    if (removed && notify) {\n        fireChangeEvent();\n    }\n    return removed;\n}",
+            "start_line": 2434
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-14/llm-0",
+        "failure_hash": "840acaefb5b5d5b2ab2b39027b89569105b1eded48e242147f1eb6da5a083a26",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "54d1c9cab7a04ca62344fcb06433f7104be1b0d478584550d8984ee19b8b92de",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 2171,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "public boolean removeDomainMarker(int index, Marker marker, Layer layer, boolean notify) {\n    ArrayList markers;\n    if (layer == Layer.FOREGROUND) {\n        markers = (ArrayList) this.foregroundDomainMarkers.get(new Integer(index));\n    } else {\n        markers = (ArrayList) this.backgroundDomainMarkers.get(new Integer(index));\n    }\n    if (markers == null) {\n        return false;\n    }\n    boolean removed = markers.remove(marker);\n    if (removed && notify) {\n        fireChangeEvent();\n    }\n    return removed;\n}",
+            "start_line": 2155
+          },
+          {
+            "end_line": 2298,
+            "file": "source/org/jfree/chart/plot/XYPlot.java",
+            "replacement": "public boolean removeDomainMarker(int index, Marker marker, Layer layer, boolean notify) {\n    ArrayList markers;\n    if (layer == Layer.FOREGROUND) {\n        markers = (ArrayList) this.foregroundDomainMarkers.get(new Integer(index));\n    } else {\n        markers = (ArrayList) this.backgroundDomainMarkers.get(new Integer(index));\n    }\n    if (markers == null) {\n        return false;\n    }\n    boolean removed = markers.remove(marker);\n    if (removed && notify) {\n        fireChangeEvent();\n    }\n    return removed;\n}",
+            "start_line": 2282
+          },
+          {
+            "end_line": 2453,
+            "file": "source/org/jfree/chart/plot/CategoryPlot.java",
+            "replacement": "public boolean removeRangeMarker(int index, Marker marker, Layer layer, boolean notify) {\n    ArrayList markers;\n    if (layer == Layer.FOREGROUND) {\n        markers = (ArrayList) this.foregroundRangeMarkers.get(new Integer(index));\n    } else {\n        markers = (ArrayList) this.backgroundRangeMarkers.get(new Integer(index));\n    }\n    if (markers == null) {\n        return false;\n    }\n    boolean removed = markers.remove(marker);\n    if (removed && notify) {\n        fireChangeEvent();\n    }\n    return removed;\n}",
+            "start_line": 2434
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Chart-14/spectrum-0",
+        "failure_hash": "840acaefb5b5d5b2ab2b39027b89569105b1eded48e242147f1eb6da5a083a26",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

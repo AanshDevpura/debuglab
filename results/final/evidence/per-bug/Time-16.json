@@ -1,0 +1,209 @@
+{
+  "bug": "Time-16",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "6750c40e57c5ac871c811b762d1dcb9424a3b089581c32e6c38c73f8876e5ec7",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "d9240df86c10b9de50581c853b1aac56f70bc9f66ce98505cf0113a7c33c050f",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 6,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1.0,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "6750c40e57c5ac871c811b762d1dcb9424a3b089581c32e6c38c73f8876e5ec7",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 193,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "public DateTimeFormatter withLocale(Locale locale) {\n    if (locale == getLocale() || (locale != null && locale.equals(getLocale()))) {\n        return this;\n    }\n    return new DateTimeFormatter(iPrinter, iParser, locale,\n            iOffsetParsed, iChrono, iZone, iPivotYear, iDefaultYear);\n}",
+            "start_line": 187
+          },
+          {
+            "end_line": 439,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "public DateTimeFormatter withDefaultYear(int defaultYear) {\n    return new DateTimeFormatter(iPrinter, iParser, iLocale,\n            iOffsetParsed, iChrono, iZone, iPivotYear, defaultYear);\n}",
+            "start_line": 436
+          },
+          {
+            "end_line": 184,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static void setDefault(DateTimeZone zone) throws SecurityException {\n    SecurityManager sm = System.getSecurityManager();\n    if (sm != null) {\n        sm.checkPermission(new JodaTimePermission(\"DateTimeZone.setDefault\"));\n    }\n    if (zone == null) {\n        throw new IllegalArgumentException(\"The datetime zone must not be null\");\n    }\n    synchronized(DateTimeZone.class) {\n        cDefault = zone;\n    }\n}",
+            "start_line": 173
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-16/combined-0",
+        "failure_hash": "d9240df86c10b9de50581c853b1aac56f70bc9f66ce98505cf0113a7c33c050f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "6750c40e57c5ac871c811b762d1dcb9424a3b089581c32e6c38c73f8876e5ec7",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 193,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "public DateTimeFormatter withLocale(Locale locale) {\n    if (locale == getLocale() || (locale != null && locale.equals(getLocale()))) {\n        return this;\n    }\n    return new DateTimeFormatter(iPrinter, iParser, locale,\n            iOffsetParsed, iChrono, iZone, iPivotYear, iDefaultYear);\n}",
+            "start_line": 187
+          },
+          {
+            "end_line": 439,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "public DateTimeFormatter withDefaultYear(int defaultYear) {\n    return new DateTimeFormatter(iPrinter, iParser, iLocale,\n            iOffsetParsed, iChrono, iZone, iPivotYear, defaultYear);\n}",
+            "start_line": 436
+          },
+          {
+            "end_line": 184,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static void setDefault(DateTimeZone zone) throws SecurityException {\n    SecurityManager sm = System.getSecurityManager();\n    if (sm != null) {\n        sm.checkPermission(new JodaTimePermission(\"DateTimeZone.setDefault\"));\n    }\n    if (zone == null) {\n        throw new IllegalArgumentException(\"The datetime zone must not be null\");\n    }\n    synchronized(DateTimeZone.class) {\n        cDefault = zone;\n    }\n}",
+            "start_line": 173
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-16/direct-0",
+        "failure_hash": "d9240df86c10b9de50581c853b1aac56f70bc9f66ce98505cf0113a7c33c050f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "6750c40e57c5ac871c811b762d1dcb9424a3b089581c32e6c38c73f8876e5ec7",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 193,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "public DateTimeFormatter withLocale(Locale locale) {\n    if (locale == getLocale() || (locale != null && locale.equals(getLocale()))) {\n        return this;\n    }\n    return new DateTimeFormatter(iPrinter, iParser, locale,\n            iOffsetParsed, iChrono, iZone, iPivotYear, iDefaultYear);\n}",
+            "start_line": 187
+          },
+          {
+            "end_line": 439,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "public DateTimeFormatter withDefaultYear(int defaultYear) {\n    return new DateTimeFormatter(iPrinter, iParser, iLocale,\n            iOffsetParsed, iChrono, iZone, iPivotYear, defaultYear);\n}",
+            "start_line": 436
+          },
+          {
+            "end_line": 184,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static void setDefault(DateTimeZone zone) throws SecurityException {\n    SecurityManager sm = System.getSecurityManager();\n    if (sm != null) {\n        sm.checkPermission(new JodaTimePermission(\"DateTimeZone.setDefault\"));\n    }\n    if (zone == null) {\n        throw new IllegalArgumentException(\"The datetime zone must not be null\");\n    }\n    synchronized(DateTimeZone.class) {\n        cDefault = zone;\n    }\n}",
+            "start_line": 173
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-16/llm-0",
+        "failure_hash": "d9240df86c10b9de50581c853b1aac56f70bc9f66ce98505cf0113a7c33c050f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "6750c40e57c5ac871c811b762d1dcb9424a3b089581c32e6c38c73f8876e5ec7",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 193,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "public DateTimeFormatter withLocale(Locale locale) {\n    if (locale == getLocale() || (locale != null && locale.equals(getLocale()))) {\n        return this;\n    }\n    return new DateTimeFormatter(iPrinter, iParser, locale,\n            iOffsetParsed, iChrono, iZone, iPivotYear, iDefaultYear);\n}",
+            "start_line": 187
+          },
+          {
+            "end_line": 439,
+            "file": "src/main/java/org/joda/time/format/DateTimeFormatter.java",
+            "replacement": "public DateTimeFormatter withDefaultYear(int defaultYear) {\n    return new DateTimeFormatter(iPrinter, iParser, iLocale,\n            iOffsetParsed, iChrono, iZone, iPivotYear, defaultYear);\n}",
+            "start_line": 436
+          },
+          {
+            "end_line": 184,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static void setDefault(DateTimeZone zone) throws SecurityException {\n    SecurityManager sm = System.getSecurityManager();\n    if (sm != null) {\n        sm.checkPermission(new JodaTimePermission(\"DateTimeZone.setDefault\"));\n    }\n    if (zone == null) {\n        throw new IllegalArgumentException(\"The datetime zone must not be null\");\n    }\n    synchronized(DateTimeZone.class) {\n        cDefault = zone;\n    }\n}",
+            "start_line": 173
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-16/spectrum-0",
+        "failure_hash": "d9240df86c10b9de50581c853b1aac56f70bc9f66ce98505cf0113a7c33c050f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

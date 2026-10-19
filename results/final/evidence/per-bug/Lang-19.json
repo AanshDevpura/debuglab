@@ -1,0 +1,161 @@
+{
+  "bug": "Lang-19",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "1d3159d2aaa90ad8cab0e770f158f920be44ae6226562df2e9f5f11dd5eb74d7",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "2ead08032047bb7985a5e5fed0419f49647f2dfc2c8893404c6381b753b6c926",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 2,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": "Line outside method or duplicate"
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 7.5,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1.0,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "1d3159d2aaa90ad8cab0e770f158f920be44ae6226562df2e9f5f11dd5eb74d7",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 83,
+            "file": "src/main/java/org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java",
+            "replacement": "    @Override\n    public int translate(CharSequence input, int index, Writer out) throws IOException {\n        int seqEnd = input.length();\n        if (index < seqEnd - 1 && input.charAt(index) == '&' && input.charAt(index + 1) == '#') {\n            int start = index + 2;\n            boolean isHex = false;\n\n            char firstChar = input.charAt(start);\n            if (firstChar == 'x' || firstChar == 'X') {\n                start++;\n                isHex = true;\n            }\n\n            int end = start;\n            while (end < seqEnd && input.charAt(end) != ';') {\n                end++;\n            }\n\n            int entityValue;\n            try {\n                if (isHex) {\n                    entityValue = Integer.parseInt(input.subSequence(start, end).toString(), 16);\n                } else {\n                    entityValue = Integer.parseInt(input.subSequence(start, end).toString(), 10);\n                }\n            } catch (NumberFormatException nfe) {\n                return 0;\n            }\n\n            if (entityValue > 0xFFFF) {\n                char[] chrs = Character.toChars(entityValue);\n                out.write(chrs[0]);\n                out.write(chrs[1]);\n            } else {\n                out.write(entityValue);\n            }\n\n            return 2 + (end - start) + (isHex ? 1 : 0) + 1;\n        }\n        return 0;\n    }",
+            "start_line": 36
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-19/combined-0",
+        "failure_hash": "2ead08032047bb7985a5e5fed0419f49647f2dfc2c8893404c6381b753b6c926",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "1d3159d2aaa90ad8cab0e770f158f920be44ae6226562df2e9f5f11dd5eb74d7",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 83,
+            "file": "src/main/java/org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java",
+            "replacement": "    @Override\n    public int translate(CharSequence input, int index, Writer out) throws IOException {\n        int seqEnd = input.length();\n        if (index < seqEnd - 1 && input.charAt(index) == '&' && input.charAt(index + 1) == '#') {\n            int start = index + 2;\n            boolean isHex = false;\n\n            if (start < seqEnd && (input.charAt(start) == 'x' || input.charAt(start) == 'X')) {\n                start++;\n                isHex = true;\n            }\n\n            int end = start;\n            while (end < seqEnd && input.charAt(end) != ';') {\n                end++;\n            }\n\n            int entityValue;\n            try {\n                if (isHex) {\n                    entityValue = Integer.parseInt(input.subSequence(start, end).toString(), 16);\n                } else {\n                    entityValue = Integer.parseInt(input.subSequence(start, end).toString(), 10);\n                }\n            } catch (NumberFormatException nfe) {\n                System.err.println(\"FAIL: \" + input.subSequence(start, end) + \"[\" + start + \"][\" + end + \"]\");\n                return 0;\n            }\n\n            if (entityValue > 0xFFFF) {\n                char[] chrs = Character.toChars(entityValue);\n                out.write(chrs[0]);\n                out.write(chrs[1]);\n            } else {\n                out.write(entityValue);\n            }\n\n            return 2 + (end - start) + (isHex ? 1 : 0) + 1;\n        }\n        return 0;\n    }",
+            "start_line": 36
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-19/direct-0",
+        "failure_hash": "2ead08032047bb7985a5e5fed0419f49647f2dfc2c8893404c6381b753b6c926",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "1d3159d2aaa90ad8cab0e770f158f920be44ae6226562df2e9f5f11dd5eb74d7",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 83,
+            "file": "src/main/java/org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java",
+            "replacement": "    @Override\n    public int translate(CharSequence input, int index, Writer out) throws IOException {\n        int seqEnd = input.length();\n        if (index + 1 < seqEnd && input.charAt(index) == '&' && input.charAt(index + 1) == '#') {\n            int start = index + 2;\n            boolean isHex = false;\n\n            if (start < seqEnd && (input.charAt(start) == 'x' || input.charAt(start) == 'X')) {\n                start++;\n                isHex = true;\n            }\n\n            int end = start;\n            while (end < seqEnd && input.charAt(end) != ';') {\n                end++;\n            }\n\n            int entityValue;\n            try {\n                if (isHex) {\n                    entityValue = Integer.parseInt(input.subSequence(start, end).toString(), 16);\n                } else {\n                    entityValue = Integer.parseInt(input.subSequence(start, end).toString(), 10);\n                }\n            } catch (NumberFormatException nfe) {\n                System.err.println(\"FAIL: \" + input.subSequence(start, end) + \"[\" + start + \"][\" + end + \"]\");\n                return 0;\n            }\n\n            if (entityValue > 0xFFFF) {\n                char[] chrs = Character.toChars(entityValue);\n                out.write(chrs[0]);\n                out.write(chrs[1]);\n            } else {\n                out.write(entityValue);\n            }\n\n            return 2 + (end - start) + (isHex ? 1 : 0) + 1;\n        }\n        return 0;\n    }",
+            "start_line": 36
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-19/llm-0",
+        "failure_hash": "2ead08032047bb7985a5e5fed0419f49647f2dfc2c8893404c6381b753b6c926",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "1d3159d2aaa90ad8cab0e770f158f920be44ae6226562df2e9f5f11dd5eb74d7",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 83,
+            "file": "src/main/java/org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java",
+            "replacement": "    @Override\n    public int translate(CharSequence input, int index, Writer out) throws IOException {\n        int seqEnd = input.length();\n        if (index < seqEnd - 1 && input.charAt(index) == '&' && input.charAt(index + 1) == '#') {\n            int start = index + 2;\n            boolean isHex = false;\n\n            char firstChar = input.charAt(start);\n            if (firstChar == 'x' || firstChar == 'X') {\n                start++;\n                isHex = true;\n            }\n\n            int end = start;\n            while (end < seqEnd && input.charAt(end) != ';') {\n                end++;\n            }\n\n            int entityValue;\n            try {\n                if (isHex) {\n                    entityValue = Integer.parseInt(input.subSequence(start, end).toString(), 16);\n                } else {\n                    entityValue = Integer.parseInt(input.subSequence(start, end).toString(), 10);\n                }\n            } catch (NumberFormatException nfe) {\n                System.err.println(\"FAIL: \" + input.subSequence(start, end) + \"[\" + start + \"][\" + end + \"]\");\n                return 0;\n            }\n\n            if (entityValue > 0xFFFF) {\n                char[] chrs = Character.toChars(entityValue);\n                out.write(chrs[0]);\n                out.write(chrs[1]);\n            } else {\n                out.write(entityValue);\n            }\n\n            return 2 + (end - start) + (isHex ? 1 : 0) + 1;\n        }\n        return 0;\n    }",
+            "start_line": 36
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-19/spectrum-0",
+        "failure_hash": "2ead08032047bb7985a5e5fed0419f49647f2dfc2c8893404c6381b753b6c926",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

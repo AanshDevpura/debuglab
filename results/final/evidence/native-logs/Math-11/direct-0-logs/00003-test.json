@@ -1,0 +1,10 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "test"
+  ],
+  "output": "Running ant (compile.tests)................................................ OK\nRunning ant (run.dev.tests)................................................ OK\nFailing tests: 2\n  - org.apache.commons.math3.distribution.MultivariateNormalDistributionTest::testDensities\n  - org.apache.commons.math3.distribution.MultivariateNormalMixtureModelDistributionTest::testDensities\n",
+  "returncode": 0,
+  "seconds": 42.073023042001296,
+  "timed_out": false
+}

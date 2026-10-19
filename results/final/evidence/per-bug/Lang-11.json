@@ -1,0 +1,161 @@
+{
+  "bug": "Lang-11",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "8aacb820a1f55ddef964cc848e58fd8efeac49e5faa7b8d3b3493e2b6bc345d1",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": null,
+    "line_any": null,
+    "line_eligible": false,
+    "line_fraction": null,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "916181b66f267ba6131dc61e129990647f2b5d5abf7b913c1e506948a3d6be9f",
+  "gold_eligibility": {
+    "line": false,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1.0,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "8aacb820a1f55ddef964cc848e58fd8efeac49e5faa7b8d3b3493e2b6bc345d1",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 289,
+            "file": "src/main/java/org/apache/commons/lang3/RandomStringUtils.java",
+            "replacement": "public static String random(int count, int start, int end, boolean letters, boolean numbers, char[] chars, Random random) {\n    if (count == 0) {\n        return \"\";\n    } else if (count < 0) {\n        throw new IllegalArgumentException(\"Requested random string length \" + count + \" is less than 0.\");\n    }\n    if (chars != null && chars.length == 0) {\n        throw new IllegalArgumentException(\"The chars array must not be empty\");\n    }\n\n    if (start == 0 && end == 0) {\n        if (chars != null) {\n            end = chars.length;\n        } else {\n            if (!letters && !numbers) {\n                end = Integer.MAX_VALUE;\n            } else {\n                end = 'z' + 1;\n                start = ' ';                 \n            }\n        }\n    }\n\n    char[] buffer = new char[count];\n    int gap = end - start;\n\n    while (count-- != 0) {\n        char ch;\n        if (chars == null) {\n            ch = (char) (random.nextInt(gap) + start);\n        } else {\n            ch = chars[random.nextInt(gap) + start];\n        }\n        if (letters && Character.isLetter(ch)\n                || numbers && Character.isDigit(ch)\n                || !letters && !numbers) {\n            if(ch >= 56320 && ch <= 57343) {\n                if(count == 0) {\n                    count++;\n                } else {\n                    // low surrogate, insert high surrogate after putting it in\n                    buffer[count] = ch;\n                    count--;\n                    buffer[count] = (char) (55296 + random.nextInt(128));\n                }\n            } else if(ch >= 55296 && ch <= 56191) {\n                if(count == 0) {\n                    count++;\n                } else {\n                    // high surrogate, insert low surrogate before putting it in\n                    buffer[count] = (char) (56320 + random.nextInt(128));\n                    count--;\n                    buffer[count] = ch;\n                }\n            } else if(ch >= 56192 && ch <= 56319) {\n                // private high surrogate, no effing clue, so skip it\n                count++;\n            } else {\n                buffer[count] = ch;\n            }\n        } else {\n            count++;\n        }\n    }\n    return new String(buffer);\n}",
+            "start_line": 223
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-11/combined-0",
+        "failure_hash": "916181b66f267ba6131dc61e129990647f2b5d5abf7b913c1e506948a3d6be9f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "8aacb820a1f55ddef964cc848e58fd8efeac49e5faa7b8d3b3493e2b6bc345d1",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 289,
+            "file": "src/main/java/org/apache/commons/lang3/RandomStringUtils.java",
+            "replacement": "public static String random(int count, int start, int end, boolean letters, boolean numbers, char[] chars, Random random) {\n    if (count == 0) {\n        return \"\";\n    } else if (count < 0) {\n        throw new IllegalArgumentException(\"Requested random string length \" + count + \" is less than 0.\");\n    }\n    if (chars != null && chars.length == 0) {\n        throw new IllegalArgumentException(\"The chars array must not be empty\");\n    }\n\n    if (start == 0 && end == 0) {\n        if (chars != null) {\n            end = chars.length;\n        } else {\n            if (!letters && !numbers) {\n                end = Integer.MAX_VALUE;\n            } else {\n                end = 'z' + 1;\n                start = ' ';                 \n            }\n        }\n    }\n\n    char[] buffer = new char[count];\n    int gap = end - start;\n\n    while (count-- != 0) {\n        char ch;\n        if (chars == null) {\n            ch = (char) (random.nextInt(gap) + start);\n        } else {\n            ch = chars[random.nextInt(gap) + start];\n        }\n        if (letters && Character.isLetter(ch)\n                || numbers && Character.isDigit(ch)\n                || !letters && !numbers) {\n            if(ch >= 56320 && ch <= 57343) {\n                if(count == 0) {\n                    count++;\n                } else {\n                    // low surrogate, insert high surrogate after putting it in\n                    buffer[count] = ch;\n                    count--;\n                    buffer[count] = (char) (55296 + random.nextInt(128));\n                }\n            } else if(ch >= 55296 && ch <= 56191) {\n                if(count == 0) {\n                    count++;\n                } else {\n                    // high surrogate, insert low surrogate before putting it in\n                    buffer[count] = (char) (56320 + random.nextInt(128));\n                    count--;\n                    buffer[count] = ch;\n                }\n            } else if(ch >= 56192 && ch <= 56319) {\n                // private high surrogate, no effing clue, so skip it\n                count++;\n            } else {\n                buffer[count] = ch;\n            }\n        } else {\n            count++;\n        }\n    }\n    return new String(buffer);\n}",
+            "start_line": 223
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-11/direct-0",
+        "failure_hash": "916181b66f267ba6131dc61e129990647f2b5d5abf7b913c1e506948a3d6be9f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "8aacb820a1f55ddef964cc848e58fd8efeac49e5faa7b8d3b3493e2b6bc345d1",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 289,
+            "file": "src/main/java/org/apache/commons/lang3/RandomStringUtils.java",
+            "replacement": "public static String random(int count, int start, int end, boolean letters, boolean numbers, char[] chars, Random random) {\n    if (count == 0) {\n        return \"\";\n    } else if (count < 0) {\n        throw new IllegalArgumentException(\"Requested random string length \" + count + \" is less than 0.\");\n    }\n    if (chars != null && chars.length == 0) {\n        throw new IllegalArgumentException(\"The chars array must not be empty\");\n    }\n\n    if (start == 0 && end == 0) {\n        if (chars != null) {\n            end = chars.length;\n        } else {\n            if (!letters && !numbers) {\n                end = Integer.MAX_VALUE;\n            } else {\n                end = 'z' + 1;\n                start = ' ';                 \n            }\n        }\n    }\n\n    char[] buffer = new char[count];\n    int gap = end - start;\n\n    while (count-- != 0) {\n        char ch;\n        if (chars == null) {\n            ch = (char) (random.nextInt(gap) + start);\n        } else {\n            ch = chars[random.nextInt(gap) + start];\n        }\n        if (letters && Character.isLetter(ch)\n                || numbers && Character.isDigit(ch)\n                || !letters && !numbers) {\n            if(ch >= 56320 && ch <= 57343) {\n                if(count == 0) {\n                    count++;\n                } else {\n                    // low surrogate, insert high surrogate after putting it in\n                    buffer[count] = ch;\n                    count--;\n                    buffer[count] = (char) (55296 + random.nextInt(128));\n                }\n            } else if(ch >= 55296 && ch <= 56191) {\n                if(count == 0) {\n                    count++;\n                } else {\n                    // high surrogate, insert low surrogate before putting it in\n                    buffer[count] = (char) (56320 + random.nextInt(128));\n                    count--;\n                    buffer[count] = ch;\n                }\n            } else if(ch >= 56192 && ch <= 56319) {\n                // private high surrogate, no effing clue, so skip it\n                count++;\n            } else {\n                buffer[count] = ch;\n            }\n        } else {\n            count++;\n        }\n    }\n    return new String(buffer);\n}",
+            "start_line": 223
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-11/llm-0",
+        "failure_hash": "916181b66f267ba6131dc61e129990647f2b5d5abf7b913c1e506948a3d6be9f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "8aacb820a1f55ddef964cc848e58fd8efeac49e5faa7b8d3b3493e2b6bc345d1",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 289,
+            "file": "src/main/java/org/apache/commons/lang3/RandomStringUtils.java",
+            "replacement": "public static String random(int count, int start, int end, boolean letters, boolean numbers, char[] chars, Random random) {\n    if (count == 0) {\n        return \"\";\n    } else if (count < 0) {\n        throw new IllegalArgumentException(\"Requested random string length \" + count + \" is less than 0.\");\n    }\n    if (chars != null && chars.length == 0) {\n        throw new IllegalArgumentException(\"The chars array must not be empty\");\n    }\n\n    if (start == 0 && end == 0) {\n        if (chars != null) {\n            end = chars.length;\n        } else {\n            if (!letters && !numbers) {\n                end = Integer.MAX_VALUE;\n            } else {\n                end = 'z' + 1;\n                start = ' ';                 \n            }\n        }\n    }\n\n    char[] buffer = new char[count];\n    int gap = end - start;\n\n    while (count-- != 0) {\n        char ch;\n        if (chars == null) {\n            ch = (char) (random.nextInt(gap) + start);\n        } else {\n            ch = chars[random.nextInt(gap) + start];\n        }\n        if (letters && Character.isLetter(ch)\n                || numbers && Character.isDigit(ch)\n                || !letters && !numbers) {\n            if(ch >= 56320 && ch <= 57343) {\n                if(count == 0) {\n                    count++;\n                } else {\n                    // low surrogate, insert high surrogate after putting it in\n                    buffer[count] = ch;\n                    count--;\n                    buffer[count] = (char) (55296 + random.nextInt(128));\n                }\n            } else if(ch >= 55296 && ch <= 56191) {\n                if(count == 0) {\n                    count++;\n                } else {\n                    // high surrogate, insert low surrogate before putting it in\n                    buffer[count] = (char) (56320 + random.nextInt(128));\n                    count--;\n                    buffer[count] = ch;\n                }\n            } else if(ch >= 56192 && ch <= 56319) {\n                // private high surrogate, no effing clue, so skip it\n                count++;\n            } else {\n                buffer[count] = ch;\n            }\n        } else {\n            count++;\n        }\n    }\n    return new String(buffer);\n}",
+            "start_line": 223
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-11/spectrum-0",
+        "failure_hash": "916181b66f267ba6131dc61e129990647f2b5d5abf7b913c1e506948a3d6be9f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

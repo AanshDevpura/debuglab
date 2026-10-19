@@ -1,0 +1,173 @@
+{
+  "bug": "Lang-13",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "7191c71dab8d9151c857017d4f18285246cbe76c9a9b75865ab06dcaf3af63c5",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": null,
+    "line_any": null,
+    "line_eligible": false,
+    "line_fraction": null,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "11165ce1b80b352a38f8b61479b6bb6ffd29c8d3445d28e691b267578c5a15ff",
+  "gold_eligibility": {
+    "line": false,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 2,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 2,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 2.5,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "7191c71dab8d9151c857017d4f18285246cbe76c9a9b75865ab06dcaf3af63c5",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 111,
+            "file": "src/main/java/org/apache/commons/lang3/SerializationUtils.java",
+            "replacement": "public static <T extends Serializable> T clone(T object) {\n    if (object == null) {\n        return null;\n    }\n    byte[] objectData = serialize(object);\n    ByteArrayInputStream bais = new ByteArrayInputStream(objectData);\n\n    ClassLoaderAwareObjectInputStream in = null;\n    try {\n        // stream closed in the finally\n        in = new ClassLoaderAwareObjectInputStream(bais, object.getClass().getClassLoader());\n        /*\n         * when we serialize and deserialize an object,\n         * it is reasonable to assume the deserialized object\n         * is of the same type as the original serialized object\n         */\n        @SuppressWarnings(\"unchecked\") // see above\n        T readObject = (T) in.readObject();\n        return readObject;\n\n    } catch (ClassNotFoundException ex) {\n        throw new SerializationException(\"ClassNotFoundException while reading cloned object data\", ex);\n    } catch (IOException ex) {\n        throw new SerializationException(\"IOException while reading cloned object data\", ex);\n    } finally {\n        try {\n            if (in != null) {\n                in.close();\n            }\n        } catch (IOException ex) {\n            throw new SerializationException(\"IOException on closing cloned object data InputStream.\", ex);\n        }\n    }\n}",
+            "start_line": 78
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-13/combined-0",
+        "failure_hash": "11165ce1b80b352a38f8b61479b6bb6ffd29c8d3445d28e691b267578c5a15ff",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "7191c71dab8d9151c857017d4f18285246cbe76c9a9b75865ab06dcaf3af63c5",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 111,
+            "file": "src/main/java/org/apache/commons/lang3/SerializationUtils.java",
+            "replacement": "public static <T extends Serializable> T clone(T object) {\n    if (object == null) {\n        return null;\n    }\n    byte[] objectData = serialize(object);\n    ByteArrayInputStream bais = new ByteArrayInputStream(objectData);\n\n    ClassLoaderAwareObjectInputStream in = null;\n    try {\n        // stream closed in the finally\n        in = new ClassLoaderAwareObjectInputStream(bais, object.getClass().getClassLoader());\n        T readObject = (T) in.readObject();\n        return readObject;\n    } catch (ClassNotFoundException ex) {\n        throw new SerializationException(\"ClassNotFoundException while reading cloned object data\", ex);\n    } catch (IOException ex) {\n        throw new SerializationException(\"IOException while reading cloned object data\", ex);\n    } finally {\n        try {\n            if (in != null) {\n                in.close();\n            }\n        } catch (IOException ex) {\n            throw new SerializationException(\"IOException on closing cloned object data InputStream.\", ex);\n        }\n    }\n}",
+            "start_line": 78
+          },
+          {
+            "end_line": 270,
+            "file": "src/main/java/org/apache/commons/lang3/SerializationUtils.java",
+            "replacement": "protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {\n    String name = desc.getName();\n    try {\n        return Class.forName(name, false, classLoader);\n    } catch (ClassNotFoundException ex) {\n        return Class.forName(name, false, Thread.currentThread().getContextClassLoader());\n    }\n}",
+            "start_line": 262
+          },
+          {
+            "end_line": 252,
+            "file": "src/main/java/org/apache/commons/lang3/SerializationUtils.java",
+            "replacement": "public ClassLoaderAwareObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {\n    super(in);\n    this.classLoader = classLoader;\n}",
+            "start_line": 248
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-13/direct-0",
+        "failure_hash": "11165ce1b80b352a38f8b61479b6bb6ffd29c8d3445d28e691b267578c5a15ff",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "7191c71dab8d9151c857017d4f18285246cbe76c9a9b75865ab06dcaf3af63c5",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 111,
+            "file": "src/main/java/org/apache/commons/lang3/SerializationUtils.java",
+            "replacement": "public static <T extends Serializable> T clone(T object) {\n    if (object == null) {\n        return null;\n    }\n    byte[] objectData = serialize(object);\n    ByteArrayInputStream bais = new ByteArrayInputStream(objectData);\n\n    ClassLoaderAwareObjectInputStream in = null;\n    try {\n        // stream closed in the finally\n        in = new ClassLoaderAwareObjectInputStream(bais, object.getClass().getClassLoader());\n        /*\n         * when we serialize and deserialize an object,\n         * it is reasonable to assume the deserialized object\n         * is of the same type as the original serialized object\n         */\n        @SuppressWarnings(\"unchecked\") // see above\n        T readObject = (T) in.readObject();\n        return readObject;\n\n    } catch (ClassNotFoundException ex) {\n        throw new SerializationException(\"ClassNotFoundException while reading cloned object data\", ex);\n    } catch (IOException ex) {\n        throw new SerializationException(\"IOException while reading cloned object data\", ex);\n    } finally {\n        try {\n            if (in != null) {\n                in.close();\n            }\n        } catch (IOException ex) {\n            throw new SerializationException(\"IOException on closing cloned object data InputStream.\", ex);\n        }\n    }\n}",
+            "start_line": 78
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-13/llm-0",
+        "failure_hash": "11165ce1b80b352a38f8b61479b6bb6ffd29c8d3445d28e691b267578c5a15ff",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "7191c71dab8d9151c857017d4f18285246cbe76c9a9b75865ab06dcaf3af63c5",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 111,
+            "file": "src/main/java/org/apache/commons/lang3/SerializationUtils.java",
+            "replacement": "public static <T extends Serializable> T clone(T object) {\n    if (object == null) {\n        return null;\n    }\n    byte[] objectData = serialize(object);\n    ByteArrayInputStream bais = new ByteArrayInputStream(objectData);\n\n    ClassLoaderAwareObjectInputStream in = null;\n    try {\n        // stream closed in the finally\n        in = new ClassLoaderAwareObjectInputStream(bais, object.getClass().getClassLoader());\n        /*\n         * when we serialize and deserialize an object,\n         * it is reasonable to assume the deserialized object\n         * is of the same type as the original serialized object\n         */\n        @SuppressWarnings(\"unchecked\") // see above\n        T readObject = (T) in.readObject();\n        return readObject;\n\n    } catch (ClassNotFoundException ex) {\n        throw new SerializationException(\"ClassNotFoundException while reading cloned object data\", ex);\n    } catch (IOException ex) {\n        throw new SerializationException(\"IOException while reading cloned object data\", ex);\n    } finally {\n        try {\n            if (in != null) {\n                in.close();\n            }\n        } catch (IOException ex) {\n            throw new SerializationException(\"IOException on closing cloned object data InputStream.\", ex);\n        }\n    }\n}",
+            "start_line": 78
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-13/spectrum-0",
+        "failure_hash": "11165ce1b80b352a38f8b61479b6bb6ffd29c8d3445d28e691b267578c5a15ff",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

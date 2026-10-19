@@ -1,0 +1,173 @@
+{
+  "bug": "Time-23",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "9b2f9e19c6742502e0ddb1f161257f2082372d6e32b475d4cb2286820843f6d1",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "3157772a6a74b722a4b5e89c3407191ef292bf67aab479c2717a652f46af3edb",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 5,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 5,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 25.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 5.5,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "9b2f9e19c6742502e0ddb1f161257f2082372d6e32b475d4cb2286820843f6d1",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 162,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "    public static DateTimeZone getDefault() {\n        DateTimeZone zone = cDefault;\n        if (zone == null) {\n            synchronized(DateTimeZone.class) {\n                zone = cDefault;\n                if (zone == null) {\n                    DateTimeZone temp = null;\n                    try {\n                        try {\n                            String id = System.getProperty(\"user.timezone\");\n                            if (id != null) {  // null check avoids stack overflow\n                                temp = forID(id);\n                            }\n                        } catch (RuntimeException ex) {\n                            // ignored\n                        }\n                        if (temp == null) {\n                            temp = forTimeZone(TimeZone.getDefault());\n                        }\n                    } catch (IllegalArgumentException ex) {\n                        // ignored\n                    }\n                    if (temp == null) {\n                        temp = UTC;\n                    }\n                    cDefault = zone = temp;\n                }\n            }\n        }\n        return zone;\n    }",
+            "start_line": 132
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-23/combined-0",
+        "failure_hash": "3157772a6a74b722a4b5e89c3407191ef292bf67aab479c2717a652f46af3edb",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "9b2f9e19c6742502e0ddb1f161257f2082372d6e32b475d4cb2286820843f6d1",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 162,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "    public static DateTimeZone getDefault() {\n        DateTimeZone zone = cDefault;\n        if (zone == null) {\n            synchronized(DateTimeZone.class) {\n                zone = cDefault;\n                if (zone == null) {\n                    DateTimeZone temp = null;\n                    try {\n                        try {\n                            String id = System.getProperty(\"user.timezone\");\n                            if (id != null) {  // null check avoids stack overflow\n                                temp = forID(id);\n                            }\n                        } catch (RuntimeException ex) {\n                            // ignored\n                        }\n                        if (temp == null) {\n                            temp = forTimeZone(TimeZone.getDefault());\n                        }\n                    } catch (IllegalArgumentException ex) {\n                        // ignored\n                    }\n                    if (temp == null) {\n                        temp = UTC;\n                    }\n                    cDefault = zone = temp;\n                }\n            }\n        }\n        return zone;\n    }",
+            "start_line": 132
+          },
+          {
+            "end_line": 184,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "    public static void setDefault(DateTimeZone zone) throws SecurityException {\n        SecurityManager sm = System.getSecurityManager();\n        if (sm != null) {\n            sm.checkPermission(new JodaTimePermission(\"DateTimeZone.setDefault\"));\n        }\n        if (zone == null) {\n            throw new IllegalArgumentException(\"The datetime zone must not be null\");\n        }\n        synchronized(DateTimeZone.class) {\n            cDefault = zone;\n        }\n    }",
+            "start_line": 173
+          },
+          {
+            "end_line": 338,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "    public static DateTimeZone forTimeZone(TimeZone zone) {\n        if (zone == null) {\n            return getDefault();\n        }\n        final String id = zone.getID();\n        if (id.equals(\"UTC\")) {\n            return DateTimeZone.UTC;\n        }\n        DateTimeZone dtz = null;\n        String convId = getConvertedId(id);\n        if (convId != null) {\n            dtz = cProvider.getZone(convId);\n        }\n        if (dtz == null) {\n            dtz = cProvider.getZone(id);\n        }\n        if (dtz != null) {\n            return dtz;\n        }\n        if (convId == null) {\n            convId = zone.getDisplayName();\n            if (convId.startsWith(\"GMT+\") || convId.startsWith(\"GMT-\")) {\n                convId = convId.substring(3);\n                int offset = parseOffset(convId);\n                if (offset == 0L) {\n                    return DateTimeZone.UTC;\n                } else {\n                    convId = printOffset(offset);\n                    return fixedOffsetZone(convId, offset);\n                }\n            }\n        }\n        throw new IllegalArgumentException(\"The datetime zone id '\" + id + \"' is not recognised\");\n    }",
+            "start_line": 301
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-23/direct-0",
+        "failure_hash": "3157772a6a74b722a4b5e89c3407191ef292bf67aab479c2717a652f46af3edb",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "9b2f9e19c6742502e0ddb1f161257f2082372d6e32b475d4cb2286820843f6d1",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 162,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "    public static DateTimeZone getDefault() {\n        DateTimeZone zone = cDefault;\n        if (zone == null) {\n            synchronized(DateTimeZone.class) {\n                zone = cDefault;\n                if (zone == null) {\n                    DateTimeZone temp = null;\n                    try {\n                        try {\n                            String id = System.getProperty(\"user.timezone\");\n                            if (id != null) {  // null check avoids stack overflow\n                                temp = forID(id);\n                            }\n                        } catch (RuntimeException ex) {\n                            // ignored\n                        }\n                        if (temp == null) {\n                            temp = forTimeZone(TimeZone.getDefault());\n                        }\n                    } catch (IllegalArgumentException ex) {\n                        // ignored\n                    }\n                    if (temp == null) {\n                        temp = UTC;\n                    }\n                    cDefault = zone = temp;\n                }\n            }\n        }\n        return zone;\n    }",
+            "start_line": 132
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-23/llm-0",
+        "failure_hash": "3157772a6a74b722a4b5e89c3407191ef292bf67aab479c2717a652f46af3edb",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "9b2f9e19c6742502e0ddb1f161257f2082372d6e32b475d4cb2286820843f6d1",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 162,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static DateTimeZone getDefault() {\n    DateTimeZone zone = cDefault;\n    if (zone == null) {\n        synchronized(DateTimeZone.class) {\n            zone = cDefault;\n            if (zone == null) {\n                DateTimeZone temp = null;\n                try {\n                    try {\n                        String id = System.getProperty(\"user.timezone\");\n                        if (id != null) {  // null check avoids stack overflow\n                            temp = forID(id);\n                        }\n                    } catch (RuntimeException ex) {\n                        // ignored\n                    }\n                    if (temp == null) {\n                        temp = forTimeZone(TimeZone.getDefault());\n                    }\n                } catch (IllegalArgumentException ex) {\n                    // ignored\n                }\n                if (temp == null) {\n                    temp = UTC;\n                }\n                cDefault = zone = temp;\n            }\n        }\n    }\n    return zone;\n}",
+            "start_line": 132
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-23/spectrum-0",
+        "failure_hash": "3157772a6a74b722a4b5e89c3407191ef292bf67aab479c2717a652f46af3edb",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

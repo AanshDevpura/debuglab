@@ -1,0 +1,161 @@
+{
+  "bug": "Time-8",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "a39c25f3f31d374025ea302e140709082f816499c402a29d6d029ee15f9b5476",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "4bd540d0258fb7d8c5a3ba979e8ecbf7cdf1e517b28aa5d5aade37974e513b4e",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 4,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 23.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 5.0,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "a39c25f3f31d374025ea302e140709082f816499c402a29d6d029ee15f9b5476",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 295,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static DateTimeZone forOffsetHoursMinutes(int hoursOffset, int minutesOffset) throws IllegalArgumentException {\n    if (hoursOffset == 0 && minutesOffset == 0) {\n        return DateTimeZone.UTC;\n    }\n    if (hoursOffset < -23 || hoursOffset > 23) {\n        throw new IllegalArgumentException(\"Hours out of range: \" + hoursOffset);\n    }\n    if (minutesOffset < 0 || minutesOffset > 59) {\n        throw new IllegalArgumentException(\"Minutes out of range: \" + minutesOffset);\n    }\n    int offset = 0;\n    try {\n        int hoursInMinutes = hoursOffset * 60;\n        if (hoursInMinutes < 0) {\n            minutesOffset = hoursInMinutes - minutesOffset;\n        } else {\n            minutesOffset = hoursInMinutes + minutesOffset;\n        }\n        offset = FieldUtils.safeMultiply(minutesOffset, DateTimeConstants.MILLIS_PER_MINUTE);\n    } catch (ArithmeticException ex) {\n        throw new IllegalArgumentException(\"Offset is too large\");\n    }\n    return forOffsetMillis(offset);\n}",
+            "start_line": 272
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-8/combined-0",
+        "failure_hash": "4bd540d0258fb7d8c5a3ba979e8ecbf7cdf1e517b28aa5d5aade37974e513b4e",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "a39c25f3f31d374025ea302e140709082f816499c402a29d6d029ee15f9b5476",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 295,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static DateTimeZone forOffsetHoursMinutes(int hoursOffset, int minutesOffset) throws IllegalArgumentException {\n    if (hoursOffset == 0 && minutesOffset == 0) {\n        return DateTimeZone.UTC;\n    }\n    if (hoursOffset < -23 || hoursOffset > 23) {\n        throw new IllegalArgumentException(\"Hours out of range: \" + hoursOffset);\n    }\n    if (minutesOffset < 0 || minutesOffset > 59) {\n        throw new IllegalArgumentException(\"Minutes out of range: \" + minutesOffset);\n    }\n    int offset = 0;\n    try {\n        int hoursInMinutes = hoursOffset * 60;\n        if (hoursInMinutes < 0) {\n            minutesOffset = hoursInMinutes - minutesOffset;\n        } else {\n            minutesOffset = hoursInMinutes + minutesOffset;\n        }\n        offset = FieldUtils.safeMultiply(minutesOffset, DateTimeConstants.MILLIS_PER_MINUTE);\n    } catch (ArithmeticException ex) {\n        throw new IllegalArgumentException(\"Offset is too large\");\n    }\n    return forOffsetMillis(offset);\n}",
+            "start_line": 272
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-8/direct-0",
+        "failure_hash": "4bd540d0258fb7d8c5a3ba979e8ecbf7cdf1e517b28aa5d5aade37974e513b4e",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "a39c25f3f31d374025ea302e140709082f816499c402a29d6d029ee15f9b5476",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 295,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static DateTimeZone forOffsetHoursMinutes(int hoursOffset, int minutesOffset) throws IllegalArgumentException {\n    if (hoursOffset == 0 && minutesOffset == 0) {\n        return DateTimeZone.UTC;\n    }\n    if (hoursOffset < -23 || hoursOffset > 23) {\n        throw new IllegalArgumentException(\"Hours out of range: \" + hoursOffset);\n    }\n    if (minutesOffset < 0 || minutesOffset > 59) {\n        throw new IllegalArgumentException(\"Minutes out of range: \" + minutesOffset);\n    }\n    int offset = 0;\n    try {\n        int hoursInMinutes = hoursOffset * 60;\n        if (hoursInMinutes < 0) {\n            minutesOffset = hoursInMinutes - minutesOffset;\n        } else {\n            minutesOffset = hoursInMinutes + minutesOffset;\n        }\n        offset = FieldUtils.safeMultiply(minutesOffset, DateTimeConstants.MILLIS_PER_MINUTE);\n    } catch (ArithmeticException ex) {\n        throw new IllegalArgumentException(\"Offset is too large\");\n    }\n    return forOffsetMillis(offset);\n}",
+            "start_line": 272
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-8/llm-0",
+        "failure_hash": "4bd540d0258fb7d8c5a3ba979e8ecbf7cdf1e517b28aa5d5aade37974e513b4e",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "a39c25f3f31d374025ea302e140709082f816499c402a29d6d029ee15f9b5476",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 295,
+            "file": "src/main/java/org/joda/time/DateTimeZone.java",
+            "replacement": "public static DateTimeZone forOffsetHoursMinutes(int hoursOffset, int minutesOffset) throws IllegalArgumentException {\n    if (hoursOffset == 0 && minutesOffset == 0) {\n        return DateTimeZone.UTC;\n    }\n    if (hoursOffset < -23 || hoursOffset > 23) {\n        throw new IllegalArgumentException(\"Hours out of range: \" + hoursOffset);\n    }\n    if (minutesOffset < 0 || minutesOffset > 59) {\n        throw new IllegalArgumentException(\"Minutes out of range: \" + minutesOffset);\n    }\n    int offset = 0;\n    try {\n        int hoursInMinutes = hoursOffset * 60;\n        if (hoursInMinutes < 0) {\n            minutesOffset = hoursInMinutes - minutesOffset;\n        } else {\n            minutesOffset = hoursInMinutes + minutesOffset;\n        }\n        offset = FieldUtils.safeMultiply(minutesOffset, DateTimeConstants.MILLIS_PER_MINUTE);\n    } catch (ArithmeticException ex) {\n        throw new IllegalArgumentException(\"Offset is too large\");\n    }\n    return forOffsetMillis(offset);\n}",
+            "start_line": 272
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-8/spectrum-0",
+        "failure_hash": "4bd540d0258fb7d8c5a3ba979e8ecbf7cdf1e517b28aa5d5aade37974e513b4e",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

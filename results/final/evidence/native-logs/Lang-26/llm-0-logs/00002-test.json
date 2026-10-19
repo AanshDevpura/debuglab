@@ -1,0 +1,12 @@
+{
+  "command": [
+    "<REPO>/work/tools/defects4j/framework/bin/defects4j",
+    "test",
+    "-t",
+    "org.apache.commons.lang3.time.FastDateFormatTest::testLang645"
+  ],
+  "output": "Running ant (compile.tests)................................................ OK\nRunning ant (run.dev.tests)................................................ OK\nFailing tests: 1\n  - org.apache.commons.lang3.time.FastDateFormatTest::testLang645\n",
+  "returncode": 0,
+  "seconds": 0.6831456249929033,
+  "timed_out": false
+}

@@ -1,0 +1,161 @@
+{
+  "bug": "Lang-17",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "ff4fc501a28f88292b5706b7bfe0f25891a5c9000c3f114ae5edb5de031786e7",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "de1cbfc97f1477839c08057ea394e3fe4772575b83c578ea4e4ad2ad32f0678b",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 4,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 4,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 25.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 5.0,
+          "top1": false,
+          "top3": false,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "ff4fc501a28f88292b5706b7bfe0f25891a5c9000c3f114ae5edb5de031786e7",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 507,
+            "file": "src/main/java/org/apache/commons/lang3/StringEscapeUtils.java",
+            "replacement": "public static final String escapeXml(String input) {\n        return ESCAPE_XML.translate(input);\n    }",
+            "start_line": 505
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-17/combined-0",
+        "failure_hash": "de1cbfc97f1477839c08057ea394e3fe4772575b83c578ea4e4ad2ad32f0678b",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "ff4fc501a28f88292b5706b7bfe0f25891a5c9000c3f114ae5edb5de031786e7",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 507,
+            "file": "src/main/java/org/apache/commons/lang3/StringEscapeUtils.java",
+            "replacement": "public static final String escapeXml(String input) {\n        return ESCAPE_XML.translate(input);\n    }",
+            "start_line": 505
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-17/direct-0",
+        "failure_hash": "de1cbfc97f1477839c08057ea394e3fe4772575b83c578ea4e4ad2ad32f0678b",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "ff4fc501a28f88292b5706b7bfe0f25891a5c9000c3f114ae5edb5de031786e7",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 507,
+            "file": "src/main/java/org/apache/commons/lang3/StringEscapeUtils.java",
+            "replacement": "public static final String escapeXml(String input) {\n        return ESCAPE_XML.translate(input);\n    }",
+            "start_line": 505
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-17/llm-0",
+        "failure_hash": "de1cbfc97f1477839c08057ea394e3fe4772575b83c578ea4e4ad2ad32f0678b",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "ff4fc501a28f88292b5706b7bfe0f25891a5c9000c3f114ae5edb5de031786e7",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 507,
+            "file": "src/main/java/org/apache/commons/lang3/StringEscapeUtils.java",
+            "replacement": "public static final String escapeXml(String input) {\n        return ESCAPE_XML.translate(input);\n    }",
+            "start_line": 505
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Lang-17/spectrum-0",
+        "failure_hash": "de1cbfc97f1477839c08057ea394e3fe4772575b83c578ea4e4ad2ad32f0678b",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

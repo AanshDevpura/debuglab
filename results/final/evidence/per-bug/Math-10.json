@@ -1,0 +1,209 @@
+{
+  "bug": "Math-10",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "5ef390a6802089e137a798485d7c89cc7db79a99a9a9879f1886b3d9bf92ce9d",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": null,
+    "line_any": null,
+    "line_eligible": false,
+    "line_fraction": null,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "d86a1ba7af6208e00cd05d4a48f2bf076c80b6dc04708fa1ff60be27370cfeea",
+  "gold_eligibility": {
+    "line": false,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1.5,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "5ef390a6802089e137a798485d7c89cc7db79a99a9a9879f1886b3d9bf92ce9d",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 760,
+            "file": "src/main/java/org/apache/commons/math3/analysis/differentiation/DerivativeStructure.java",
+            "replacement": "public static DerivativeStructure atan2(final DerivativeStructure y, final DerivativeStructure x)\n    throws DimensionMismatchException {\n        y.compiler.checkCompatibility(x.compiler);\n        final DerivativeStructure result = new DerivativeStructure(y.compiler);\n        y.compiler.atan2(y.data, 0, x.data, 0, result.data, 0);\n        return result;\n    }",
+            "start_line": 754
+          },
+          {
+            "end_line": 1420,
+            "file": "src/main/java/org/apache/commons/math3/analysis/differentiation/DSCompiler.java",
+            "replacement": "public void atan2(final double[] y, final int yOffset,\n                      final double[] x, final int xOffset,\n                      final double[] result, final int resultOffset) {\n        // compute r = sqrt(x^2+y^2)\n        double[] tmp1 = new double[getSize()];\n        multiply(x, xOffset, x, xOffset, tmp1, 0);      // x^2\n        double[] tmp2 = new double[getSize()];\n        multiply(y, yOffset, y, yOffset, tmp2, 0);      // y^2\n        add(tmp1, 0, tmp2, 0, tmp2, 0);                 // x^2 + y^2\n        rootN(tmp2, 0, 2, tmp1, 0);                     // r = sqrt(x^2 + y^2)\n\n        if (x[xOffset] >= 0) {\n\n            // compute atan2(y, x) = 2 atan(y / (r + x))\n            add(tmp1, 0, x, xOffset, tmp2, 0);          // r + x\n            divide(y, yOffset, tmp2, 0, tmp1, 0);       // y /(r + x)\n            atan(tmp1, 0, tmp2, 0);                     // atan(y / (r + x))\n            for (int i = 0; i < tmp2.length; ++i) {\n                result[resultOffset + i] = 2 * tmp2[i]; // 2 * atan(y / (r + x))\n            }\n\n        } else {\n\n            // compute atan2(y, x) = +/- pi - 2 atan(y / (r - x))\n            subtract(tmp1, 0, x, xOffset, tmp2, 0);     // r - x\n            divide(y, yOffset, tmp2, 0, tmp1, 0);       // y /(r - x)\n            atan(tmp1, 0, tmp2, 0);                     // atan(y / (r - x))\n            result[resultOffset] =\n                    ((tmp2[0] <= 0) ? -FastMath.PI : FastMath.PI) - 2 * tmp2[0]; // +/-pi - 2 * atan(y / (r - x))\n            for (int i = 1; i < tmp2.length; ++i) {\n                result[resultOffset + i] = -2 * tmp2[i]; // +/-pi - 2 * atan(y / (r - x))\n            }\n\n        }\n\n        // fix value to take special cases (+0/+0, +0/-0, -0/+0, -0/-0, +/-infinity) correctly\n\n    }",
+            "start_line": 1382
+          },
+          {
+            "end_line": 232,
+            "file": "src/main/java/org/apache/commons/math3/analysis/differentiation/DerivativeStructure.java",
+            "replacement": "public double getValue() {\n        return data[0];\n    }",
+            "start_line": 230
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-10/combined-0",
+        "failure_hash": "d86a1ba7af6208e00cd05d4a48f2bf076c80b6dc04708fa1ff60be27370cfeea",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "5ef390a6802089e137a798485d7c89cc7db79a99a9a9879f1886b3d9bf92ce9d",
+        "detail": "Running ant (compile)...................................................... FAIL\nExecuted command:  cd <REPO>/work/final/attempts/Math-10/direct-0 && <REPO>/work/tools/defects4j/major/bin/ant -f <REPO>/work/tools/defects4j/framework/projects/defects4j.build.xml -Dd4j.home=<REPO>/work/tools/defects4j -Dd4j.dir.projects=<REPO>/work/tools/defects4j/framework/projects -Dbasedir=<REPO>/work/final/attempts/Math-10/direct-0  compile 2>&1\nBuildfile: <REPO>/work/tools/defects4j/framework/projects/defects4j.build.xml\n[hastarget] Warning: Nashorn engine is planned to be removed from a future JDK release\n\ninit:\n     [echo] -------- Commons MATH 3.1-SNAPSHOT --------\n\ncompile:\n    [javac] Compiling 2 source files to <REPO>/work/final/attempts/Math-10/direct-0/target/classes\n    [javac] warning: [options] bootstrap class path not set in conjunction with -source 6\n    [javac] warning: [options] source value 6 is obsolete and will be removed in a future release\n    [javac] warning: [options] target value 1.6 is obsolete and will be removed in a future release\n    [javac] warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.\n    [javac] <REPO>/work/final/attempts/Math-10/direct-0/src/main/java/org/apache/commons/math3/analysis/differentiation/DSCompiler.java:1418: error: cannot find symbol\n    [javac]         result[resultOffset] = FastMath.copySign(result[resultOffset], y.data[yOffset]);\n    [javac]                                                                         ^\n    [javac]   symbol:   variable data\n    [javac]   location: variable y of type double[]\n    [javac] 1 error\n    [javac] 4 warnings\n\nBUILD FAILED\n<REPO>/work/final/attempts/Math-10/direct-0/build.xml:169: Compile failed; see the compiler error output for details.\n\nTotal time: 0 seconds\nCannot compile sources! at <REPO>/work/tools/defects4j/framework/bin/d4j/d4j-compile line 82.\nCompilation failed in require at <REPO>/work/tools/defects4j/framework/bin/defects4j line 195.\n",
+        "edits": [
+          {
+            "end_line": 760,
+            "file": "src/main/java/org/apache/commons/math3/analysis/differentiation/DerivativeStructure.java",
+            "replacement": "public static DerivativeStructure atan2(final DerivativeStructure y, final DerivativeStructure x)\n    throws DimensionMismatchException {\n        y.compiler.checkCompatibility(x.compiler);\n        final DerivativeStructure result = new DerivativeStructure(y.compiler);\n        y.compiler.atan2(y.data, 0, x.data, 0, result.data, 0);\n        return result;\n    }",
+            "start_line": 754
+          },
+          {
+            "end_line": 1420,
+            "file": "src/main/java/org/apache/commons/math3/analysis/differentiation/DSCompiler.java",
+            "replacement": "public void atan2(final double[] y, final int yOffset,\n                      final double[] x, final int xOffset,\n                      final double[] result, final int resultOffset) {\n        // compute r = sqrt(x^2+y^2)\n        double[] tmp1 = new double[getSize()];\n        multiply(x, xOffset, x, xOffset, tmp1, 0);      // x^2\n        double[] tmp2 = new double[getSize()];\n        multiply(y, yOffset, y, yOffset, tmp2, 0);      // y^2\n        add(tmp1, 0, tmp2, 0, tmp2, 0);                 // x^2 + y^2\n        rootN(tmp2, 0, 2, tmp1, 0);                     // r = sqrt(x^2 + y^2)\n\n        if (x[xOffset] >= 0) {\n\n            // compute atan2(y, x) = 2 atan(y / (r + x))\n            add(tmp1, 0, x, xOffset, tmp2, 0);          // r + x\n            divide(y, yOffset, tmp2, 0, tmp1, 0);       // y /(r + x)\n            atan(tmp1, 0, tmp2, 0);                     // atan(y / (r + x))\n            for (int i = 0; i < tmp2.length; ++i) {\n                result[resultOffset + i] = 2 * tmp2[i]; // 2 * atan(y / (r + x))\n            }\n\n        } else {\n\n            // compute atan2(y, x) = +/- pi - 2 atan(y / (r - x))\n            subtract(tmp1, 0, x, xOffset, tmp2, 0);     // r - x\n            divide(y, yOffset, tmp2, 0, tmp1, 0);       // y /(r - x)\n            atan(tmp1, 0, tmp2, 0);                     // atan(y / (r - x))\n            result[resultOffset] =\n                    ((tmp2[0] <= 0) ? -FastMath.PI : FastMath.PI) - 2 * tmp2[0]; // +/-pi - 2 * atan(y / (r - x))\n            for (int i = 1; i < tmp2.length; ++i) {\n                result[resultOffset + i] = -2 * tmp2[i]; // +/-pi - 2 * atan(y / (r - x))\n            }\n\n        }\n\n        // fix value to take special cases (+0/+0, +0/-0, -0/+0, -0/-0, +/-infinity) correctly\n        result[resultOffset] = FastMath.copySign(result[resultOffset], y.data[yOffset]);\n    }",
+            "start_line": 1382
+          },
+          {
+            "end_line": 232,
+            "file": "src/main/java/org/apache/commons/math3/analysis/differentiation/DerivativeStructure.java",
+            "replacement": "public double getValue() {\n        return data[0];\n    }",
+            "start_line": 230
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-10/direct-0",
+        "failure_hash": "d86a1ba7af6208e00cd05d4a48f2bf076c80b6dc04708fa1ff60be27370cfeea",
+        "sample": 0,
+        "status": "COMPILE_ERROR"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "5ef390a6802089e137a798485d7c89cc7db79a99a9a9879f1886b3d9bf92ce9d",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 760,
+            "file": "src/main/java/org/apache/commons/math3/analysis/differentiation/DerivativeStructure.java",
+            "replacement": "public static DerivativeStructure atan2(final DerivativeStructure y, final DerivativeStructure x)\n    throws DimensionMismatchException {\n        y.compiler.checkCompatibility(x.compiler);\n        final DerivativeStructure result = new DerivativeStructure(y.compiler);\n        y.compiler.atan2(y.data, 0, x.data, 0, result.data, 0);\n        return result;\n    }",
+            "start_line": 754
+          },
+          {
+            "end_line": 1420,
+            "file": "src/main/java/org/apache/commons/math3/analysis/differentiation/DSCompiler.java",
+            "replacement": "public void atan2(final double[] y, final int yOffset,\n                      final double[] x, final int xOffset,\n                      final double[] result, final int resultOffset) {\n        // compute r = sqrt(x^2+y^2)\n        double[] tmp1 = new double[getSize()];\n        multiply(x, xOffset, x, xOffset, tmp1, 0);      // x^2\n        double[] tmp2 = new double[getSize()];\n        multiply(y, yOffset, y, yOffset, tmp2, 0);      // y^2\n        add(tmp1, 0, tmp2, 0, tmp2, 0);                 // x^2 + y^2\n        rootN(tmp2, 0, 2, tmp1, 0);                     // r = sqrt(x^2 + y^2)\n\n        if (x[xOffset] >= 0) {\n\n            // compute atan2(y, x) = 2 atan(y / (r + x))\n            add(tmp1, 0, x, xOffset, tmp2, 0);          // r + x\n            divide(y, yOffset, tmp2, 0, tmp1, 0);       // y /(r + x)\n            atan(tmp1, 0, tmp2, 0);                     // atan(y / (r + x))\n            for (int i = 0; i < tmp2.length; ++i) {\n                result[resultOffset + i] = 2 * tmp2[i]; // 2 * atan(y / (r + x))\n            }\n\n        } else {\n\n            // compute atan2(y, x) = +/- pi - 2 atan(y / (r - x))\n            subtract(tmp1, 0, x, xOffset, tmp2, 0);     // r - x\n            divide(y, yOffset, tmp2, 0, tmp1, 0);       // y /(r - x)\n            atan(tmp1, 0, tmp2, 0);                     // atan(y / (r - x))\n            result[resultOffset] =\n                    ((tmp2[0] <= 0) ? -FastMath.PI : FastMath.PI) - 2 * tmp2[0]; // +/-pi - 2 * atan(y / (r - x))\n            for (int i = 1; i < tmp2.length; ++i) {\n                result[resultOffset + i] = -2 * tmp2[i]; // +/-pi - 2 * atan(y / (r - x))\n            }\n\n        }\n\n        // fix value to take special cases (+0/+0, +0/-0, -0/+0, -0/-0, +/-infinity) correctly\n\n    }",
+            "start_line": 1382
+          },
+          {
+            "end_line": 232,
+            "file": "src/main/java/org/apache/commons/math3/analysis/differentiation/DerivativeStructure.java",
+            "replacement": "public double getValue() {\n        return data[0];\n    }",
+            "start_line": 230
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-10/llm-0",
+        "failure_hash": "d86a1ba7af6208e00cd05d4a48f2bf076c80b6dc04708fa1ff60be27370cfeea",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "5ef390a6802089e137a798485d7c89cc7db79a99a9a9879f1886b3d9bf92ce9d",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 760,
+            "file": "src/main/java/org/apache/commons/math3/analysis/differentiation/DerivativeStructure.java",
+            "replacement": "public static DerivativeStructure atan2(final DerivativeStructure y, final DerivativeStructure x) throws DimensionMismatchException {\n    y.compiler.checkCompatibility(x.compiler);\n    final DerivativeStructure result = new DerivativeStructure(y.compiler);\n    y.compiler.atan2(y.data, 0, x.data, 0, result.data, 0);\n    return result;\n}",
+            "start_line": 754
+          },
+          {
+            "end_line": 1420,
+            "file": "src/main/java/org/apache/commons/math3/analysis/differentiation/DSCompiler.java",
+            "replacement": "public void atan2(final double[] y, final int yOffset,\n                      final double[] x, final int xOffset,\n                      final double[] result, final int resultOffset) {\n    // compute r = sqrt(x^2+y^2)\n    double[] tmp1 = new double[getSize()];\n    multiply(x, xOffset, x, xOffset, tmp1, 0);      // x^2\n    double[] tmp2 = new double[getSize()];\n    multiply(y, yOffset, y, yOffset, tmp2, 0);      // y^2\n    add(tmp1, 0, tmp2, 0, tmp2, 0);                 // x^2 + y^2\n    rootN(tmp2, 0, 2, tmp1, 0);                     // r = sqrt(x^2 + y^2)\n\n    if (x[xOffset] >= 0) {\n\n        // compute atan2(y, x) = 2 atan(y / (r + x))\n        add(tmp1, 0, x, xOffset, tmp2, 0);          // r + x\n        divide(y, yOffset, tmp2, 0, tmp1, 0);       // y /(r + x)\n        atan(tmp1, 0, tmp2, 0);                     // atan(y / (r + x))\n        for (int i = 0; i < tmp2.length; ++i) {\n            result[resultOffset + i] = 2 * tmp2[i]; // 2 * atan(y / (r + x))\n        }\n\n    } else {\n\n        // compute atan2(y, x) = +/- pi - 2 atan(y / (r - x))\n        subtract(tmp1, 0, x, xOffset, tmp2, 0);     // r - x\n        divide(y, yOffset, tmp2, 0, tmp1, 0);       // y /(r - x)\n        atan(tmp1, 0, tmp2, 0);                     // atan(y / (r - x))\n        result[resultOffset] =\n                ((tmp2[0] <= 0) ? -FastMath.PI : FastMath.PI) - 2 * tmp2[0]; // +/-pi - 2 * atan(y / (r - x))\n        for (int i = 1; i < tmp2.length; ++i) {\n            result[resultOffset + i] = -2 * tmp2[i]; // +/-pi - 2 * atan(y / (r - x))\n        }\n\n    }\n\n    // fix value to take special cases (+0/+0, +0/-0, -0/+0, -0/-0, +/-infinity) correctly\n\n}",
+            "start_line": 1382
+          },
+          {
+            "end_line": 232,
+            "file": "src/main/java/org/apache/commons/math3/analysis/differentiation/DerivativeStructure.java",
+            "replacement": "public double getValue() {\n    return data[0];\n}",
+            "start_line": 230
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-10/spectrum-0",
+        "failure_hash": "d86a1ba7af6208e00cd05d4a48f2bf076c80b6dc04708fa1ff60be27370cfeea",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

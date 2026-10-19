@@ -1,0 +1,211 @@
+{
+  "bug": "Math-20",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "feca6a1296361f5add6a95160a61090797e703c479c5b50e993b6001ade09e0d",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": false,
+    "line_any": false,
+    "line_eligible": true,
+    "line_fraction": 0.0,
+    "method_all": false,
+    "method_any": false,
+    "missing": [
+      {
+        "method_id": "src/main/java/org/apache/commons/math3/optimization/direct/CMAESOptimizer.java::org.apache.commons.math3.optimization.direct.CMAESOptimizer$FitnessFunction#repairAndDecode@920",
+        "not_executed_by_failing_test": false,
+        "reason": "dropped_for_budget"
+      }
+    ],
+    "missing_lines": [
+      {
+        "id": "src/main/java/org/apache/commons/math3/optimization/direct/CMAESOptimizer.java:921",
+        "method_id": "src/main/java/org/apache/commons/math3/optimization/direct/CMAESOptimizer.java::org.apache.commons.math3.optimization.direct.CMAESOptimizer$FitnessFunction#repairAndDecode@920",
+        "not_executed_by_failing_test": false,
+        "outside_method_body": false,
+        "reason": "dropped_for_budget"
+      }
+    ]
+  },
+  "evaluated": true,
+  "failure_hash": "2fe379bedb8b54ddf5fd703fb5405d8089b4633b276aa828f82935471c265bd3",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 218.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 23.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "feca6a1296361f5add6a95160a61090797e703c479c5b50e993b6001ade09e0d",
+        "detail": "<REPO>/work/final/attempts/Math-20/combined-0/src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.java",
+        "edits": [
+          {
+            "end_line": 141,
+            "file": "src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.java",
+            "replacement": "    public PointValuePair optimize(int maxEval, FUNC f, GoalType goalType,\n",
+            "start_line": 91
+          },
+          {
+            "end_line": 106,
+            "file": "src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.java",
+            "replacement": "    public PointValuePair optimize(int maxEval, FUNC f, GoalType goalType,\n",
+            "start_line": 103
+          },
+          {
+            "end_line": 75,
+            "file": "src/main/java/org/apache/commons/math3/optimization/PointValuePair.java",
+            "replacement": "    public double[] getPoint() {\n",
+            "start_line": 72
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-20/combined-0",
+        "failure_hash": "2fe379bedb8b54ddf5fd703fb5405d8089b4633b276aa828f82935471c265bd3",
+        "sample": 0,
+        "status": "SYNTAX_ERROR"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "feca6a1296361f5add6a95160a61090797e703c479c5b50e993b6001ade09e0d",
+        "detail": "<REPO>/work/final/attempts/Math-20/direct-0/src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.java",
+        "edits": [
+          {
+            "end_line": 141,
+            "file": "src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.java",
+            "replacement": "    public PointValuePair optimize(int maxEval, FUNC f, GoalType goalType,\n",
+            "start_line": 91
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-20/direct-0",
+        "failure_hash": "2fe379bedb8b54ddf5fd703fb5405d8089b4633b276aa828f82935471c265bd3",
+        "sample": 0,
+        "status": "SYNTAX_ERROR"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "feca6a1296361f5add6a95160a61090797e703c479c5b50e993b6001ade09e0d",
+        "detail": "<REPO>/work/final/attempts/Math-20/llm-0/src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.java",
+        "edits": [
+          {
+            "end_line": 141,
+            "file": "src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.java",
+            "replacement": "    public PointValuePair optimize(int maxEval, FUNC f, GoalType goalType,\n",
+            "start_line": 91
+          },
+          {
+            "end_line": 106,
+            "file": "src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.java",
+            "replacement": "    public PointValuePair optimize(int maxEval, FUNC f, GoalType goalType,\n",
+            "start_line": 103
+          },
+          {
+            "end_line": 75,
+            "file": "src/main/java/org/apache/commons/math3/optimization/PointValuePair.java",
+            "replacement": "    public double[] getPoint() {\n",
+            "start_line": 72
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-20/llm-0",
+        "failure_hash": "2fe379bedb8b54ddf5fd703fb5405d8089b4633b276aa828f82935471c265bd3",
+        "sample": 0,
+        "status": "SYNTAX_ERROR"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "feca6a1296361f5add6a95160a61090797e703c479c5b50e993b6001ade09e0d",
+        "detail": "<REPO>/work/final/attempts/Math-20/spectrum-0/src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.java",
+        "edits": [
+          {
+            "end_line": 141,
+            "file": "src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.java",
+            "replacement": "private static class Sphere implements MultivariateFunction {\n    @Override\n    public double value(double[] parameters) {\n        double sum = 0;\n        for (double parameter : parameters) {\n            sum += parameter * parameter;\n        }\n        return sum;\n    }\n}\n\nprivate static class Cigar implements MultivariateFunction {\n    private double factor;\n    public Cigar(double factor) {\n        this.factor = factor;\n    }\n    @Override\n    public double value(double[] parameters) {\n        double sum = 0;\n        for (int i = 1; i < parameters.length; i++) {\n            sum += parameters[i] * parameters[i];\n        }\n        return factor * parameters[0] * parameters[0] + sum;\n    }\n}\n\nprivate static class Tablet implements MultivariateFunction {\n    private double factor;\n    public Tablet(double factor) {\n        this.factor = factor;\n    }\n    @Override\n    public double value(double[] parameters) {\n        double sum = 0;\n        for (int i = 1; i < parameters.length; i++) {\n            sum += parameters[i] * parameters[i];\n        }\n        return parameters[0] * parameters[0] + factor * sum;\n    }\n}\n\nprivate static class CigTab implements MultivariateFunction {\n    private double factor;\n    public CigTab(double factor) {\n        this.factor = factor;\n    }\n    @Override\n    public double value(double[] parameters) {\n        double sum = 0;\n        for (int i = 1; i < parameters.length; i++) {\n            sum += parameters[i] * parameters[i];\n        }\n        return factor * parameters[0] * parameters[0] + sum;\n    }\n}\n\nprivate static class TwoAxes implements MultivariateFunction {\n    private double factor;\n    public TwoAxes(double factor) {\n        this.factor = factor;\n    }\n    @Override\n    public double value(double[] parameters) {\n        return factor * parameters[0] * parameters[0] + parameters[1] * parameters[1];\n    }\n}\n\nprivate static class ElliRotated implements MultivariateFunction {\n    private Basis B = new Basis();\n    private double factor;\n    public ElliRotated(double factor) {\n        this.factor = factor;\n    }\n    @Override\n    public double value(double[] parameters) {\n        double[] transformed = B.transform(parameters);\n        double sum = 0;\n        for (double t : transformed) {\n            sum += t * t;\n        }\n        return factor * sum;\n    }\n}\n\nprivate static class Elli implements MultivariateFunction {\n    private double factor;\n    public Elli(double factor) {\n        this.factor = factor;\n    }\n    @Override\n    public double value(double[] parameters) {\n        double sum = 0;\n        for (double parameter : parameters) {\n            sum += parameter * parameter;\n        }\n        return factor * sum;\n    }\n}\n\nprivate static class MinusElli implements MultivariateFunction {\n    private double factor;\n    public MinusElli(double factor) {\n        this.factor = factor;\n    }\n    @Override\n    public double value(double[] parameters) {\n        double sum = 0;\n        for (double parameter : parameters) {\n            sum += parameter * parameter;\n        }\n        return -factor * sum;\n    }\n}\n\nprivate static class DiffPow implements MultivariateFunction {\n    private double factor;\n    public DiffPow(double factor) {\n        this.factor = factor;\n    }\n    @Override\n    public double value(double[] parameters) {\n        double sum = 0;\n        for (double parameter : parameters) {\n            sum += Math.pow(parameter, 2);\n        }\n        return factor * sum;\n    }\n}\n\nprivate static class SsDiffPow implements MultivariateFunction {\n    private double factor;\n    public SsDiffPow(double factor) {\n        this.factor = factor;\n    }\n    @Override\n    public double value(double[] parameters) {\n        double sum = 0;\n        for (double parameter : parameters) {\n            sum += Math.pow(parameter, 2);\n        }\n        return factor * sum;\n    }\n}\n\nprivate static class Rosen implements MultivariateFunction {\n    @Override\n    public double value(double[] parameters) {\n        double sum = 0;\n        for (int i = 0; i < parameters.length - 1; i++) {\n            double x = parameters[i];\n            double y = parameters[i + 1];\n            sum += 100 * Math.pow(y - x * x * x, 2) + Math.pow(1 - x, 2);\n        }\n        return sum;\n    }\n}\n\nprivate static class Ackley implements MultivariateFunction {\n    private double axisratio;\n    public Ackley(double axisratio) {\n        this.axisratio = axisratio;\n    }\n    @Override\n    public double value(double[] parameters) {\n        double sum1 = 0;\n        double sum2 = 0;\n        for (double parameter : parameters) {\n            sum1 += parameter * parameter;\n            sum2 += Math.cos(2 * Math.PI * axisratio * parameter);\n        }\n        return -20 * Math.exp(-0.2 * Math.sqrt(sum1 / parameters.length)) - Math.exp(sum2 / parameters.length) + 20 + Math.E;\n    }\n}\n\nprivate static class Rastrigin implements MultivariateFunction {\n    private double axisratio;\n    private double amplitude;\n    public Rastrigin(double axisratio, double amplitude) {\n        this.axisratio = axisratio;\n        this.amplitude = amplitude;\n    }\n    @Override\n    public double value(double[] parameters) {\n        double sum = 0;\n        for (double parameter : parameters) {\n            sum += parameter * parameter - axisratio * Math.cos(2 * Math.PI * axisratio * parameter);\n        }\n        return amplitude * parameters.length + sum;\n    }\n}\n\nprivate static class Basis {\n    double[][] basis;\n    Random rand = new Random(2); // use not always the same basis\n}\n\nprivate static class DoubleIndex implements Comparable<DoubleIndex> {\n    private double value;\n    private int index;\n    public DoubleIndex(double value, int index) {\n        this.value = value;\n        this.index = index;\n    }\n    @Override\n    public int compareTo(DoubleIndex other) {\n        return Double.compare(value, other.value);\n    }\n}\n\nprivate static class FitnessFunction {\n    private double valueRange;\n    private boolean isRepairMode;\n    public FitnessFunction() {\n        valueRange = 1.0;\n        isRepairMode = true;\n    }\n    private double penalty(double[] x, double[] repaired) {\n        double penalty = 0;\n        for (int i = 0; i < x.length; i++) {\n            double diff = Math.abs(x[i] - repaired[i]);\n            penalty += diff * valueRange;\n        }\n        return isMinimize ? penalty : -penalty;\n    }\n    private double[] repair(double[] x) {\n        double[] repaired = new double[x.length];\n        for (int i = 0; i < x.length; i++) {\n            if (x[i] < 0) {\n                repaired[i] = 0;\n            } else if (x[i] > 1.0) {\n                repaired[i] = 1.0;\n            } else {\n                repaired[i] = x[i];\n            }\n        }\n        return repaired;\n    }\n    public double value(double[] point) {\n        double value;\n        if (boundaries != null && isRepairMode) {\n            double[] repaired = repair(point);\n            value = CMAESOptimizer.this.computeObjectiveValue(decode(repaired)) + penalty(point, repaired);\n        } else {\n            value = CMAESOptimizer.this.computeObjectiveValue(decode(point));\n        }\n        return isMinimize ? value : -value;\n    }\n}\n\nprivate static class RealMatrixPreservingVisitor<T> {\n    public void start(int rows, int columns, int startRow, int endRow, int startColumn, int endColumn) {}\n    public void visit(int row, int column, T value) {}\n    public T end() { return null; }\n}\n\nprivate static class ArrayRealVector {\n    private double[] data;\n    public ArrayRealVector(double[] data) {\n        this.data = data;\n    }\n    public double getEntry(int index) {\n        return data[index];\n    }\n    public void setEntry(int index, double value) {\n        data[index] = value;\n    }\n    public int getDimension() {\n        return data.length;\n    }\n}\n\nprivate static class RealMatrixFormat {\n    private static final RealMatrixFormat INSTANCE = new RealMatrixFormat();\n    private RealMatrixFormat() {}\n    public static RealMatrixFormat getInstance() {\n        return INSTANCE;\n    }\n}\n\nprivate static class NonSymmetricMatrixException extends MathIllegalArgumentException {\n    public NonSymmetricMatrixException(int i, int j, double eps) {\n        super(LocalizedFormats.NON_SYMMETRIC_MATRIX, i, j, eps);\n    }\n}\n\nprivate static class LocalizedFormats {\n    public static final String NON_SYMMETRIC_MATRIX = ",
+            "start_line": 91
+          },
+          {
+            "end_line": 106,
+            "file": "src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.java",
+            "replacement": "public PointValuePair optimize(int maxEval, FUNC f, GoalType goalType, double[] startPoint) {\n    return optimizeInternal(maxEval, f, goalType, startPoint);\n}\n\npublic PointValuePair optimizeInternal(int maxEval, MultivariateFunction f, GoalType goalType, double[] startPoint) {\n    // Checks.\n    if (f == null) {\n        throw new NullArgumentException();\n    }\n    if (goalType == null) {\n        throw new NullArgumentException();\n    }\n    if (startPoint == null) {\n        throw new NullArgumentException();\n    }\n\n    // Reset.\n    evaluations.setMaximalCount(maxEval);\n    evaluations.resetCount();\n\n    // Store optimization problem characteristics.\n    function = f;\n    goal = goalType;\n    start = startPoint.clone();\n\n    // Perform computation.\n    return doOptimize();\n}\n\nprivate static class Incrementor {\n    private int count;\n    private int maxCount;\n    public void setMaximalCount(int maxCount) {\n        this.maxCount = maxCount;\n    }\n    public void resetCount() {\n        count = 0;\n    }\n    public int getCount() {\n        return count;\n    }\n    public void incrementCount() {\n        if (count >= maxCount) {\n            throw new TooManyEvaluationsException(maxCount);\n        }\n        count++;\n    }\n}\n\nprivate static class TooManyEvaluationsException extends MathIllegalArgumentException {\n    public TooManyEvaluationsException(int maxCount) {\n        super(LocalizedFormats.TOO_MANY_EVALUATIONS, maxCount);\n    }\n}\n\nprivate static class NullArgumentException extends MathIllegalArgumentException {\n    public NullArgumentException() {\n        super(LocalizedFormats.NULL_ARGUMENT);\n    }\n}\n\nprivate static class LocalizedFormats {\n    public static final String TOO_MANY_EVALUATIONS = ",
+            "start_line": 103
+          },
+          {
+            "end_line": 75,
+            "file": "src/main/java/org/apache/commons/math3/optimization/PointValuePair.java",
+            "replacement": "public double[] getPoint() {\n    final double[] p = getKey();\n    return p == null ? null : p.clone();\n}\n\nprivate static class Pair<K, V> {\n    private K key;\n    private V value;\n    public Pair(K key, V value) {\n        this.key = key;\n        this.value = value;\n    }\n    public K getKey() {\n        return key;\n    }\n    public V getValue() {\n        return value;\n    }\n}\n\nprivate static class RealMatrix {\n    public double getEntry(int row, int column) {\n        return 0;\n    }\n    public int getRowDimension() {\n        return 0;\n    }\n    public int getColumnDimension() {\n        return 0;\n    }\n    public RealMatrix transpose() {\n        return new Array2DRowRealMatrix(new double[0][0], false);\n    }\n    public RealMatrix scalarMultiply(double scalar) {\n        return new Array2DRowRealMatrix(new double[0][0], false);\n    }\n    public RealMatrix add(RealMatrix m) {\n        return new Array2DRowRealMatrix(new double[0][0], false);\n    }\n    public RealMatrix subtract(RealMatrix m) {\n        return new Array2DRowRealMatrix(new double[0][0], false);\n    }\n    public RealMatrix multiply(RealMatrix m) {\n        return new Array2DRowRealMatrix(new double[0][0], false);\n    }\n    public RealMatrix getSubMatrix(int startRow, int endRow, int startColumn, int endColumn) {\n        return new Array2DRowRealMatrix(new double[0][0], false);\n    }\n    public void setSubMatrix(double[][] subMatrix, int row, int column) {}\n}\n\nprivate static class Array2DRowRealMatrix extends RealMatrix {\n    private double[][] data;\n    public Array2DRowRealMatrix(double[][] data) {\n        this.data = data;\n    }\n    public double getEntry(int row, int column) {\n        return data[row][column];\n    }\n    public int getRowDimension() {\n        return data.length;\n    }\n    public int getColumnDimension() {\n        return data[0].length;\n    }\n    public RealMatrix transpose() {\n        double[][] transpose = new double[columnDimension][rowDimension];\n        for (int i = 0; i < rowDimension; i++) {\n            for (int j = 0; j < columnDimension; j++) {\n                transpose[j][i] = data[i][j];\n            }\n        }\n        return new Array2DRowRealMatrix(transpose, false);\n    }\n    public RealMatrix scalarMultiply(double scalar) {\n        double[][] result = new double[rowDimension][columnDimension];\n        for (int i = 0; i < rowDimension; i++) {\n            for (int j = 0; j < columnDimension; j++) {\n                result[i][j] = data[i][j] * scalar;\n            }\n        }\n        return new Array2DRowRealMatrix(result, false);\n    }\n    public RealMatrix add(RealMatrix m) {\n        double[][] result = new double[rowDimension][columnDimension];\n        for (int i = 0; i < rowDimension; i++) {\n            for (int j = 0; j < columnDimension; j++) {\n                result[i][j] = data[i][j] + m.getEntry(i, j);\n            }\n        }\n        return new Array2DRowRealMatrix(result, false);\n    }\n    public RealMatrix subtract(RealMatrix m) {\n        double[][] result = new double[rowDimension][columnDimension];\n        for (int i = 0; i < rowDimension; i++) {\n            for (int j = 0; j < columnDimension; j++) {\n                result[i][j] = data[i][j] - m.getEntry(i, j);\n            }\n        }\n        return new Array2DRowRealMatrix(result, false);\n    }\n    public RealMatrix multiply(RealMatrix m) {\n        double[][] result = new double[rowDimension][m.getColumnDimension()];\n        for (int i = 0; i < rowDimension; i++) {\n            for (int j = 0; j < m.getColumnDimension(); j++) {\n                result[i][j] = 0;\n                for (int k = 0; k < columnDimension; k++) {\n                    result[i][j] += data[i][k] * m.getEntry(k, j);\n                }\n            }\n        }\n        return new Array2DRowRealMatrix(result, false);\n    }\n    public RealMatrix getSubMatrix(int startRow, int endRow, int startColumn, int endColumn) {\n        double[][] subMatrix = new double[endRow - startRow + 1][endColumn - startColumn + 1];\n        for (int i = startRow; i <= endRow; i++) {\n            System.arraycopy(data[i], startColumn, subMatrix[i - startRow], 0, endColumn - startColumn + 1);\n        }\n        return new Array2DRowRealMatrix(subMatrix, false);\n    }\n    public void setSubMatrix(double[][] subMatrix, int row, int column) {\n        for (int i = 0; i < subMatrix.length; i++) {\n            System.arraycopy(subMatrix[i], 0, data[row + i], column, subMatrix[i].length);\n        }\n    }\n}\n\nprivate static class RealLinearOperator {\n    public RealLinearOperator() {}\n}\n\nprivate static class RealMatrixFormat {\n    private static final RealMatrixFormat INSTANCE = new RealMatrixFormat();\n    private RealMatrixFormat() {}\n    public static RealMatrixFormat getInstance() {\n        return INSTANCE;\n    }\n}\n\nprivate static class NonSymmetricMatrixException extends MathIllegalArgumentException {\n    public NonSymmetricMatrixException(int i, int j, double eps) {\n        super(LocalizedFormats.NON_SYMMETRIC_MATRIX, i, j, eps);\n    }\n}\n\nprivate static class LocalizedFormats {\n    public static final String NON_SYMMETRIC_MATRIX = ",
+            "start_line": 72
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-20/spectrum-0",
+        "failure_hash": "2fe379bedb8b54ddf5fd703fb5405d8089b4633b276aa828f82935471c265bd3",
+        "sample": 0,
+        "status": "SYNTAX_ERROR"
+      }
+    ]
+  }
+}

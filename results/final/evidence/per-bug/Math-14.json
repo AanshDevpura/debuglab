@@ -1,0 +1,203 @@
+{
+  "bug": "Math-14",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "f8730de7733393940f84c481080bc748ee3b9b0a5a18408b3b746a4d46c6932b",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": true,
+    "line_any": true,
+    "line_eligible": true,
+    "line_fraction": 1.0,
+    "method_all": false,
+    "method_any": true,
+    "missing": [
+      {
+        "method_id": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/AbstractLeastSquaresOptimizer.java::org.apache.commons.math3.optim.nonlinear.vector.jacobian.AbstractLeastSquaresOptimizer#squareRoot@266",
+        "not_executed_by_failing_test": true,
+        "reason": "outside_retrieved_set"
+      }
+    ],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "8ab0aefa3f2d72afc3022d5820fd9d8bf7b56e6e8403900b82a9b3178f81ea51",
+  "gold_eligibility": {
+    "line": true,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 8,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 2,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 7,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 2,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": true,
+          "rank": 20041.5,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        },
+        "method": {
+          "eligible": true,
+          "rank": 18.0,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "f8730de7733393940f84c481080bc748ee3b9b0a5a18408b3b746a4d46c6932b",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 181,
+            "file": "src/main/java/org/apache/commons/math3/fitting/CurveFitter.java",
+            "replacement": "    public double[] fit(int maxEval, T f, final double[] initialGuess) {\n        // Prepare least squares problem.\n        double[] target  = new double[observations.size()];\n        double[] weights = new double[observations.size()];\n        int i = 0;\n        for (WeightedObservedPoint point : observations) {\n            target[i]  = point.getY();\n            weights[i] = point.getWeight();\n            ++i;\n        }\n\n        // Input to the optimizer: the model and its Jacobian.\n        final TheoreticalValuesFunction model = new TheoreticalValuesFunction(f);\n\n        // Perform the fit.\n        final PointVectorValuePair optimum\n            = optimizer.optimize(new MaxEval(maxEval),\n                                 model.getModelFunction(),\n                                 model.getModelFunctionJacobian(),\n                                 new Target(target),\n                                 new Weight(weights),\n                                 new InitialGuess(initialGuess));\n        // Extract the coefficients.\n        return optimum.getPointRef();\n    }",
+            "start_line": 156
+          },
+          {
+            "end_line": 47,
+            "file": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/Weight.java",
+            "replacement": "    public Weight(double[] weight) {\n        final int dim = weight.length;\n        weightMatrix = org.apache.commons.math3.linear.MatrixUtils.createRealMatrix(dim, dim);\n        for (int i = 0; i < dim; i++) {\n            weightMatrix.setEntry(i, i, weight[i]);\n        }\n    }",
+            "start_line": 41
+          },
+          {
+            "end_line": 277,
+            "file": "src/main/java/org/apache/commons/math3/linear/BlockRealMatrix.java",
+            "replacement": "    public static double[][] createBlocksLayout(final int rows, final int columns) {\n        final int blockRows = (rows    + BLOCK_SIZE - 1) / BLOCK_SIZE;\n        final int blockColumns = (columns + BLOCK_SIZE - 1) / BLOCK_SIZE;\n\n        final double[][] blocks = new double[blockRows * blockColumns][];\n        int blockIndex = 0;\n        for (int iBlock = 0; iBlock < blockRows; ++iBlock) {\n            final int pStart = iBlock * BLOCK_SIZE;\n            final int pEnd = FastMath.min(pStart + BLOCK_SIZE, rows);\n            final int iHeight = pEnd - pStart;\n            for (int jBlock = 0; jBlock < blockColumns; ++jBlock) {\n                final int qStart = jBlock * BLOCK_SIZE;\n                final int qEnd = FastMath.min(qStart + BLOCK_SIZE, columns);\n                final int jWidth = qEnd - qStart;\n                blocks[blockIndex] = new double[iHeight * jWidth];\n                ++blockIndex;\n            }\n        }\n\n        return blocks;\n    }",
+            "start_line": 257
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-14/combined-0",
+        "failure_hash": "8ab0aefa3f2d72afc3022d5820fd9d8bf7b56e6e8403900b82a9b3178f81ea51",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "f8730de7733393940f84c481080bc748ee3b9b0a5a18408b3b746a4d46c6932b",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 181,
+            "file": "src/main/java/org/apache/commons/math3/fitting/CurveFitter.java",
+            "replacement": "    public double[] fit(int maxEval, T f, final double[] initialGuess) {\n        // Prepare least squares problem.\n        double[] target  = new double[observations.size()];\n        double[] weights = new double[observations.size()];\n        int i = 0;\n        for (WeightedObservedPoint point : observations) {\n            target[i]  = point.getY();\n            weights[i] = point.getWeight();\n            ++i;\n        }\n\n        // Input to the optimizer: the model and its Jacobian.\n        final TheoreticalValuesFunction model = new TheoreticalValuesFunction(f);\n\n        // Perform the fit.\n        final PointVectorValuePair optimum\n            = optimizer.optimize(new MaxEval(maxEval),\n                                 model.getModelFunction(),\n                                 model.getModelFunctionJacobian(),\n                                 new Target(target),\n                                 new Weight(weights),\n                                 new InitialGuess(initialGuess));\n        // Extract the coefficients.\n        return optimum.getPointRef();\n    }",
+            "start_line": 156
+          },
+          {
+            "end_line": 47,
+            "file": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/Weight.java",
+            "replacement": "    public Weight(double[] weight) {\n        final int dim = weight.length;\n        weightMatrix = org.apache.commons.math3.linear.MatrixUtils.createRealMatrix(dim, dim);\n        for (int i = 0; i < dim; i++) {\n            weightMatrix.setEntry(i, i, weight[i]);\n        }\n    }",
+            "start_line": 41
+          },
+          {
+            "end_line": 277,
+            "file": "src/main/java/org/apache/commons/math3/linear/BlockRealMatrix.java",
+            "replacement": "    public static double[][] createBlocksLayout(final int rows, final int columns) {\n        final int blockRows = (rows    + BLOCK_SIZE - 1) / BLOCK_SIZE;\n        final int blockColumns = (columns + BLOCK_SIZE - 1) / BLOCK_SIZE;\n\n        final double[][] blocks = new double[blockRows * blockColumns][];\n        int blockIndex = 0;\n        for (int iBlock = 0; iBlock < blockRows; ++iBlock) {\n            final int pStart = iBlock * BLOCK_SIZE;\n            final int pEnd = FastMath.min(pStart + BLOCK_SIZE, rows);\n            final int iHeight = pEnd - pStart;\n            for (int jBlock = 0; jBlock < blockColumns; ++jBlock) {\n                final int qStart = jBlock * BLOCK_SIZE;\n                final int qEnd = FastMath.min(qStart + BLOCK_SIZE, columns);\n                final int jWidth = qEnd - qStart;\n                blocks[blockIndex] = new double[iHeight * jWidth];\n                ++blockIndex;\n            }\n        }\n\n        return blocks;\n    }",
+            "start_line": 257
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-14/direct-0",
+        "failure_hash": "8ab0aefa3f2d72afc3022d5820fd9d8bf7b56e6e8403900b82a9b3178f81ea51",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "f8730de7733393940f84c481080bc748ee3b9b0a5a18408b3b746a4d46c6932b",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 181,
+            "file": "src/main/java/org/apache/commons/math3/fitting/CurveFitter.java",
+            "replacement": "    public double[] fit(int maxEval, T f, final double[] initialGuess) {\n        // Prepare least squares problem.\n        double[] target  = new double[observations.size()];\n        double[] weights = new double[observations.size()];\n        int i = 0;\n        for (WeightedObservedPoint point : observations) {\n            target[i]  = point.getY();\n            weights[i] = point.getWeight();\n            ++i;\n        }\n\n        // Input to the optimizer: the model and its Jacobian.\n        final TheoreticalValuesFunction model = new TheoreticalValuesFunction(f);\n\n        // Perform the fit.\n        final PointVectorValuePair optimum\n            = optimizer.optimize(new MaxEval(maxEval),\n                                 model.getModelFunction(),\n                                 model.getModelFunctionJacobian(),\n                                 new Target(target),\n                                 new Weight(weights),\n                                 new InitialGuess(initialGuess));\n        // Extract the coefficients.\n        return optimum.getPointRef();\n    }",
+            "start_line": 156
+          },
+          {
+            "end_line": 47,
+            "file": "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/Weight.java",
+            "replacement": "    public Weight(double[] weight) {\n        final int dim = weight.length;\n        weightMatrix = org.apache.commons.math3.linear.MatrixUtils.createRealMatrix(dim, dim);\n        for (int i = 0; i < dim; i++) {\n            weightMatrix.setEntry(i, i, weight[i]);\n        }\n    }",
+            "start_line": 41
+          },
+          {
+            "end_line": 277,
+            "file": "src/main/java/org/apache/commons/math3/linear/BlockRealMatrix.java",
+            "replacement": "    public static double[][] createBlocksLayout(final int rows, final int columns) {\n        final int blockRows = (rows    + BLOCK_SIZE - 1) / BLOCK_SIZE;\n        final int blockColumns = (columns + BLOCK_SIZE - 1) / BLOCK_SIZE;\n\n        final double[][] blocks = new double[blockRows * blockColumns][];\n        int blockIndex = 0;\n        for (int iBlock = 0; iBlock < blockRows; ++iBlock) {\n            final int pStart = iBlock * BLOCK_SIZE;\n            final int pEnd = FastMath.min(pStart + BLOCK_SIZE, rows);\n            final int iHeight = pEnd - pStart;\n            for (int jBlock = 0; jBlock < blockColumns; ++jBlock) {\n                final int qStart = jBlock * BLOCK_SIZE;\n                final int qEnd = FastMath.min(qStart + BLOCK_SIZE, columns);\n                final int jWidth = qEnd - qStart;\n                blocks[blockIndex] = new double[iHeight * jWidth];\n                ++blockIndex;\n            }\n        }\n\n        return blocks;\n    }",
+            "start_line": 257
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-14/llm-0",
+        "failure_hash": "8ab0aefa3f2d72afc3022d5820fd9d8bf7b56e6e8403900b82a9b3178f81ea51",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "f8730de7733393940f84c481080bc748ee3b9b0a5a18408b3b746a4d46c6932b",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 181,
+            "file": "src/main/java/org/apache/commons/math3/fitting/CurveFitter.java",
+            "replacement": "    public double[] fit(int maxEval, T f, final double[] initialGuess) {\n        // Prepare least squares problem.\n        double[] target  = new double[observations.size()];\n        double[] weights = new double[observations.size()];\n        int i = 0;\n        for (WeightedObservedPoint point : observations) {\n            target[i]  = point.getY();\n            weights[i] = point.getWeight();\n            ++i;\n        }\n\n        // Input to the optimizer: the model and its Jacobian.\n        final TheoreticalValuesFunction model = new TheoreticalValuesFunction(f);\n\n        // Perform the fit.\n        final PointVectorValuePair optimum\n            = optimizer.optimize(new MaxEval(maxEval),\n                                 model.getModelFunction(),\n                                 model.getModelFunctionJacobian(),\n                                 new Target(target),\n                                 new Weight(weights),\n                                 new InitialGuess(initialGuess));\n        // Extract the coefficients.\n        return optimum.getPointRef();\n    }",
+            "start_line": 156
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-14/spectrum-0",
+        "failure_hash": "8ab0aefa3f2d72afc3022d5820fd9d8bf7b56e6e8403900b82a9b3178f81ea51",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}

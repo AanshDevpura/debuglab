@@ -1,0 +1,161 @@
+{
+  "bug": "Time-18",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "fa41347f93480a1fdeea25922a7c544aad8b026e867698a2777a1c60c9389482",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": null,
+    "line_any": null,
+    "line_eligible": false,
+    "line_fraction": null,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "c8530caf2abfd9a6ae443d236f0a9eec7b865e89df95a8130df883d691a0d5ae",
+  "gold_eligibility": {
+    "line": false,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 3,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 3,
+          "top1": false,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 1.0,
+          "top1": true,
+          "top3": true,
+          "top5": true
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "fa41347f93480a1fdeea25922a7c544aad8b026e867698a2777a1c60c9389482",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 182,
+            "file": "src/main/java/org/joda/time/chrono/BasicChronology.java",
+            "replacement": "    public long getDateTimeMillis(\n            int year, int monthOfYear, int dayOfMonth,\n            int hourOfDay, int minuteOfHour, int secondOfMinute, int millisOfSecond)\n            throws IllegalArgumentException {\n        Chronology base;\n        if ((base = getBase()) != null) {\n            return base.getDateTimeMillis(year, monthOfYear, dayOfMonth,\n                                          hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond);\n        }\n\n        FieldUtils.verifyValueBounds(DateTimeFieldType.year(), year, getMinYear(), getMaxYear());\n        FieldUtils.verifyValueBounds(DateTimeFieldType.monthOfYear(), monthOfYear, 1, getMaxMonth(year));\n        FieldUtils.verifyValueBounds(DateTimeFieldType.dayOfMonth(), dayOfMonth, 1, getDaysInYearMonth(year, monthOfYear));\n        FieldUtils.verifyValueBounds(DateTimeFieldType.hourOfDay(), hourOfDay, 0, 23);\n        FieldUtils.verifyValueBounds(DateTimeFieldType.minuteOfHour(), minuteOfHour, 0, 59);\n        FieldUtils.verifyValueBounds(DateTimeFieldType.secondOfMinute(), secondOfMinute, 0, 59);\n        FieldUtils.verifyValueBounds(DateTimeFieldType.millisOfSecond(), millisOfSecond, 0, 999);\n\n        return getDateMidnightMillis(year, monthOfYear, dayOfMonth)\n            + hourOfDay * DateTimeConstants.MILLIS_PER_HOUR\n            + minuteOfHour * DateTimeConstants.MILLIS_PER_MINUTE\n            + secondOfMinute * DateTimeConstants.MILLIS_PER_SECOND\n            + millisOfSecond;\n    }",
+            "start_line": 162
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-18/combined-0",
+        "failure_hash": "c8530caf2abfd9a6ae443d236f0a9eec7b865e89df95a8130df883d691a0d5ae",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "fa41347f93480a1fdeea25922a7c544aad8b026e867698a2777a1c60c9389482",
+        "detail": "Running ant (compile)...................................................... FAIL\nExecuted command:  cd <REPO>/work/final/attempts/Time-18/direct-0 && <REPO>/work/tools/defects4j/major/bin/ant -f <REPO>/work/tools/defects4j/framework/projects/defects4j.build.xml -Dd4j.home=<REPO>/work/tools/defects4j -Dd4j.dir.projects=<REPO>/work/tools/defects4j/framework/projects -Dbasedir=<REPO>/work/final/attempts/Time-18/direct-0  compile 2>&1\nBuildfile: <REPO>/work/tools/defects4j/framework/projects/defects4j.build.xml\n\ninit:\n     [echo] -------- joda-time 2.0 --------\n\ngetjunit:\n\ninstalljunit:\n\ngetjodaconvert:\n\nprepare:\n\nstatic:\n\ncompile.main:\n    [javac] Compiling 1 source file to <REPO>/work/final/attempts/Time-18/direct-0/build/classes\n    [javac] warning: [options] bootstrap class path not set in conjunction with -source 6\n    [javac] warning: [options] source value 6 is obsolete and will be removed in a future release\n    [javac] warning: [options] target value 1.6 is obsolete and will be removed in a future release\n    [javac] warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.\n    [javac] <REPO>/work/final/attempts/Time-18/direct-0/src/main/java/org/joda/time/chrono/BasicChronology.java:178: error: cannot find symbol\n    [javac]         if (instant < iCutoverMillis) {\n    [javac]                       ^\n    [javac]   symbol:   variable iCutoverMillis\n    [javac]   location: class BasicChronology\n    [javac] <REPO>/work/final/attempts/Time-18/direct-0/src/main/java/org/joda/time/chrono/BasicChronology.java:179: error: cannot find symbol\n    [javac]             instant = iJulianChronology.getDateTimeMillis(year, monthOfYear, dayOfMonth,\n    [javac]                       ^\n    [javac]   symbol:   variable iJulianChronology\n    [javac]   location: class BasicChronology\n    [javac] 2 errors\n    [javac] 4 warnings\n\nBUILD FAILED\n<REPO>/work/final/attempts/Time-18/direct-0/build.xml:194: Compile failed; see the compiler error output for details.\n\nTotal time: 0 seconds\nCannot compile sources! at <REPO>/work/tools/defects4j/framework/bin/d4j/d4j-compile line 82.\nCompilation failed in require at <REPO>/work/tools/defects4j/framework/bin/defects4j line 195.\n",
+        "edits": [
+          {
+            "end_line": 182,
+            "file": "src/main/java/org/joda/time/chrono/BasicChronology.java",
+            "replacement": "    public long getDateTimeMillis(\n        int year, int monthOfYear, int dayOfMonth,\n        int hourOfDay, int minuteOfHour, int secondOfMinute, int millisOfSecond)\n        throws IllegalArgumentException {\n        Chronology base;\n        if ((base = getBase()) != null) {\n            return base.getDateTimeMillis(year, monthOfYear, dayOfMonth,\n                                          hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond);\n        }\n\n        FieldUtils.verifyValueBounds(DateTimeFieldType.hourOfDay(), hourOfDay, 0, 23);\n        FieldUtils.verifyValueBounds(DateTimeFieldType.minuteOfHour(), minuteOfHour, 0, 59);\n        FieldUtils.verifyValueBounds(DateTimeFieldType.secondOfMinute(), secondOfMinute, 0, 59);\n        FieldUtils.verifyValueBounds(DateTimeFieldType.millisOfSecond(), millisOfSecond, 0, 999);\n\n        long instant = getDateMidnightMillis(year, monthOfYear, dayOfMonth);\n        if (instant < iCutoverMillis) {\n            instant = iJulianChronology.getDateTimeMillis(year, monthOfYear, dayOfMonth,\n                                                         hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond);\n        }\n        return instant + hourOfDay * DateTimeConstants.MILLIS_PER_HOUR\n            + minuteOfHour * DateTimeConstants.MILLIS_PER_MINUTE\n            + secondOfMinute * DateTimeConstants.MILLIS_PER_SECOND\n            + millisOfSecond;\n    }",
+            "start_line": 162
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-18/direct-0",
+        "failure_hash": "c8530caf2abfd9a6ae443d236f0a9eec7b865e89df95a8130df883d691a0d5ae",
+        "sample": 0,
+        "status": "COMPILE_ERROR"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "fa41347f93480a1fdeea25922a7c544aad8b026e867698a2777a1c60c9389482",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 182,
+            "file": "src/main/java/org/joda/time/chrono/BasicChronology.java",
+            "replacement": "    public long getDateTimeMillis(\n            int year, int monthOfYear, int dayOfMonth,\n            int hourOfDay, int minuteOfHour, int secondOfMinute, int millisOfSecond)\n            throws IllegalArgumentException {\n        Chronology base;\n        if ((base = getBase()) != null) {\n            return base.getDateTimeMillis(year, monthOfYear, dayOfMonth,\n                                          hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond);\n        }\n\n        FieldUtils.verifyValueBounds(DateTimeFieldType.year(), year, getMinYear(), getMaxYear());\n        FieldUtils.verifyValueBounds(DateTimeFieldType.monthOfYear(), monthOfYear, 1, getMaxMonth(year));\n        FieldUtils.verifyValueBounds(DateTimeFieldType.dayOfMonth(), dayOfMonth, 1, getDaysInYearMonth(year, monthOfYear));\n        FieldUtils.verifyValueBounds(DateTimeFieldType.hourOfDay(), hourOfDay, 0, 23);\n        FieldUtils.verifyValueBounds(DateTimeFieldType.minuteOfHour(), minuteOfHour, 0, 59);\n        FieldUtils.verifyValueBounds(DateTimeFieldType.secondOfMinute(), secondOfMinute, 0, 59);\n        FieldUtils.verifyValueBounds(DateTimeFieldType.millisOfSecond(), millisOfSecond, 0, 999);\n\n        return getDateMidnightMillis(year, monthOfYear, dayOfMonth)\n            + hourOfDay * DateTimeConstants.MILLIS_PER_HOUR\n            + minuteOfHour * DateTimeConstants.MILLIS_PER_MINUTE\n            + secondOfMinute * DateTimeConstants.MILLIS_PER_SECOND\n            + millisOfSecond;\n    }",
+            "start_line": 162
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-18/llm-0",
+        "failure_hash": "c8530caf2abfd9a6ae443d236f0a9eec7b865e89df95a8130df883d691a0d5ae",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "fa41347f93480a1fdeea25922a7c544aad8b026e867698a2777a1c60c9389482",
+        "detail": ": class GJChronology\n    [javac] <REPO>/work/final/attempts/Time-18/spectrum-0/src/main/java/org/joda/time/chrono/GJChronology.java:356: error: cannot find symbol\n    [javac]     FieldUtils.verifyValueBounds(DateTimeFieldType.year(), year, getMinYear(), getMaxYear());\n    [javac]     ^\n    [javac]   symbol:   variable FieldUtils\n    [javac]   location: class GJChronology\n    [javac] <REPO>/work/final/attempts/Time-18/spectrum-0/src/main/java/org/joda/time/chrono/GJChronology.java:357: error: cannot find symbol\n    [javac]     FieldUtils.verifyValueBounds(DateTimeFieldType.monthOfYear(), monthOfYear, 1, getMaxMonth(year));\n    [javac]                                  ^\n    [javac]   symbol:   variable DateTimeFieldType\n    [javac]   location: class GJChronology\n    [javac] <REPO>/work/final/attempts/Time-18/spectrum-0/src/main/java/org/joda/time/chrono/GJChronology.java:357: error: cannot find symbol\n    [javac]     FieldUtils.verifyValueBounds(DateTimeFieldType.monthOfYear(), monthOfYear, 1, getMaxMonth(year));\n    [javac]                                                                                   ^\n    [javac]   symbol:   method getMaxMonth(int)\n    [javac]   location: class GJChronology\n    [javac] <REPO>/work/final/attempts/Time-18/spectrum-0/src/main/java/org/joda/time/chrono/GJChronology.java:357: error: cannot find symbol\n    [javac]     FieldUtils.verifyValueBounds(DateTimeFieldType.monthOfYear(), monthOfYear, 1, getMaxMonth(year));\n    [javac]     ^\n    [javac]   symbol:   variable FieldUtils\n    [javac]   location: class GJChronology\n    [javac] <REPO>/work/final/attempts/Time-18/spectrum-0/src/main/java/org/joda/time/chrono/GJChronology.java:358: error: cannot find symbol\n    [javac]     FieldUtils.verifyValueBounds(DateTimeFieldType.dayOfMonth(), dayOfMonth, 1, getDaysInYearMonth(year, monthOfYear));\n    [javac]                                  ^\n    [javac]   symbol:   variable DateTimeFieldType\n    [javac]   location: class GJChronology\n    [javac] <REPO>/work/final/attempts/Time-18/spectrum-0/src/main/java/org/joda/time/chrono/GJChronology.java:358: error: cannot find symbol\n    [javac]     FieldUtils.verifyValueBounds(DateTimeFieldType.dayOfMonth(), dayOfMonth, 1, getDaysInYearMonth(year, monthOfYear));\n    [javac]                                                                                 ^\n    [javac]   symbol:   method getDaysInYearMonth(int,int)\n    [javac]   location: class GJChronology\n    [javac] <REPO>/work/final/attempts/Time-18/spectrum-0/src/main/java/org/joda/time/chrono/GJChronology.java:358: error: cannot find symbol\n    [javac]     FieldUtils.verifyValueBounds(DateTimeFieldType.dayOfMonth(), dayOfMonth, 1, getDaysInYearMonth(year, monthOfYear));\n    [javac]     ^\n    [javac]   symbol:   variable FieldUtils\n    [javac]   location: class GJChronology\n    [javac] 10 errors\n    [javac] 4 warnings\n\nBUILD FAILED\n<REPO>/work/final/attempts/Time-18/spectrum-0/build.xml:194: Compile failed; see the compiler error output for details.\n\nTotal time: 0 seconds\nCannot compile sources! at <REPO>/work/tools/defects4j/framework/bin/d4j/d4j-compile line 82.\nCompilation failed in require at <REPO>/work/tools/defects4j/framework/bin/defects4j line 195.\n",
+        "edits": [
+          {
+            "end_line": 378,
+            "file": "src/main/java/org/joda/time/chrono/GJChronology.java",
+            "replacement": "public long getDateTimeMillis(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour, int secondOfMinute, int millisOfSecond) throws IllegalArgumentException {\n    Chronology base;\n    if ((base = getBase()) != null) {\n        return base.getDateTimeMillis(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond);\n    }\n\n    FieldUtils.verifyValueBounds(DateTimeFieldType.year(), year, getMinYear(), getMaxYear());\n    FieldUtils.verifyValueBounds(DateTimeFieldType.monthOfYear(), monthOfYear, 1, getMaxMonth(year));\n    FieldUtils.verifyValueBounds(DateTimeFieldType.dayOfMonth(), dayOfMonth, 1, getDaysInYearMonth(year, monthOfYear));\n\n    long instant;\n    try {\n        instant = iGregorianChronology.getDateTimeMillis(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond);\n    } catch (IllegalArgumentException e) {\n        instant = iJulianChronology.getDateTimeMillis(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond);\n    }\n\n    if (instant < iCutoverMillis) {\n        throw new IllegalArgumentException(\"Specified date does not exist\");\n    }\n\n    return instant;\n}",
+            "start_line": 350
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Time-18/spectrum-0",
+        "failure_hash": "c8530caf2abfd9a6ae443d236f0a9eec7b865e89df95a8130df883d691a0d5ae",
+        "sample": 0,
+        "status": "COMPILE_ERROR"
+      }
+    ]
+  }
+}

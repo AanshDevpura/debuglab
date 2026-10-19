@@ -1,0 +1,197 @@
+{
+  "bug": "Math-13",
+  "config_hash": "7efdcfc3f27ec1f6d209556cdc467c6ab8dc02b39a844d5012dfc6a23d96ab0a",
+  "context_hash": "220fcbe8d7a1a38f714c531176411c411ea5e71a5e39c22692432323199f45e9",
+  "context_recall": {
+    "file_all": true,
+    "file_any": true,
+    "line_all": null,
+    "line_any": null,
+    "line_eligible": false,
+    "line_fraction": null,
+    "method_all": true,
+    "method_any": true,
+    "missing": [],
+    "missing_lines": []
+  },
+  "evaluated": true,
+  "failure_hash": "39ae7c9d55ad946fb18b0da574eaf95cfbedeb9c9b556fd90121a88476d9b50f",
+  "gold_eligibility": {
+    "line": false,
+    "method": true,
+    "method_target_mapped": true
+  },
+  "leak_violations": [],
+  "localization": {
+    "combined": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "llm": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": null,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "model_status": "OK",
+      "parse_error": null
+    },
+    "spectrum": {
+      "metrics": {
+        "line": {
+          "eligible": false,
+          "rank": null,
+          "top1": null,
+          "top3": null,
+          "top5": null
+        },
+        "method": {
+          "eligible": true,
+          "rank": 3348.5,
+          "top1": false,
+          "top3": false,
+          "top5": false
+        }
+      },
+      "parse_error": null
+    }
+  },
+  "pipeline_complete": true,
+  "repair": {
+    "combined": [
+      {
+        "context_hash": "220fcbe8d7a1a38f714c531176411c411ea5e71a5e39c22692432323199f45e9",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 198,
+            "file": "src/main/java/org/apache/commons/math3/optimization/fitting/CurveFitter.java",
+            "replacement": "    public double[] fit(int maxEval, T f, final double[] initialGuess) {\n        // prepare least squares problem\n        double[] target  = new double[observations.size()];\n        double[] weights = new double[observations.size()];\n        int i = 0;\n        for (WeightedObservedPoint point : observations) {\n            target[i]  = point.getY();\n            weights[i] = point.getWeight();\n            ++i;\n        }\n\n        // perform the fit\n        final PointVectorValuePair optimum;\n        if (optimizer == null) {\n            // to be removed in 4.0\n            optimum = oldOptimizer.optimize(maxEval, new OldTheoreticalValuesFunction(f),\n                                            target, weights, initialGuess);\n        } else {\n            optimum = optimizer.optimize(maxEval, new TheoreticalValuesFunction(f),\n                                         target, weights, initialGuess);\n        }\n\n        // extract the coefficients\n        return optimum.getPointRef();\n    }",
+            "start_line": 173
+          },
+          {
+            "end_line": 242,
+            "file": "src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateVectorOptimizer.java",
+            "replacement": "    protected PointVectorValuePair optimizeInternal(int maxEval,\n                                                        FUNC f,\n                                                        OptimizationData... optData)\n        throws TooManyEvaluationsException,\n               DimensionMismatchException {\n        // Set internal state.\n        evaluations.setMaximalCount(maxEval);\n        evaluations.resetCount();\n        function = f;\n        // Retrieve other settings.\n        parseOptimizationData(optData);\n        // Check input consistency.\n        checkParameters();\n        // Allow subclasses to reset their own internal state.\n        setUp();\n        // Perform computation.\n        return doOptimize();\n    }",
+            "start_line": 225
+          },
+          {
+            "end_line": 522,
+            "file": "src/main/java/org/apache/commons/math3/optimization/general/AbstractLeastSquaresOptimizer.java",
+            "replacement": "    @Override\n    protected void setUp() {\n        super.setUp();\n\n        // Reset counter.\n        jacobianEvaluations = 0;\n\n        // Square-root of the weight matrix.\n        weightMatrixSqrt = squareRoot(getWeight());\n\n        // Store least squares problem characteristics.\n        // XXX The conversion won't be necessary when the generic argument of\n        // the base class becomes \"MultivariateDifferentiableVectorFunction\".\n        // XXX \"jF\" is not strictly necessary anymore but is currently more\n        // efficient than converting the value returned from \"getObjectiveFunction()\"\n        // every time it is used.\n        jF = FunctionUtils.toMultivariateDifferentiableVectorFunction((DifferentiableMultivariateVectorFunction) getObjectiveFunction());\n\n        // Arrays shared with \"private\" and \"protected\" methods.\n        point = getStartPoint();\n        rows = getTarget().length;\n        cols = point.length;\n    }",
+            "start_line": 500
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-13/combined-0",
+        "failure_hash": "39ae7c9d55ad946fb18b0da574eaf95cfbedeb9c9b556fd90121a88476d9b50f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "direct": [
+      {
+        "context_hash": "220fcbe8d7a1a38f714c531176411c411ea5e71a5e39c22692432323199f45e9",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 198,
+            "file": "src/main/java/org/apache/commons/math3/optimization/fitting/CurveFitter.java",
+            "replacement": "    public double[] fit(int maxEval, T f, final double[] initialGuess) {\n        // prepare least squares problem\n        double[] target  = new double[observations.size()];\n        double[] weights = new double[observations.size()];\n        int i = 0;\n        for (WeightedObservedPoint point : observations) {\n            target[i]  = point.getY();\n            weights[i] = point.getWeight();\n            ++i;\n        }\n\n        // perform the fit\n        final PointVectorValuePair optimum;\n        if (optimizer == null) {\n            // to be removed in 4.0\n            optimum = oldOptimizer.optimize(maxEval, new OldTheoreticalValuesFunction(f),\n                                            target, weights, initialGuess);\n        } else {\n            optimum = optimizer.optimize(maxEval, new TheoreticalValuesFunction(f),\n                                         target, weights, initialGuess);\n        }\n\n        // extract the coefficients\n        return optimum.getPointRef();\n    }",
+            "start_line": 173
+          },
+          {
+            "end_line": 242,
+            "file": "src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateVectorOptimizer.java",
+            "replacement": "    protected PointVectorValuePair optimizeInternal(int maxEval,\n                                                        FUNC f,\n                                                        OptimizationData... optData)\n        throws TooManyEvaluationsException,\n               DimensionMismatchException {\n        // Set internal state.\n        evaluations.setMaximalCount(maxEval);\n        evaluations.resetCount();\n        function = f;\n        // Retrieve other settings.\n        parseOptimizationData(optData);\n        // Check input consistency.\n        checkParameters();\n        // Allow subclasses to reset their own internal state.\n        setUp();\n        // Perform computation.\n        return doOptimize();\n    }",
+            "start_line": 225
+          },
+          {
+            "end_line": 522,
+            "file": "src/main/java/org/apache/commons/math3/optimization/general/AbstractLeastSquaresOptimizer.java",
+            "replacement": "    @Override\n    protected void setUp() {\n        super.setUp();\n\n        // Reset counter.\n        jacobianEvaluations = 0;\n\n        // Square-root of the weight matrix.\n        weightMatrixSqrt = squareRoot(getWeight());\n\n        // Store least squares problem characteristics.\n        // XXX The conversion won't be necessary when the generic argument of\n        // the base class becomes \"MultivariateDifferentiableVectorFunction\".\n        // XXX \"jF\" is not strictly necessary anymore but is currently more\n        // efficient than converting the value returned from \"getObjectiveFunction()\"\n        // every time it is used.\n        jF = FunctionUtils.toMultivariateDifferentiableVectorFunction((DifferentiableMultivariateVectorFunction) getObjectiveFunction());\n\n        // Arrays shared with \"private\" and \"protected\" methods.\n        point = getStartPoint();\n        rows = getTarget().length;\n        cols = point.length;\n    }",
+            "start_line": 500
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-13/direct-0",
+        "failure_hash": "39ae7c9d55ad946fb18b0da574eaf95cfbedeb9c9b556fd90121a88476d9b50f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "llm": [
+      {
+        "context_hash": "220fcbe8d7a1a38f714c531176411c411ea5e71a5e39c22692432323199f45e9",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 198,
+            "file": "src/main/java/org/apache/commons/math3/optimization/fitting/CurveFitter.java",
+            "replacement": "    public double[] fit(int maxEval, T f, final double[] initialGuess) {\n        // prepare least squares problem\n        double[] target  = new double[observations.size()];\n        double[] weights = new double[observations.size()];\n        int i = 0;\n        for (WeightedObservedPoint point : observations) {\n            target[i]  = point.getY();\n            weights[i] = point.getWeight();\n            ++i;\n        }\n\n        // perform the fit\n        final PointVectorValuePair optimum;\n        if (optimizer == null) {\n            // to be removed in 4.0\n            optimum = oldOptimizer.optimize(maxEval, new OldTheoreticalValuesFunction(f),\n                                            target, weights, initialGuess);\n        } else {\n            optimum = optimizer.optimize(maxEval, new TheoreticalValuesFunction(f),\n                                         target, weights, initialGuess);\n        }\n\n        // extract the coefficients\n        return optimum.getPointRef();\n    }",
+            "start_line": 173
+          },
+          {
+            "end_line": 242,
+            "file": "src/main/java/org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateVectorOptimizer.java",
+            "replacement": "    protected PointVectorValuePair optimizeInternal(int maxEval,\n                                                        FUNC f,\n                                                        OptimizationData... optData)\n        throws TooManyEvaluationsException,\n               DimensionMismatchException {\n        // Set internal state.\n        evaluations.setMaximalCount(maxEval);\n        evaluations.resetCount();\n        function = f;\n        // Retrieve other settings.\n        parseOptimizationData(optData);\n        // Check input consistency.\n        checkParameters();\n        // Allow subclasses to reset their own internal state.\n        setUp();\n        // Perform computation.\n        return doOptimize();\n    }",
+            "start_line": 225
+          },
+          {
+            "end_line": 522,
+            "file": "src/main/java/org/apache/commons/math3/optimization/general/AbstractLeastSquaresOptimizer.java",
+            "replacement": "    @Override\n    protected void setUp() {\n        super.setUp();\n\n        // Reset counter.\n        jacobianEvaluations = 0;\n\n        // Square-root of the weight matrix.\n        weightMatrixSqrt = squareRoot(getWeight());\n\n        // Store least squares problem characteristics.\n        // XXX The conversion won't be necessary when the generic argument of\n        // the base class becomes \"MultivariateDifferentiableVectorFunction\".\n        // XXX \"jF\" is not strictly necessary anymore but is currently more\n        // efficient than converting the value returned from \"getObjectiveFunction()\"\n        // every time it is used.\n        jF = FunctionUtils.toMultivariateDifferentiableVectorFunction((DifferentiableMultivariateVectorFunction) getObjectiveFunction());\n\n        // Arrays shared with \"private\" and \"protected\" methods.\n        point = getStartPoint();\n        rows = getTarget().length;\n        cols = point.length;\n    }",
+            "start_line": 500
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-13/llm-0",
+        "failure_hash": "39ae7c9d55ad946fb18b0da574eaf95cfbedeb9c9b556fd90121a88476d9b50f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ],
+    "spectrum": [
+      {
+        "context_hash": "220fcbe8d7a1a38f714c531176411c411ea5e71a5e39c22692432323199f45e9",
+        "detail": "",
+        "edits": [
+          {
+            "end_line": 198,
+            "file": "src/main/java/org/apache/commons/math3/optimization/fitting/CurveFitter.java",
+            "replacement": "    public double[] fit(int maxEval, T f, final double[] initialGuess) {\n        // prepare least squares problem\n        double[] target  = new double[observations.size()];\n        double[] weights = new double[observations.size()];\n        int i = 0;\n        for (WeightedObservedPoint point : observations) {\n            target[i]  = point.getY();\n            weights[i] = point.getWeight();\n            ++i;\n        }\n\n        // perform the fit\n        final PointVectorValuePair optimum;\n        if (optimizer == null) {\n            // to be removed in 4.0\n            optimum = oldOptimizer.optimize(maxEval, new OldTheoreticalValuesFunction(f),\n                                            target, weights, initialGuess);\n        } else {\n            optimum = optimizer.optimize(maxEval, new TheoreticalValuesFunction(f),\n                                         target, weights, initialGuess);\n        }\n\n        // extract the coefficients\n        return optimum.getPointRef();\n    }",
+            "start_line": 173
+          }
+        ],
+        "evaluation_checkout": "<REPO>/work/final/attempts/Math-13/spectrum-0",
+        "failure_hash": "39ae7c9d55ad946fb18b0da574eaf95cfbedeb9c9b556fd90121a88476d9b50f",
+        "sample": 0,
+        "status": "FAILS_TRIGGER"
+      }
+    ]
+  }
+}
