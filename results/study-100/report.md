@@ -12,17 +12,17 @@ Finding faulty code does not guarantee a correct repair. We compare Ochiai, LLM-
 
 Fault localization identifies buggy code; program repair changes it to restore intended behavior. Spectrum-based localization uses passing and failing test coverage, while a large language model (LLM) interprets source and failure evidence. Combining these signals may improve diagnosis, but a repair must also preserve other behavior.
 
-We ask: RQ1, how do spectrum-based, LLM-only and combined localization compare? RQ2, do their hints improve one-shot repair (one answer without feedback or revision) over direct generation? RQ3, how does a stronger model compare with a weaker model given the same source context? We contribute a controlled pipeline and paired measurements of localization accuracy, test plausibility and reference-based patch assessment. The code and study data are available in our repository [8].
+We ask: RQ1, how do spectrum-based, LLM-only and combined localization compare? RQ2, do their hints improve one-shot repair (one answer without feedback or revision) over direct generation? RQ3, how does a stronger model compare with a weaker model given the same source context? We contribute a controlled pipeline and paired measurements of localization accuracy, test plausibility and reference-based patch assessment. The code and study data are available in our repository [1].
 
 ## 2 Related Work
 
-Statistical and combined localization. Defects4J provides real Java bugs and tests [1]; Ochiai ranks code using test coverage [2]. Zou et al. train a model to merge scores from seven localization families, each estimating how likely a statement is faulty. It ranks a faulty statement first for 72 of 357 faults, versus 24 for the best individual technique, a 200% increase [3]. Unlike this learned combination, we give spectrum ranks directly to an LLM.
+Statistical and combined localization. Defects4J provides real Java bugs and tests [2]; Ochiai ranks code using test coverage [3]. Zou et al. train a model to merge scores from seven localization families, each estimating how likely a statement is faulty. It ranks a faulty statement first for 72 of 357 faults, versus 24 for the best individual technique, a 200% increase [4]. Unlike this learned combination, we give spectrum ranks directly to an LLM.
 
-LLM-based repair. Xia et al. compare nine models on five datasets [4]. On Defects4J 1.2, whole-function generation with Codex yields 102 test-passing fixes, of which 63 are judged correct. They also find that supplying the surrounding code and asking the model to fill only the missing fragment increases the proportion of correct patches. Their models sample multiple candidates; we use one answer per condition with fixed source and edit rules.
+LLM-based repair. Xia et al. compare nine models on five datasets [5]. On Defects4J 1.2, whole-function generation with Codex yields 102 test-passing fixes, of which 63 are judged correct. They also find that supplying the surrounding code and asking the model to fill only the missing fragment increases the proportion of correct patches. Their models sample multiple candidates; we use one answer per condition with fixed source and edit rules.
 
-LLM-based localization. Kang et al.’s AutoFL uses test coverage and repository navigation to identify faulty methods [5]. With GPT-3.5, it improves method Top-1 accuracy over Ochiai by 19.7% on Defects4J, a relative increase. This improves diagnosis; we ask whether better rankings also improve repair when the supplied code is fixed.
+LLM-based localization. Kang et al.’s AutoFL uses test coverage and repository navigation to identify faulty methods [6]. With GPT-3.5, it improves method Top-1 accuracy over Ochiai by 19.7% on Defects4J, a relative increase. This improves diagnosis; we ask whether better rankings also improve repair when the supplied code is fixed.
 
-Patch validity. Qi et al. find that GenProg repairs only 2 of 105 defects correctly despite 55 reported fixes; many patches remove functionality or fail proper validation [6]. Their findings motivate checking both test results and preserved behavior. We therefore report test results separately from reference-based patch assessment.
+Patch validity. Qi et al. find that GenProg repairs only 2 of 105 defects correctly despite 55 reported fixes; many patches remove functionality or fail proper validation [7]. Their findings motivate checking both test results and preserved behavior. We therefore report test results separately from reference-based patch assessment.
 
 ## 3 Approach and Study Methodology
 
@@ -58,7 +58,7 @@ The midpoint’s 60-bug prototype exposed missing context, unsupported edits and
 
 The 100 Defects4J 3.0.1 bugs span JFreeChart (Chart, 19), Apache Commons Lang (Lang, 30), Apache Commons Math (Math, 34) and Joda-Time (Time, 17). All known faulty methods are supplied; 68 bugs have eligible changed/deleted-line targets. Both models receive the same bugs and frozen source. This new cohort is not directly comparable with the midpoint’s 60 bugs.
 
-We compare weaker Qwen2.5-Coder 7B with stronger GPT-5.4 mini (gpt-5.4-mini-2026-03-17) [7]; these labels describe performance here. Both use temperature zero and a 4,096-token output cap. Qwen runs locally with a 32,768-token window, 28,160-token input allowance and seed 20261009. GPT uses the API without a seed or recorded reasoning tokens; its larger window adds no source.
+We compare weaker Qwen2.5-Coder 7B with stronger GPT-5.4 mini (gpt-5.4-mini-2026-03-17) [8]; these labels describe performance here. Both use temperature zero and a 4,096-token output cap. Qwen runs locally with a 32,768-token window, 28,160-token input allowance and seed 20261009. GPT uses the API without a seed or recorded reasoning tokens; its larger window adds no source.
 
 Each model makes 600 requests and 400 repair attempts. Source and failure evidence are identical. The 400 fixed-input messages match across models; 200 repair prompts use each model’s newly generated rankings. Provider-specific request formats preserve the same edit rules and validation.
 
@@ -145,18 +145,18 @@ LLM-based localization outperforms spectrum, but combining the signals adds no c
 
 ## References
 
-[1] R. Just, D. Jalali and M. D. Ernst. “[Defects4J: A Database of Existing Faults to Enable Controlled Testing Studies for Java Programs.](https://doi.org/10.1145/2610384.2628055)” ISSTA, 2014.
+[1] A. Devpura and T. Novitsky. “[DebugLab: Code and Study Data.](https://github.com/AanshDevpura/debuglab)” GitHub repository, 2026.
 
-[2] R. Abreu, P. Zoeteweij and A. J. C. van Gemund. “[An Evaluation of Similarity Coefficients for Software Fault Localization.](https://doi.org/10.1109/PRDC.2006.18)” PRDC, 2006.
+[2] R. Just, D. Jalali and M. D. Ernst. “[Defects4J: A Database of Existing Faults to Enable Controlled Testing Studies for Java Programs.](https://doi.org/10.1145/2610384.2628055)” ISSTA, 2014.
 
-[3] D. Zou, J. Liang, Y. Xiong, M. D. Ernst and L. Zhang. “[An Empirical Study of Fault Localization Families and Their Combinations.](https://homes.cs.washington.edu/~mernst/pubs/fl-families-tse2019.pdf)” IEEE Transactions on Software Engineering, 47(2), 332–347, 2021.
+[3] R. Abreu, P. Zoeteweij and A. J. C. van Gemund. “[An Evaluation of Similarity Coefficients for Software Fault Localization.](https://doi.org/10.1109/PRDC.2006.18)” PRDC, 2006.
 
-[4] C. S. Xia, Y. Wei and L. Zhang. “[Automated Program Repair in the Era of Large Pre-trained Language Models.](https://lingming.cs.illinois.edu/publications/icse2023a.pdf)” ICSE, 2023.
+[4] D. Zou, J. Liang, Y. Xiong, M. D. Ernst and L. Zhang. “[An Empirical Study of Fault Localization Families and Their Combinations.](https://homes.cs.washington.edu/~mernst/pubs/fl-families-tse2019.pdf)” IEEE Transactions on Software Engineering, 47(2), 332–347, 2021.
 
-[5] S. Kang, G. An and S. Yoo. “[A Quantitative and Qualitative Evaluation of LLM-Based Explainable Fault Localization.](https://coinse.github.io/publications/pdfs/Kang2024ay.pdf)” Proceedings of the ACM on Software Engineering, FSE, 2024.
+[5] C. S. Xia, Y. Wei and L. Zhang. “[Automated Program Repair in the Era of Large Pre-trained Language Models.](https://lingming.cs.illinois.edu/publications/icse2023a.pdf)” ICSE, 2023.
 
-[6] Z. Qi, F. Long, S. Achour and M. Rinard. “[An Analysis of Patch Plausibility and Correctness for Generate-and-Validate Patch Generation Systems.](https://people.csail.mit.edu/rinard/paper/issta15.pdf)” ISSTA, 2015.
+[6] S. Kang, G. An and S. Yoo. “[A Quantitative and Qualitative Evaluation of LLM-Based Explainable Fault Localization.](https://coinse.github.io/publications/pdfs/Kang2024ay.pdf)” Proceedings of the ACM on Software Engineering, FSE, 2024.
 
-[7] OpenAI. “[GPT-5.4 mini.](https://developers.openai.com/api/docs/models/gpt-5.4-mini)” Model documentation; snapshot checked November 2, 2026.
+[7] Z. Qi, F. Long, S. Achour and M. Rinard. “[An Analysis of Patch Plausibility and Correctness for Generate-and-Validate Patch Generation Systems.](https://people.csail.mit.edu/rinard/paper/issta15.pdf)” ISSTA, 2015.
 
-[8] A. Devpura and T. Novitsky. “[DebugLab: Code and Study Data.](https://github.com/AanshDevpura/debuglab)” GitHub repository, 2026.
+[8] OpenAI. “[GPT-5.4 mini.](https://developers.openai.com/api/docs/models/gpt-5.4-mini)” Model documentation; snapshot checked November 2, 2026.
