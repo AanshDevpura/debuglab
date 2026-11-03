@@ -12,7 +12,7 @@ Finding faulty code does not guarantee a correct repair. We compare Ochiai, LLM-
 
 Fault localization identifies buggy code; program repair changes it to restore intended behavior. Spectrum-based localization uses passing and failing test coverage, while a large language model (LLM) interprets source and failure evidence. Combining these signals may improve diagnosis, but a repair must also preserve other behavior.
 
-We ask: RQ1, how do spectrum-based, LLM-only and combined localization compare? RQ2, do their hints improve one-shot repair (one answer without feedback or revision) over direct generation? RQ3, how does a stronger model compare with a weaker model given the same source context? We contribute a controlled pipeline and paired measurements of localization accuracy, test plausibility and reference-based patch assessment.
+We ask: RQ1, how do spectrum-based, LLM-only and combined localization compare? RQ2, do their hints improve one-shot repair (one answer without feedback or revision) over direct generation? RQ3, how does a stronger model compare with a weaker model given the same source context? We contribute a controlled pipeline and paired measurements of localization accuracy, test plausibility and reference-based patch assessment. The code and study data are available in our repository [8].
 
 ## 2 Related Work
 
@@ -158,3 +158,5 @@ LLM-based localization outperforms spectrum, but combining the signals adds no c
 [6] Z. Qi, F. Long, S. Achour and M. Rinard. “[An Analysis of Patch Plausibility and Correctness for Generate-and-Validate Patch Generation Systems.](https://people.csail.mit.edu/rinard/paper/issta15.pdf)” ISSTA, 2015.
 
 [7] OpenAI. “[GPT-5.4 mini.](https://developers.openai.com/api/docs/models/gpt-5.4-mini)” Model documentation; snapshot checked November 2, 2026.
+
+[8] A. Devpura and T. Novitsky. “[DebugLab: Code and Study Data.](https://github.com/AanshDevpura/debuglab)” GitHub repository, 2026.
