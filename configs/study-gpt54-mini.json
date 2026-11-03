@@ -1,0 +1,33 @@
+{
+  "bug_timeout": 7200,
+  "bugs_path": "configs/bugs-study-100.json",
+  "call_depth": 2,
+  "cleanup_checkouts": true,
+  "command_timeout": 900,
+  "defects4j": "work/tools/defects4j/framework/bin/defects4j",
+  "dependency_context": true,
+  "hint_candidates": 30,
+  "independent_statements": true,
+  "java_source_guidance": true,
+  "method_interface": true,
+  "model": {
+    "api_key_env": "OPENAI_API_KEY",
+    "base_url": "https://api.openai.com/v1",
+    "context_window": 400000,
+    "json_mode": true,
+    "max_output_tokens": 4096,
+    "model": "gpt-5.4-mini-2026-03-17",
+    "safety_margin": 512,
+    "schema_mode": true,
+    "seed": null,
+    "temperature": 0.0,
+    "timeout": 600,
+    "token_parameter": "max_completion_tokens",
+    "tokenizer": "conservative"
+  },
+  "output_root": "outputs/study-gpt54-mini/runs",
+  "retrieval_candidates": 300,
+  "samples": 1,
+  "strict_method_replacements": true,
+  "work_root": "work/study-gpt54-mini/bugs"
+}

@@ -1,0 +1,22 @@
+{
+  "model": "gpt",
+  "bug": "Lang-14",
+  "group": 2,
+  "conditions": [
+    "llm"
+  ],
+  "assessment": "supported",
+  "assessment_basis": "Supported alternative: explicit length check plus contentEquals or regionMatches covers reference equality cases. Null/identity behavior retained. Differential character-content checks found no differences.",
+  "methods": [
+    {
+      "id": "src/main/java/org/apache/commons/lang3/StringUtils.java::org.apache.commons.lang3.StringUtils#equals@781",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public static boolean equals(CharSequence cs1, CharSequence cs2) {\n        if (cs1 == cs2) {\n            return true;\n        }\n        if (cs1 == null || cs2 == null) {\n            return false;\n        }\n        if (cs1 instanceof String && cs2 instanceof String) {\n            return cs1.equals(cs2);\n        }\n        return CharSequenceUtils.regionMatches(cs1, false, 0, cs2, 0, Math.max(cs1.length(), cs2.length()));\n    }",
+      "original_text": "    public static boolean equals(CharSequence cs1, CharSequence cs2) {\n        if (cs1 == cs2) {\n            return true;\n        }\n        if (cs1 == null || cs2 == null) {\n            return false;\n        }\n            return cs1.equals(cs2);\n    }",
+      "candidate_text": "    public static boolean equals(CharSequence cs1, CharSequence cs2) {\n        if (cs1 == cs2) {\n            return true;\n        }\n        if (cs1 == null || cs2 == null) {\n            return false;\n        }\n        if (cs1.length() != cs2.length()) {\n            return false;\n        }\n        if (cs1 instanceof String && cs2 instanceof String) {\n            return cs1.equals(cs2);\n        }\n        return CharSequenceUtils.regionMatches(cs1, false, 0, cs2, 0, cs1.length());\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

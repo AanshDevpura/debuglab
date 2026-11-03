@@ -1,99 +1,46 @@
 # DebugLab
 
-DebugLab evaluates LLM-assisted fault localization and automated program repair on
-real Java bugs from Defects4J. It compares spectrum-based localization, LLM-only
-localization and their combination, then checks one generated patch per repair
-condition with real compilation and tests.
+A reproducible, one-shot study of fault localization and Java program repair on
+Defects4J. DebugLab compares Ochiai spectrum-based localization, LLM-only
+localization and their combination, then evaluates one patch under each of four
+repair conditions. Models receive the same frozen source and no test feedback.
 
-The selected evaluation set is a list of Defects4J bug IDs in
-[`configs/bugs.json`](configs/bugs.json).
+## Final report and data
 
-## Evaluation results
+- [Final research report](results/study-100/report.md), with figures and references.
+- [Results, evidence guide and limitations](results/study-100/README.md).
+- [Machine-readable summary](results/study-100/summary.json).
+- [Editable Google Doc](https://docs.google.com/document/d/1prFTs354ZOPsbP989uwf3ajJfEMOTJnEU7c4Mo4OceE).
 
-See the [evaluation report](results/final/README.md) for localization, retrieval
-coverage, repair outcomes, evaluation settings and limitations for the selected
-60-bug evaluation.
+The final study compares the weaker **Qwen2.5-Coder 7B** with the stronger
+**GPT-5.4 mini** on the same 100 selected bugs, with 600 calls and 400 repair
+attempts per model. Review classifies 30 Qwen and 124 GPT repairs as valid, versus
+43 and 160 passing the original test suites. Passing tests alone is not correctness.
 
-## What the LLM actually does
+The earlier [60-bug midpoint evaluation](results/final/README.md) is retained as
+historical evidence. It uses a different cohort/protocol and is not pooled with the
+final study. Experimental agentic prototypes and preparation drafts are excluded
+from this release; iterative repair remains future work in the paper.
 
-### 1. Build a shared debugging input
+## Verify the published numbers, without models or Java
 
-The harness checks out the original buggy version, reproduces failing tests and
-collects per-test executable-line coverage. Ochiai converts coverage into
-suspiciousness rankings without using an LLM.
+Python 3.11+ is sufficient. This command uses only the standard library and makes
+no network requests:
 
-Separately, retrieval selects relevant complete methods and compact class
-information using failing-test text, stack traces, lexical matches, an unranked
-executed-method set and conservative call proximity. Retrieval cannot read Ochiai
-scores or known fixes. The selected source is numbered, assigned short method
-handles such as `M001`, budgeted and frozen once per bug.
-
-### 2. Ask for fault rankings
-
-The configured model receives two separate localization requests:
-
-- **LLM-only:** source context plus failing-test/error information.
-- **Combined:** the same input plus spectrum-based suspiciousness hints.
-
-The model returns JSON ranking up to ten methods, with up to five original line
-numbers inside each method. For example:
-
-```json
-{"methods": [{"method_id": "M001", "lines": [123, 126]}]}
+```sh
+python3 scripts/verify-study-data.py
 ```
 
-The parser checks handles, line ranges and duplicates, then converts the response
-into original method and statement rankings. Invalid rankings remain recorded
-failures. Ground-truth fixes are used only by a separate evaluation process.
+It checks evidence hashes, all selected denominators, paired input hashes,
+localization Top-1/3/5, all repair statuses, review assignments, full-suite proof
+summaries and the final paper totals. It does not rerun native tests or establish
+correctness for every possible input. See the [evidence guide](results/study-100/README.md).
 
-### 3. Ask for four independent patches
+## Install the harness
 
-The same configured model makes four **separate repair calls**. Every call gets
-the same frozen source and failure information. Only its localization hint changes:
-
-| Condition | Input added to the repair request |
-|---|---|
-| Direct | No explicit localization ranking |
-| Spectrum-guided | Ochiai method/statement rankings |
-| LLM-guided | The validated LLM-only rankings |
-| Combined-guided | The validated combined rankings |
-
-The repair model uses rankings as guidance and may choose any complete method
-available in the shared context. It returns one JSON patch containing one
-to three distinct method handles and **complete replacement Java methods or
-constructors**, including their original signatures and braces. It does not run
-shell commands, edit files itself or receive compiler/test feedback.
-
-The harness resolves each handle to its original production file and inclusive
-line range. It replaces those method bodies and declarations with the generated
-strings, applying ranges from the bottom of a file upward so line numbers do not
-drift. No test edits, arbitrary paths, duplicate handles or overlapping ranges are
-accepted. Generated source is not hand-corrected.
-
-### 4. Check each patch on an isolated checkout
-
-Each condition starts from a fresh copy of the original buggy program. Validation
-stops at the first failed stage:
-
-1. Parse JSON and validate the original-source edit mappings.
-2. Parse the modified Java source to check syntax.
-3. Compile with the benchmark's native build.
-4. Run the original triggering tests.
-5. Run the **complete** native test suite.
-
-A patch is `PLAUSIBLE` only if the full `defects4j test` command, without `-t`,
-returns code 0, does not time out and reports a final `Failing tests: 0`. Exit code
-0 alone is insufficient. Failures are classified as `INVALID_FORMAT`,
-`INVALID_APPLY`, `SYNTAX_ERROR`, `COMPILE_ERROR`, `FAILS_TRIGGER`, `FAILS_SUITE`,
-`MODEL_ERROR` or `TIMEOUT`. All remain in the results. There is no feedback-driven
-revision, repeated sampling or best-of selection.
-
-## Install
-
-Use Python 3.11 and Java 11 on macOS or Linux. Native experiments also need Git,
-Subversion, Perl and `cpanm`, as documented by
-[Defects4J](https://github.com/rjust/defects4j#setting-up-defects4j). The measured
-benchmark version is 3.0.1.
+Use Python 3.11 and a Defects4J-supported Java installation (the measured native
+setup uses Java 11), plus Git, Subversion, Perl and `cpanm`. Model weights and
+benchmark tools are separate downloads.
 
 ```sh
 git clone https://github.com/AanshDevpura/debuglab.git
@@ -102,182 +49,159 @@ python3.11 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements-lock.txt
 pip install --no-deps -e .
-
 mkdir -p work/tools
 git clone https://github.com/rjust/defects4j.git work/tools/defects4j
-(
-  cd work/tools/defects4j
-  cpanm --installdeps .
-  ./init.sh
-)
+(cd work/tools/defects4j && cpanm --installdeps . && ./init.sh)
 ```
 
-Set `JAVA_HOME` and `PATH` to your Java 11 installation. Check that Defects4J reports
-version 3.0.1 when reproducing the measured results. The default executable is
-`work/tools/defects4j/framework/bin/defects4j`; another path can be configured.
-
-Install the coverage dependencies at these filenames:
+Use Defects4J **3.0.1** to match the study; follow its
+[setup instructions](https://github.com/rjust/defects4j#setting-up-defects4j) and
+set `JAVA_HOME`/`PATH`. The default executable is
+`work/tools/defects4j/framework/bin/defects4j`.
 
 ```sh
 mkdir -p work/tools/jacoco
-curl --fail --location \
-  https://repo.maven.apache.org/maven2/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar \
-  --output work/tools/jacoco/agent.jar
-curl --fail --location \
-  https://repo.maven.apache.org/maven2/org/jacoco/org.jacoco.cli/0.8.12/org.jacoco.cli-0.8.12-nodeps.jar \
-  --output work/tools/jacoco/cli.jar
-
+curl --fail --location https://repo.maven.apache.org/maven2/org/jacoco/org.jacoco.agent/0.8.12/org.jacoco.agent-0.8.12-runtime.jar --output work/tools/jacoco/agent.jar
+curl --fail --location https://repo.maven.apache.org/maven2/org/jacoco/org.jacoco.cli/0.8.12/org.jacoco.cli-0.8.12-nodeps.jar --output work/tools/jacoco/cli.jar
 source scripts/env.sh
 java -version
 defects4j info -p Lang
 ```
 
-The environment script discovers optional workspace-local tools and sets the
-benchmark timezone to `America/Los_Angeles`. Always use this timezone for native
-runs. Python dependencies are pinned; model weights and native tools are separate.
+`scripts/env.sh` discovers optional workspace tools and fixes the benchmark timezone
+to `America/Los_Angeles`. This is an experiment setting, not the user's timezone.
 
-## Run
+## Run a new evaluation
 
-### Local 7B model
+### Qwen2.5-Coder 7B
 
-Install and start [Ollama](https://docs.ollama.com/quickstart), then create the alias:
+Install/start [Ollama](https://docs.ollama.com/quickstart), then:
 
 ```sh
 ollama pull qwen2.5-coder:7b
 ollama create debuglab-qwen-coder-32k -f configs/ollama-7b.Modelfile
+source scripts/env.sh
+debuglab run --config configs/study-qwen.json --output outputs/qwen-run-1
 ```
 
-Run **every bug in the selected list** with one command:
+For a smaller native check, select one bug in a fresh output directory:
 
 ```sh
-debuglab run
+debuglab run --config configs/study-qwen.json --bug Time-23 --output outputs/qwen-smoke
 ```
 
-Or run just one selected bug in a separate output directory:
+The checked-in study configs enable independent statement rankings, compact
+same-class helper context and strict original-method replacements. Qwen uses a
+32,768-token context, 4,096-token output cap, temperature 0 and seed 20261009.
+The model tag can change upstream; the published data records the measured setup.
+
+### GPT-5.4 mini
+
+Use the pinned `gpt-5.4-mini-2026-03-17` model and a funded API project. Set the
+key in your environment, never in JSON or Git. To avoid shell history:
 
 ```sh
-debuglab run --bug Chart-25 --output outputs/smoke
+read -s OPENAI_API_KEY
+export OPENAI_API_KEY
+source scripts/env.sh
+python scripts/run-hosted.py --output outputs/gpt-run-1
 ```
 
-A full run submits six model requests per bug: two localizations and four repairs.
-The default output directory is `outputs/local-7b`. The local configuration uses a
-32,768-token context, 4,096-token output budget, 512-token safety reserve,
-temperature 0 and seed 20261009. The matching tokenizer supplies local chat-template
-counts; the input limit is 28,160 tokens.
+The wrapper runs the same one-shot coordinator with the study's **$60 reservation
+cap**, at most 600 dispatches, unique call paths, no retries and preserved transport
+receipts. Reservations use conservative input bytes and the maximum output allowance;
+they are not refunded. The cap covers this run, not account-wide spending or taxes.
+It uses the study pricing assumptions ($0.75/M input and $4.50/M output tokens),
+which must be checked before a future paid reproduction. Inspect `TRANSPORT_STOP.json` and
+receipts after an API/budget halt; the wrapper refuses automatic continuation.
+Use the wrapper rather than calling `debuglab run` directly for the paid model.
 
-### Resume and report
+The API uses temperature 0, no seed, up to 4,096 output tokens and strict structured
+output. Its larger context window is used for conservative byte accounting; the
+study did **not** supply extra source to GPT. Provider schema encoding omits
+unsupported uniqueness keywords, but the parser still rejects duplicate rankings.
 
-Repeat the **same run command** to resume. The runner locks the output directory,
-freezes the configuration, bug list and source before calls, skips completed bugs
-and preserves request caches. Never delete fingerprints or regenerate an
-interrupted/completed call. A pending request without a saved response becomes an
-explicit failure rather than permission to resample.
+### Resume, reports and paired inputs
 
-To regenerate reports from saved evidence, without model calls:
+Use the exact same command/config to resume an interrupted native evaluation.
+Do not change source, model settings or selection within a run. Saved responses and
+`IN_FLIGHT` requests are never regenerated. API halts require diagnosis, not a retry
+or a fresh sample to replace a disappointing answer.
 
 ```sh
-debuglab report --output outputs/local-7b
+debuglab report --output outputs/qwen-run-1
 ```
 
-Reports contain pooled method/line Top-1/3/5, infinite and ranked-only mean ranks,
-context recall, syntax-validity rates, all repair statuses, missing selected bugs,
-and both context-conditioned subsets. Incomplete runs are explicitly labeled;
-partial rates are not presented as completed-set results.
+This regenerates sealed reports from saved artifacts, without model calls.
+Reports contain eligible and unranked counts, Top-1/3/5, context-conditional metrics
+and all repair statuses. Gold evaluation runs separately from generation.
 
-## Extensibility
-
-The two planned extensions are a stronger hosted model and a larger evaluation
-set. Model settings and the bug list are configured independently.
-
-### Hosted stronger model
-
-Copy [`configs/hosted.example.json`](configs/hosted.example.json) to an ignored
-local configuration, then edit the provider details:
+Fresh executions are not guaranteed to retrieve byte-identical source. For the
+paper, original debugging artifacts were copied before inference and their hashes
+matched across both models. To reproduce that control with new runs, prepare the
+second run using `debuglab.replay.reuse` on the first run's completed `runs/` folders
+before dispatch. For example, after completing `outputs/qwen-run-1`:
 
 ```sh
-cp configs/hosted.example.json configs/hosted.local.json
+python - <<'PYCODE'
+from pathlib import Path
+from debuglab.cohort_run import prepare_run
+from debuglab.replay import reuse
+from debuglab.selection import read_bugs
+
+cfg, saved = prepare_run(Path("configs/study-gpt54-mini.json"),
+                         output=Path("outputs/gpt-paired-1"))
+for bug in read_bugs(Path(cfg.bugs_path)):
+    reuse(cfg, bug, Path("outputs/qwen-run-1/runs"))
+PYCODE
+python scripts/run-hosted.py --output outputs/gpt-paired-1
 ```
 
-Set `base_url` to a Chat Completions-compatible endpoint, `model` to the hosted
-model ID, and the context/output budgets to values supported by that model. Put
-credentials in the environment variable named by `api_key_env`:
+This copies original buggy inputs/context, not answers, gold or outcomes. Preserve equal contexts and compare their hashes; two independent fresh
+retrieval runs alone do not establish this control.
+
+The 100-bug list is reference-and-retrieval-conditioned: all known faulty methods
+fit the supplied source and the known fixes fit at most three original methods.
+This is not an unbiased Defects4J sample or guaranteed model success. The offline
+`debuglab_gold.interface_readiness` module certifies reference expressibility;
+`python -m debuglab_gold.interface_readiness --help` documents its required inputs.
+
+## Protocol
+
+1. Reproduce original failing tests, collect per-test coverage and compute Ochiai.
+2. Retrieve complete buggy methods and compact declarations from failure text,
+   stack traces, lexical relevance and an unranked executed-method set, without gold.
+   At most two unambiguous same-class helpers follow an accepted caller within budget.
+3. Freeze source once per bug. Make two independent localization calls, LLM-only and
+   combined. Ochiai is a separate ranker that needs no model call.
+4. Make four separate repair calls: direct, spectrum-guided, LLM-guided and
+   combined-guided. Every condition gets the same source; only hints differ.
+5. Parse the first answer, enforce at most three complete original-API method or
+   constructor replacements, then check Java syntax, compile, run trigger tests
+   and run the full suite on isolated original checkouts. No revisions or feedback.
+
+Added helpers, fields and classes are outside this protocol. Consistent parameter
+binding renames are allowed. Native plausibility requires `defects4j test` without
+`-t`, exit 0, no timeout and a final `Failing tests: 0`. Every format, syntax,
+compilation, behavioral and timeout failure stays in the selected denominator.
+Reference-based review is a separate post-run assessment, not model feedback.
+
+## Development checks
 
 ```sh
-read -s DEBUGLAB_API_KEY
-export DEBUGLAB_API_KEY
-debuglab run --config configs/hosted.local.json
-```
-
-The example uses `tokenizer: "conservative"`: UTF-8 byte counts plus estimated
-message framing, explicitly labeled **estimates**.
-For an open-weight hosted model, set `tokenizer` to its matching Hugging Face
-identifier or local tokenizer directory to use its chat template instead. The
-server may use a different template; reported token usage and discrepancies are
-retained separately. The estimator cannot guarantee an unknown server's framing.
-Input-budget overflows are recorded as failed attempts.
-
-Provider controls are limited to request compatibility: `token_parameter` can be
-`max_tokens` or `max_completion_tokens`; `seed` and `temperature` can be `null` to
-omit them. Enable `json_mode` or `schema_mode` only if supported by the provider.
-Strict local parsing remains enabled regardless of server formatting support.
-API errors are cached as failed attempts, preserving one-shot evaluation.
-
-### More bugs
-
-Edit the flat JSON list in `configs/bugs.json`, or pass a different list:
-
-```sh
-debuglab run --bugs configs/more-bugs.json --output outputs/more-bugs
-```
-
-Lists contain Defects4J IDs such as `["Lang-1", "Math-3", "Cli-1"]`; duplicates
-and unsafe IDs are rejected. The runner accepts evaluation lists across Defects4J
-projects.
-Additional projects must still reproduce successfully with the benchmark toolchain;
-preparation failures remain in the selected set and appear as incomplete.
-
-Changing the model, bug list or source requires a **new output directory**. All
-four repair conditions still share context within a bug. A different model,
-tokenizer or budget can change which methods fit; compare context hashes and
-retrieval recall when interpreting cross-model results.
-
-## Verify
-
-```sh
-# Portable checks; no model or benchmark installation needed
 ruff check .
 ruff format --check .
 pytest -q -m 'not integration'
+python scripts/check-hosted-guard.py
+python scripts/verify-study-data.py
 scripts/check-release
 
-# Includes real Java/Defects4J integration checks after native setup
+# After installing Java and Defects4J; no model calls:
 source scripts/env.sh
 scripts/verify
 ```
 
-GitHub Actions runs the portable checks. The portable suite uses mock model
-responses; native integration checks use Java and Defects4J.
-
-## Files and evidence
-
-| Path | Purpose |
-|---|---|
-| `configs/bugs.json` | One selected evaluation list |
-| `configs/local.json`, `configs/hosted.example.json` | Local and hosted model settings |
-| `src/debuglab/cli.py`, `cohort_run.py`, `study.py` | Commands, frozen runs, workers and deadlines |
-| `src/debuglab/pipeline.py` | Per-bug source preparation, localization and four repairs |
-| `src/debuglab/model.py`, `interface.py` | Model calls, token accounting and strict method mappings |
-| `src/debuglab/source.py`, `retrieval.py`, `spectrum.py` | Java indexing, context selection and Ochiai |
-| `src/debuglab/edits.py`, `harness.py` | Isolated patch application and native validation |
-| `java/SpectrumRunner.java` | JUnit/JaCoCo per-test coverage helper |
-| `src/debuglab_gold/` | Separate ground-truth evaluation, reporting and comparison utilities |
-| `tests/` | Portable and native regression tests |
-| `results/final/` | Measured evaluation results and analysis |
-| `outputs/<run>/` | Ignored run manifest, snapshots, reports, worker logs and archives |
-| `outputs/<run>/runs/<bug>/` | Context, model calls, canonical edits, test logs and outcomes |
-| `work/` | Ignored local tools, gold evaluation data and disposable checkouts |
-
-Each local run retains raw prompts and responses, original-numbered edits, test
-proofs and hashes for analysis. Ground-truth fixes are isolated in the evaluator,
-never supplied to retrieval or generation. Git tracks source, tests and compact
-result tables; `work/` and `outputs/` hold local runtime data and run evidence.
+CI runs portable tests, transport-guard tests, evidence verification and the release
+boundary check. Large runtime checkouts, raw request/response archives, credentials,
+paper scratch files and models stay under ignored local paths. The export command
+and publication scope are documented in the results guide.

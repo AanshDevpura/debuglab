@@ -1,0 +1,25 @@
+{
+  "model": "qwen",
+  "bug": "Lang-33",
+  "group": 1,
+  "conditions": [
+    "combined",
+    "direct",
+    "llm",
+    "spectrum"
+  ],
+  "assessment": "supported",
+  "assessment_basis": "Supported alternative: if/else null assignment is the reference null-safe ternary expanded; same array, order and getClass calls.",
+  "methods": [
+    {
+      "id": "src/main/java/org/apache/commons/lang3/ClassUtils.java::org.apache.commons.lang3.ClassUtils#toClass@902",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public static Class<?>[] toClass(Object[] array) {\n        if (array == null) {\n            return null;\n        } else if (array.length == 0) {\n            return ArrayUtils.EMPTY_CLASS_ARRAY;\n        }\n        Class<?>[] classes = new Class[array.length];\n        for (int i = 0; i < array.length; i++) {\n            classes[i] = array[i] == null ? null : array[i].getClass();\n        }\n        return classes;\n    }",
+      "original_text": "    public static Class<?>[] toClass(Object[] array) {\n        if (array == null) {\n            return null;\n        } else if (array.length == 0) {\n            return ArrayUtils.EMPTY_CLASS_ARRAY;\n        }\n        Class<?>[] classes = new Class[array.length];\n        for (int i = 0; i < array.length; i++) {\n            classes[i] = array[i].getClass();\n        }\n        return classes;\n    }",
+      "candidate_text": "public static Class<?>[] toClass(Object[] array) {\n    if (array == null) {\n        return null;\n    } else if (array.length == 0) {\n        return ArrayUtils.EMPTY_CLASS_ARRAY;\n    }\n    Class<?>[] classes = new Class[array.length];\n    for (int i = 0; i < array.length; i++) {\n        if (array[i] == null) {\n            classes[i] = null;\n        } else {\n            classes[i] = array[i].getClass();\n        }\n    }\n    return classes;\n}"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

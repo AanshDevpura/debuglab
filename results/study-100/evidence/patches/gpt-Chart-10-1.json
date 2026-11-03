@@ -1,0 +1,25 @@
+{
+  "model": "gpt",
+  "bug": "Chart-10",
+  "group": 1,
+  "conditions": [
+    "combined",
+    "direct",
+    "llm",
+    "spectrum"
+  ],
+  "assessment": "supported",
+  "assessment_basis": "Java tokens equal developer-fixed methods after excluding comments/whitespace; all developer-changed methods covered.",
+  "methods": [
+    {
+      "id": "source/org/jfree/chart/imagemap/StandardToolTipTagFragmentGenerator.java::org.jfree.chart.imagemap.StandardToolTipTagFragmentGenerator#generateToolTipFragment@64",
+      "reference_token_equal": true,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public String generateToolTipFragment(String toolTipText) {\n        return \" title=\\\"\" + ImageMapUtilities.htmlEscape(toolTipText) \n            + \"\\\" alt=\\\"\\\"\";\n    }",
+      "original_text": "    public String generateToolTipFragment(String toolTipText) {\n        return \" title=\\\"\" + toolTipText\n            + \"\\\" alt=\\\"\\\"\";\n    }",
+      "candidate_text": "    public String generateToolTipFragment(String toolTipText) {\n        return \" title=\\\"\" + ImageMapUtilities.htmlEscape(toolTipText)\n            + \"\\\" alt=\\\"\\\"\";\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

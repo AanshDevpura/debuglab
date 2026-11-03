@@ -8,6 +8,7 @@ from dataclasses import asdict
 
 from debuglab.edits import Edit
 from debuglab.localization import parse
+from debuglab.method_contract import validate_replacement
 from debuglab.model import messages
 from debuglab.source import Method, executable_lines
 
@@ -32,7 +33,11 @@ class MethodInterface:
         java_source_guidance: bool = False,
         source_units: list[Method] | None = None,
         executable_line_hints: bool = False,
+        independent_statements: bool = False,
+        strict_method_replacements: bool = False,
     ):
+        self.strict_method_replacements = strict_method_replacements
+        self.independent_statements = independent_statements
         self.hint_limit = hint_limit
         self.line_array_edits = line_array_edits
         self.java_source_guidance = java_source_guidance
@@ -89,6 +94,19 @@ class MethodInterface:
             "Read the failing test expectations and explain them through production behavior "
             "internally before making the smallest semantic change."
         )
+        if task == "localize" and self.independent_statements:
+            instruction = (
+                "Rank methods and executable statements independently by cause of the failure. "
+                'Return {"methods":[{"method_id":"M001"}],'
+                '"statements":[{"method_id":"M002","line":123}]}. '
+                "Rank at most 10 distinct methods and 10 distinct statements, most suspicious "
+                "first in each list. Statement order is global: it need not follow method order "
+                "and may name a method absent from the method ranking. Use only the original "
+                "executable statement starts in the supplied source. Declarations, comments "
+                "and brace-only lines are "
+                "not candidates. Return fewer entries if uncertain. Identify the faulty cause, "
+                "not merely a detector or failing assertion."
+            )
         if task == "localize" and self.executable_line_hints:
             instruction += (
                 " Choose lines only from these AST statement/condition starts; declaration, "
@@ -118,6 +136,14 @@ class MethodInterface:
                 "The harness joins lines exactly with newline separators into one replacement. "
                 "Never split one method across multiple edit blocks."
             )
+        if task == "repair" and self.strict_method_replacements:
+            instruction += (
+                " Each replacement must contain exactly one method or constructor. "
+                "Keep its original declaration, visibility, modifiers, return type, parameters "
+                "and throws clause. Do not append helper methods or class/field declarations. "
+                "If a helper must change, use its own supplied handle "
+                "within the three-method limit."
+            )
         if task == "repair" and self.java_source_guidance:
             instruction += (
                 " Check every method call against the supplied source; do not assume newer "
@@ -132,6 +158,45 @@ class MethodInterface:
         return prompt
 
     def schema(self, task: str) -> dict:
+        if task == "localize" and self.independent_statements:
+            method_item = {
+                "type": "object",
+                "properties": {"method_id": {"enum": list(self.units)}},
+                "required": ["method_id"],
+                "additionalProperties": False,
+            }
+            candidates = [
+                {
+                    "type": "object",
+                    "properties": {
+                        "method_id": {"const": key},
+                        "line": {"type": "integer", "enum": executable_lines(m)},
+                    },
+                    "required": ["method_id", "line"],
+                    "additionalProperties": False,
+                }
+                for key, m in self.units.items()
+                if executable_lines(m)
+            ]
+            return {
+                "type": "object",
+                "properties": {
+                    "methods": {
+                        "type": "array",
+                        "items": method_item,
+                        "maxItems": min(10, len(self.units)),
+                        "uniqueItems": True,
+                    },
+                    "statements": {
+                        "type": "array",
+                        "items": {"oneOf": candidates} if candidates else {"type": "object"},
+                        "maxItems": 10 if candidates else 0,
+                        "uniqueItems": True,
+                    },
+                },
+                "required": ["methods", "statements"],
+                "additionalProperties": False,
+            }
         if task == "localize":
             rows = [
                 {
@@ -191,6 +256,8 @@ class MethodInterface:
     def localization(self, raw: str) -> dict:
         try:
             data = json.loads(raw, object_pairs_hook=unique_object)
+            if self.independent_statements:
+                return self._independent_localization(data)
             if not isinstance(data, dict) or set(data) != {"methods"}:
                 raise ValueError("Expected methods object")
             if not isinstance(data["methods"], list) or len(data["methods"]) > 10:
@@ -211,6 +278,34 @@ class MethodInterface:
             )
         except (ValueError, TypeError, KeyError) as error:
             return {"method": [], "statement": [], "parse_error": str(error)}
+
+    def _independent_localization(self, data: dict) -> dict:
+        if not isinstance(data, dict) or set(data) != {"methods", "statements"}:
+            raise ValueError("Expected independent methods and statements")
+        output = {"method": [], "statement": [], "parse_error": None}
+        for field, fields, target in (
+            ("methods", {"method_id"}, "method"),
+            ("statements", {"method_id", "line"}, "statement"),
+        ):
+            rows = data[field]
+            if not isinstance(rows, list) or len(rows) > 10:
+                raise ValueError("Expected at most ten ranking entries")
+            seen = set()
+            for row in rows:
+                if not isinstance(row, dict) or set(row) != fields:
+                    raise ValueError("Incorrect ranking fields")
+                method = self.units[row["method_id"]]
+                identity = method.id
+                if target == "statement":
+                    line = row["line"]
+                    if type(line) is not int or line not in executable_lines(method):
+                        raise ValueError("Line is not an executable source candidate")
+                    identity = f"{method.file}:{line}"
+                if identity in seen:
+                    raise ValueError("Duplicate ranking entry")
+                seen.add(identity)
+                output[target].append({"id": identity, "rank": len(output[target]) + 1})
+        return output
 
     def edits(self, raw: str) -> str:
         data = json.loads(raw, object_pairs_hook=unique_object)
@@ -240,6 +335,8 @@ class MethodInterface:
                 raise ValueError("Duplicate method or nontext replacement")
             seen.add(key)
             method = self.repair_units[key]
+            if self.strict_method_replacements:
+                validate_replacement(method.text, replacement)
             canonical.append(asdict(Edit(method.file, method.start, method.end, replacement)))
         return json.dumps({"edits": canonical})
 

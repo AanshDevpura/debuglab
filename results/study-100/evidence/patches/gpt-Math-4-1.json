@@ -1,0 +1,33 @@
+{
+  "model": "gpt",
+  "bug": "Math-4",
+  "group": 1,
+  "conditions": [
+    "combined",
+    "llm",
+    "spectrum"
+  ],
+  "assessment": "supported",
+  "assessment_basis": "Java tokens equal developer-fixed methods after excluding comments/whitespace; all developer-changed methods covered.",
+  "methods": [
+    {
+      "id": "src/main/java/org/apache/commons/math3/geometry/euclidean/threed/SubLine.java::org.apache.commons.math3.geometry.euclidean.threed.SubLine#intersection@110",
+      "reference_token_equal": true,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public Vector3D intersection(final SubLine subLine, final boolean includeEndPoints) {\n\n        // compute the intersection on infinite line\n        Vector3D v1D = line.intersection(subLine.line);\n        if (v1D == null) {\n            return null;\n        }\n\n        // check location of point with respect to first sub-line\n        Location loc1 = remainingRegion.checkPoint(line.toSubSpace(v1D));\n\n        // check location of point with respect to second sub-line\n        Location loc2 = subLine.remainingRegion.checkPoint(subLine.line.toSubSpace(v1D));\n\n        if (includeEndPoints) {\n            return ((loc1 != Location.OUTSIDE) && (loc2 != Location.OUTSIDE)) ? v1D : null;\n        } else {\n            return ((loc1 == Location.INSIDE) && (loc2 == Location.INSIDE)) ? v1D : null;\n        }\n\n    }",
+      "original_text": "    public Vector3D intersection(final SubLine subLine, final boolean includeEndPoints) {\n\n        // compute the intersection on infinite line\n        Vector3D v1D = line.intersection(subLine.line);\n\n        // check location of point with respect to first sub-line\n        Location loc1 = remainingRegion.checkPoint(line.toSubSpace(v1D));\n\n        // check location of point with respect to second sub-line\n        Location loc2 = subLine.remainingRegion.checkPoint(subLine.line.toSubSpace(v1D));\n\n        if (includeEndPoints) {\n            return ((loc1 != Location.OUTSIDE) && (loc2 != Location.OUTSIDE)) ? v1D : null;\n        } else {\n            return ((loc1 == Location.INSIDE) && (loc2 == Location.INSIDE)) ? v1D : null;\n        }\n\n    }",
+      "candidate_text": "    public Vector3D intersection(final SubLine subLine, final boolean includeEndPoints) {\n\n        // compute the intersection on infinite line\n        Vector3D v1D = line.intersection(subLine.line);\n        if (v1D == null) {\n            return null;\n        }\n\n        // check location of point with respect to first sub-line\n        Location loc1 = remainingRegion.checkPoint(line.toSubSpace(v1D));\n\n        // check location of point with respect to second sub-line\n        Location loc2 = subLine.remainingRegion.checkPoint(subLine.line.toSubSpace(v1D));\n\n        if (includeEndPoints) {\n            return ((loc1 != Location.OUTSIDE) && (loc2 != Location.OUTSIDE)) ? v1D : null;\n        } else {\n            return ((loc1 == Location.INSIDE) && (loc2 == Location.INSIDE)) ? v1D : null;\n        }\n\n    }"
+    },
+    {
+      "id": "src/main/java/org/apache/commons/math3/geometry/euclidean/twod/SubLine.java::org.apache.commons.math3.geometry.euclidean.twod.SubLine#intersection@110",
+      "reference_token_equal": true,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public Vector2D intersection(final SubLine subLine, final boolean includeEndPoints) {\n\n        // retrieve the underlying lines\n        Line line1 = (Line) getHyperplane();\n        Line line2 = (Line) subLine.getHyperplane();\n\n        // compute the intersection on infinite line\n        Vector2D v2D = line1.intersection(line2);\n        if (v2D == null) {\n            return null;\n        }\n\n        // check location of point with respect to first sub-line\n        Location loc1 = getRemainingRegion().checkPoint(line1.toSubSpace(v2D));\n\n        // check location of point with respect to second sub-line\n        Location loc2 = subLine.getRemainingRegion().checkPoint(line2.toSubSpace(v2D));\n\n        if (includeEndPoints) {\n            return ((loc1 != Location.OUTSIDE) && (loc2 != Location.OUTSIDE)) ? v2D : null;\n        } else {\n            return ((loc1 == Location.INSIDE) && (loc2 == Location.INSIDE)) ? v2D : null;\n        }\n\n    }",
+      "original_text": "    public Vector2D intersection(final SubLine subLine, final boolean includeEndPoints) {\n\n        // retrieve the underlying lines\n        Line line1 = (Line) getHyperplane();\n        Line line2 = (Line) subLine.getHyperplane();\n\n        // compute the intersection on infinite line\n        Vector2D v2D = line1.intersection(line2);\n\n        // check location of point with respect to first sub-line\n        Location loc1 = getRemainingRegion().checkPoint(line1.toSubSpace(v2D));\n\n        // check location of point with respect to second sub-line\n        Location loc2 = subLine.getRemainingRegion().checkPoint(line2.toSubSpace(v2D));\n\n        if (includeEndPoints) {\n            return ((loc1 != Location.OUTSIDE) && (loc2 != Location.OUTSIDE)) ? v2D : null;\n        } else {\n            return ((loc1 == Location.INSIDE) && (loc2 == Location.INSIDE)) ? v2D : null;\n        }\n\n    }",
+      "candidate_text": "    public Vector2D intersection(final SubLine subLine, final boolean includeEndPoints) {\n\n        // retrieve the underlying lines\n        Line line1 = (Line) getHyperplane();\n        Line line2 = (Line) subLine.getHyperplane();\n\n        // compute the intersection on infinite line\n        Vector2D v2D = line1.intersection(line2);\n        if (v2D == null) {\n            return null;\n        }\n\n        // check location of point with respect to first sub-line\n        Location loc1 = getRemainingRegion().checkPoint(line1.toSubSpace(v2D));\n\n        // check location of point with respect to second sub-line\n        Location loc2 = subLine.getRemainingRegion().checkPoint(line2.toSubSpace(v2D));\n\n        if (includeEndPoints) {\n            return ((loc1 != Location.OUTSIDE) && (loc2 != Location.OUTSIDE)) ? v2D : null;\n        } else {\n            return ((loc1 == Location.INSIDE) && (loc2 == Location.INSIDE)) ? v2D : null;\n        }\n\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

@@ -1,0 +1,40 @@
+{
+  "model": "qwen",
+  "bug": "Math-35",
+  "group": 2,
+  "conditions": [
+    "direct"
+  ],
+  "assessment": "supported",
+  "assessment_basis": "Supported alternative for intended constructor contract: inline guard reproduces saved setter [0,1] comparison and assignment, including NaN behavior. Extra ListPopulation replacement is token-equivalent to original. Error message format differs; subclass override behavior is not a proved equivalence.",
+  "methods": [
+    {
+      "id": "src/main/java/org/apache/commons/math3/genetics/ElitisticListPopulation.java::org.apache.commons.math3.genetics.ElitisticListPopulation#ElitisticListPopulation@47",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public ElitisticListPopulation(final List<Chromosome> chromosomes,\n                                   final int populationLimit,\n                                   final double elitismRate) {\n        super(chromosomes, populationLimit);\n        setElitismRate(elitismRate);\n    }",
+      "original_text": "    public ElitisticListPopulation(final List<Chromosome> chromosomes,\n                                   final int populationLimit,\n                                   final double elitismRate) {\n        super(chromosomes, populationLimit);\n        this.elitismRate = elitismRate;\n    }",
+      "candidate_text": "public ElitisticListPopulation(final List<Chromosome> chromosomes, final int populationLimit, final double elitismRate) {\n    super(chromosomes, populationLimit);\n    if (elitismRate < 0 || elitismRate > 1) {\n        throw new OutOfRangeException(LocalizedFormats.OUT_OF_RANGE_SIMPLE, elitismRate, 0, 1);\n    }\n    this.elitismRate = elitismRate;\n}"
+    },
+    {
+      "id": "src/main/java/org/apache/commons/math3/genetics/ElitisticListPopulation.java::org.apache.commons.math3.genetics.ElitisticListPopulation#ElitisticListPopulation@63",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public ElitisticListPopulation(final int populationLimit, final double elitismRate) {\n        super(populationLimit);\n        setElitismRate(elitismRate);\n    }",
+      "original_text": "    public ElitisticListPopulation(final int populationLimit, final double elitismRate) {\n        super(populationLimit);\n        this.elitismRate = elitismRate;\n    }",
+      "candidate_text": "public ElitisticListPopulation(final int populationLimit, final double elitismRate) {\n    super(populationLimit);\n    if (elitismRate < 0 || elitismRate > 1) {\n        throw new OutOfRangeException(LocalizedFormats.OUT_OF_RANGE_SIMPLE, elitismRate, 0, 1);\n    }\n    this.elitismRate = elitismRate;\n}"
+    },
+    {
+      "id": "src/main/java/org/apache/commons/math3/genetics/ListPopulation.java::org.apache.commons.math3.genetics.ListPopulation#ListPopulation@50",
+      "reference_token_equal": true,
+      "unchanged_from_buggy": true,
+      "developer_changes_in_method": false,
+      "reference_text": "    public ListPopulation(final List<Chromosome> chromosomes, final int populationLimit) {\n        if (chromosomes.size() > populationLimit) {\n            throw new NumberIsTooLargeException(LocalizedFormats.LIST_OF_CHROMOSOMES_BIGGER_THAN_POPULATION_SIZE,\n                                                chromosomes.size(), populationLimit, false);\n        }\n        if (populationLimit <= 0) {\n            throw new NotPositiveException(LocalizedFormats.POPULATION_LIMIT_NOT_POSITIVE, populationLimit);\n        }\n\n        this.chromosomes = chromosomes;\n        this.populationLimit = populationLimit;\n    }",
+      "original_text": "    public ListPopulation(final List<Chromosome> chromosomes, final int populationLimit) {\n        if (chromosomes.size() > populationLimit) {\n            throw new NumberIsTooLargeException(LocalizedFormats.LIST_OF_CHROMOSOMES_BIGGER_THAN_POPULATION_SIZE,\n                                                chromosomes.size(), populationLimit, false);\n        }\n        if (populationLimit <= 0) {\n            throw new NotPositiveException(LocalizedFormats.POPULATION_LIMIT_NOT_POSITIVE, populationLimit);\n        }\n\n        this.chromosomes = chromosomes;\n        this.populationLimit = populationLimit;\n    }",
+      "candidate_text": "public ListPopulation(final List<Chromosome> chromosomes, final int populationLimit) {\n    if (chromosomes.size() > populationLimit) {\n        throw new NumberIsTooLargeException(LocalizedFormats.LIST_OF_CHROMOSOMES_BIGGER_THAN_POPULATION_SIZE, chromosomes.size(), populationLimit, false);\n    }\n    if (populationLimit <= 0) {\n        throw new NotPositiveException(LocalizedFormats.POPULATION_LIMIT_NOT_POSITIVE, populationLimit);\n    }\n    this.chromosomes = chromosomes;\n    this.populationLimit = populationLimit;\n}"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

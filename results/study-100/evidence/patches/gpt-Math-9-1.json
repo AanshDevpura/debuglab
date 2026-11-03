@@ -1,0 +1,25 @@
+{
+  "model": "gpt",
+  "bug": "Math-9",
+  "group": 1,
+  "conditions": [
+    "combined",
+    "direct",
+    "llm",
+    "spectrum"
+  ],
+  "assessment": "identified_defect",
+  "assessment_basis": "Defect: reconstructing a Line from zero and zero-direction loses the displacement at large coordinates. Exact saved constructor/reset/revert fixture accepts original line; candidate reversal throws ZERO_NORM while reference succeeds.",
+  "methods": [
+    {
+      "id": "src/main/java/org/apache/commons/math3/geometry/euclidean/threed/Line.java::org.apache.commons.math3.geometry.euclidean.threed.Line#revert@86",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public Line revert() {\n        final Line reverted = new Line(this);\n        reverted.direction = reverted.direction.negate();\n        return reverted;\n    }",
+      "original_text": "    public Line revert() {\n        final Line reverted = new Line(zero, zero.subtract(direction));\n        return reverted;\n    }",
+      "candidate_text": "    public Line revert() {\n        final Line reverted = new Line(zero, zero.subtract(direction));\n        reverted.direction = direction.negate();\n        return reverted;\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

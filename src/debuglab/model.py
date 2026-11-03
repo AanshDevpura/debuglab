@@ -142,6 +142,46 @@ def require_model_credentials(config: ModelConfig) -> None:
         raise RuntimeError(f"Set {config.api_key_env} for the hosted model before running")
 
 
+def openai_schema(schema: dict) -> dict:
+    """Encode the method interface in OpenAI's supported JSON Schema subset.
+
+    Uniqueness remains enforced by MethodInterface. Our oneOf alternatives have
+    distinct required method_id constants, so their anyOf union is equivalent.
+    Do not mutate the local-backend schema or relax answer parsing.
+    """
+    output = {}
+    for key, value in schema.items():
+        if key == "uniqueItems":
+            continue
+        if key == "oneOf":
+            identifiers = [row.get("properties", {}).get("method_id", {}) for row in value]
+            if not value or any("const" not in row for row in identifiers):
+                raise ValueError("OpenAI oneOf conversion requires distinct method IDs")
+            ids = [row["const"] for row in identifiers]
+            if len(set(ids)) != len(ids) or any(
+                "method_id" not in row.get("required", []) for row in value
+            ):
+                raise ValueError("OpenAI oneOf alternatives must be disjoint")
+            output["anyOf"] = [openai_schema(row) for row in value]
+        elif key in {"properties", "$defs"}:
+            output[key] = {name: openai_schema(row) for name, row in value.items()}
+        elif key == "items" and isinstance(value, dict):
+            output[key] = openai_schema(value)
+        elif key == "anyOf":
+            output[key] = [openai_schema(row) for row in value]
+        elif key == "const":
+            output["enum"] = [value]
+        else:
+            output[key] = value
+    if "enum" in output and "type" not in output:
+        types = {str: "string", int: "integer", bool: "boolean", float: "number"}
+        kinds = {types[type(value)] for value in output["enum"]}
+        if len(kinds) != 1:
+            raise ValueError("OpenAI enum requires one explicit scalar type")
+        output["type"] = kinds.pop()
+    return output
+
+
 def call(
     config: ModelConfig,
     budget: TokenBudget,
@@ -162,6 +202,8 @@ def call(
     if config.seed is not None:
         params["seed"] = config.seed + sample
     if schema is not None and config.schema_mode:
+        if urlparse(config.base_url).hostname == "api.openai.com":
+            schema = openai_schema(schema)
         params["response_format"] = {
             "type": "json_schema",
             "json_schema": {"name": "debugging_output", "strict": True, "schema": schema},

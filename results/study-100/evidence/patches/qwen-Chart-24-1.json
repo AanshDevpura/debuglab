@@ -1,0 +1,25 @@
+{
+  "model": "qwen",
+  "bug": "Chart-24",
+  "group": 1,
+  "conditions": [
+    "combined",
+    "direct",
+    "llm",
+    "spectrum"
+  ],
+  "assessment": "supported",
+  "assessment_basis": "Java tokens equal developer-fixed methods after excluding comments/whitespace; all developer-changed methods covered.",
+  "methods": [
+    {
+      "id": "source/org/jfree/chart/renderer/GrayPaintScale.java::org.jfree.chart.renderer.GrayPaintScale#getPaint@123",
+      "reference_token_equal": true,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public Paint getPaint(double value) {\n        double v = Math.max(value, this.lowerBound);\n        v = Math.min(v, this.upperBound);\n        int g = (int) ((v - this.lowerBound) / (this.upperBound \n                - this.lowerBound) * 255.0);\n        return new Color(g, g, g);\n    }",
+      "original_text": "    public Paint getPaint(double value) {\n        double v = Math.max(value, this.lowerBound);\n        v = Math.min(v, this.upperBound);\n        int g = (int) ((value - this.lowerBound) / (this.upperBound \n                - this.lowerBound) * 255.0);\n        return new Color(g, g, g);\n    }",
+      "candidate_text": "public Paint getPaint(double value) {\n    double v = Math.max(value, this.lowerBound);\n    v = Math.min(v, this.upperBound);\n    int g = (int) ((v - this.lowerBound) / (this.upperBound - this.lowerBound) * 255.0);\n    return new Color(g, g, g);\n}"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

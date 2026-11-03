@@ -1,0 +1,25 @@
+{
+  "model": "qwen",
+  "bug": "Lang-21",
+  "group": 1,
+  "conditions": [
+    "combined",
+    "direct",
+    "llm",
+    "spectrum"
+  ],
+  "assessment": "identified_defect",
+  "assessment_basis": "Qwen drops concrete calendar-class guard; copied-method probe returns true for subclass versus base calendar. GPT retains guard and returns false while fixing HOUR_OF_DAY.",
+  "methods": [
+    {
+      "id": "src/main/java/org/apache/commons/lang3/time/DateUtils.java::org.apache.commons.lang3.time.DateUtils#isSameLocalTime@258",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public static boolean isSameLocalTime(Calendar cal1, Calendar cal2) {\n        if (cal1 == null || cal2 == null) {\n            throw new IllegalArgumentException(\"The date must not be null\");\n        }\n        return (cal1.get(Calendar.MILLISECOND) == cal2.get(Calendar.MILLISECOND) &&\n                cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND) &&\n                cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&\n                cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&\n                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&\n                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&\n                cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &&\n                cal1.getClass() == cal2.getClass());\n    }",
+      "original_text": "    public static boolean isSameLocalTime(Calendar cal1, Calendar cal2) {\n        if (cal1 == null || cal2 == null) {\n            throw new IllegalArgumentException(\"The date must not be null\");\n        }\n        return (cal1.get(Calendar.MILLISECOND) == cal2.get(Calendar.MILLISECOND) &&\n                cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND) &&\n                cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&\n                cal1.get(Calendar.HOUR) == cal2.get(Calendar.HOUR) &&\n                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&\n                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&\n                cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &&\n                cal1.getClass() == cal2.getClass());\n    }",
+      "candidate_text": "public static boolean isSameLocalTime(Calendar cal1, Calendar cal2) {\n    if (cal1 == null || cal2 == null) {\n        throw new IllegalArgumentException(\"The date must not be null\");\n    }\n    return (cal1.get(Calendar.MILLISECOND) == cal2.get(Calendar.MILLISECOND) &&\n            cal1.get(Calendar.SECOND) == cal2.get(Calendar.SECOND) &&\n            cal1.get(Calendar.MINUTE) == cal2.get(Calendar.MINUTE) &&\n            cal1.get(Calendar.HOUR_OF_DAY) == cal2.get(Calendar.HOUR_OF_DAY) &&\n            cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH) &&\n            cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&\n            cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&\n            cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA));\n}"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

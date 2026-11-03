@@ -1,0 +1,22 @@
+{
+  "model": "gpt",
+  "bug": "Math-13",
+  "group": 2,
+  "conditions": [
+    "spectrum"
+  ],
+  "assessment": "supported",
+  "assessment_basis": "Supported alternative: builds diagonal sqrt values in a local array and passes them to DiagonalMatrix, rather than populating diagonal entries. Same dimensions, entries and unchanged nonDiagonal path; reference also uses sqrt for negative entries.",
+  "methods": [
+    {
+      "id": "src/main/java/org/apache/commons/math3/optimization/general/AbstractLeastSquaresOptimizer.java::org.apache.commons.math3.optimization.general.AbstractLeastSquaresOptimizer#squareRoot@561",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    private RealMatrix squareRoot(RealMatrix m) {\n        if (m instanceof DiagonalMatrix) {\n            final int dim = m.getRowDimension();\n            final RealMatrix sqrtM = new DiagonalMatrix(dim);\n            for (int i = 0; i < dim; i++) {\n               sqrtM.setEntry(i, i, FastMath.sqrt(m.getEntry(i, i)));\n            }\n            return sqrtM;\n        } else {\n            final EigenDecomposition dec = new EigenDecomposition(m);\n            return dec.getSquareRoot();\n        }\n    }",
+      "original_text": "    private RealMatrix squareRoot(RealMatrix m) {\n            final EigenDecomposition dec = new EigenDecomposition(m);\n            return dec.getSquareRoot();\n    }",
+      "candidate_text": "    private RealMatrix squareRoot(RealMatrix m) {\n        if (m instanceof DiagonalMatrix) {\n            final int dim = m.getRowDimension();\n            final double[] sqrtData = new double[dim];\n            for (int i = 0; i < dim; i++) {\n                sqrtData[i] = FastMath.sqrt(m.getEntry(i, i));\n            }\n            return new DiagonalMatrix(sqrtData);\n        }\n        final EigenDecomposition dec = new EigenDecomposition(m);\n        return dec.getSquareRoot();\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

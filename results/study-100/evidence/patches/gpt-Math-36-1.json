@@ -1,0 +1,31 @@
+{
+  "model": "gpt",
+  "bug": "Math-36",
+  "group": 1,
+  "conditions": [
+    "direct"
+  ],
+  "assessment": "identified_defect",
+  "assessment_basis": "Defect strengthened: exact Java BigInteger conversion for 1/2^1022 and 1/2^126 returns nonzero normal minima in reference, but candidate returns zero. This avoids reliance on cases the reference itself fails.",
+  "methods": [
+    {
+      "id": "src/main/java/org/apache/commons/math/fraction/BigFraction.java::org.apache.commons.math.fraction.BigFraction#doubleValue@683",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    @Override\n    public double doubleValue() {\n        double result = numerator.doubleValue() / denominator.doubleValue();\n        if (Double.isNaN(result)) {\n            // Numerator and/or denominator must be out of range:\n            // Calculate how far to shift them to put them in range.\n            int shift = Math.max(numerator.bitLength(),\n                                 denominator.bitLength()) - Double.MAX_EXPONENT;\n            result = numerator.shiftRight(shift).doubleValue() /\n                denominator.shiftRight(shift).doubleValue();\n        }\n        return result;\n    }",
+      "original_text": "    @Override\n    public double doubleValue() {\n        double result = numerator.doubleValue() / denominator.doubleValue();\n            // Numerator and/or denominator must be out of range:\n            // Calculate how far to shift them to put them in range.\n        return result;\n    }",
+      "candidate_text": "    @Override\n    public double doubleValue() {\n        if (numerator.bitLength() < 1023 && denominator.bitLength() < 1023) {\n            return numerator.doubleValue() / denominator.doubleValue();\n        }\n\n        final int shift = Math.max(numerator.bitLength(), denominator.bitLength()) - 1022;\n        final BigInteger scaledNumerator = numerator.shiftRight(shift);\n        final BigInteger scaledDenominator = denominator.shiftRight(shift);\n        return scaledNumerator.doubleValue() / scaledDenominator.doubleValue();\n    }"
+    },
+    {
+      "id": "src/main/java/org/apache/commons/math/fraction/BigFraction.java::org.apache.commons.math.fraction.BigFraction#floatValue@730",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    @Override\n    public float floatValue() {\n        float result = numerator.floatValue() / denominator.floatValue();\n        if (Double.isNaN(result)) {\n            // Numerator and/or denominator must be out of range:\n            // Calculate how far to shift them to put them in range.\n            int shift = Math.max(numerator.bitLength(),\n                                 denominator.bitLength()) - Float.MAX_EXPONENT;\n            result = numerator.shiftRight(shift).floatValue() /\n                denominator.shiftRight(shift).floatValue();\n        }\n        return result;\n    }",
+      "original_text": "    @Override\n    public float floatValue() {\n        float result = numerator.floatValue() / denominator.floatValue();\n            // Numerator and/or denominator must be out of range:\n            // Calculate how far to shift them to put them in range.\n        return result;\n    }",
+      "candidate_text": "    @Override\n    public float floatValue() {\n        if (numerator.bitLength() < 127 && denominator.bitLength() < 127) {\n            return numerator.floatValue() / denominator.floatValue();\n        }\n\n        final int shift = Math.max(numerator.bitLength(), denominator.bitLength()) - 126;\n        final BigInteger scaledNumerator = numerator.shiftRight(shift);\n        final BigInteger scaledDenominator = denominator.shiftRight(shift);\n        return scaledNumerator.floatValue() / scaledDenominator.floatValue();\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

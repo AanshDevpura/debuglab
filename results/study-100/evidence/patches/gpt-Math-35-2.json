@@ -1,0 +1,31 @@
+{
+  "model": "gpt",
+  "bug": "Math-35",
+  "group": 2,
+  "conditions": [
+    "spectrum"
+  ],
+  "assessment": "supported",
+  "assessment_basis": "Supported alternative for intended constructor contract: inline guard and assignment reproduce saved setElitismRate checks, including endpoints and NaN. Different exception message constructor; subclass setter overrides not covered by this source-level contract judgment.",
+  "methods": [
+    {
+      "id": "src/main/java/org/apache/commons/math3/genetics/ElitisticListPopulation.java::org.apache.commons.math3.genetics.ElitisticListPopulation#ElitisticListPopulation@47",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public ElitisticListPopulation(final List<Chromosome> chromosomes,\n                                   final int populationLimit,\n                                   final double elitismRate) {\n        super(chromosomes, populationLimit);\n        setElitismRate(elitismRate);\n    }",
+      "original_text": "    public ElitisticListPopulation(final List<Chromosome> chromosomes,\n                                   final int populationLimit,\n                                   final double elitismRate) {\n        super(chromosomes, populationLimit);\n        this.elitismRate = elitismRate;\n    }",
+      "candidate_text": "    public ElitisticListPopulation(final List<Chromosome> chromosomes,\n                                   final int populationLimit,\n                                   final double elitismRate) {\n        super(chromosomes, populationLimit);\n        if ((elitismRate < 0.0) || (elitismRate > 1.0)) {\n            throw new OutOfRangeException(elitismRate, 0.0, 1.0);\n        }\n        this.elitismRate = elitismRate;\n    }"
+    },
+    {
+      "id": "src/main/java/org/apache/commons/math3/genetics/ElitisticListPopulation.java::org.apache.commons.math3.genetics.ElitisticListPopulation#ElitisticListPopulation@63",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public ElitisticListPopulation(final int populationLimit, final double elitismRate) {\n        super(populationLimit);\n        setElitismRate(elitismRate);\n    }",
+      "original_text": "    public ElitisticListPopulation(final int populationLimit, final double elitismRate) {\n        super(populationLimit);\n        this.elitismRate = elitismRate;\n    }",
+      "candidate_text": "    public ElitisticListPopulation(final int populationLimit, final double elitismRate) {\n        super(populationLimit);\n        if ((elitismRate < 0.0) || (elitismRate > 1.0)) {\n            throw new OutOfRangeException(elitismRate, 0.0, 1.0);\n        }\n        this.elitismRate = elitismRate;\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

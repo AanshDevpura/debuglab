@@ -1,0 +1,24 @@
+{
+  "model": "gpt",
+  "bug": "Lang-37",
+  "group": 1,
+  "conditions": [
+    "combined",
+    "direct",
+    "spectrum"
+  ],
+  "assessment": "identified_defect",
+  "assessment_basis": "Qwen converts array copy error while preserving first-array runtime type. GPT widens result to Object[] and accepts incompatible contents. Exact copied-method probes cover both GPT groups and Qwen group.",
+  "methods": [
+    {
+      "id": "src/java/org/apache/commons/lang3/ArrayUtils.java::org.apache.commons.lang3.ArrayUtils#addAll@2952",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    @SuppressWarnings(\"unchecked\")\n    public static <T> T[] addAll(T[] array1, T... array2) {\n        if (array1 == null) {\n            return clone(array2);\n        } else if (array2 == null) {\n            return clone(array1);\n        }\n        final Class<?> type1 = array1.getClass().getComponentType();\n        T[] joinedArray = (T[]) Array.newInstance(type1, array1.length + array2.length);\n        System.arraycopy(array1, 0, joinedArray, 0, array1.length);\n        try {\n            System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);\n        } catch (ArrayStoreException ase) {\n            // Check if problem is incompatible types\n            final Class<?> type2 = array2.getClass().getComponentType();\n            if (!type1.isAssignableFrom(type2)){\n                throw new IllegalArgumentException(\"Cannot store \"+type2.getName()+\" in an array of \"+type1.getName());\n            }\n            throw ase; // No, so rethrow original\n        }\n        return joinedArray;\n    }",
+      "original_text": "    @SuppressWarnings(\"unchecked\")\n    public static <T> T[] addAll(T[] array1, T... array2) {\n        if (array1 == null) {\n            return clone(array2);\n        } else if (array2 == null) {\n            return clone(array1);\n        }\n        final Class<?> type1 = array1.getClass().getComponentType();\n        T[] joinedArray = (T[]) Array.newInstance(type1, array1.length + array2.length);\n        System.arraycopy(array1, 0, joinedArray, 0, array1.length);\n            System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);\n            // Check if problem is incompatible types\n        return joinedArray;\n    }",
+      "candidate_text": "    @SuppressWarnings(\"unchecked\")\n    public static <T> T[] addAll(T[] array1, T... array2) {\n        if (array1 == null) {\n            return clone(array2);\n        } else if (array2 == null) {\n            return clone(array1);\n        }\n        final Class<?> type1 = array1.getClass().getComponentType();\n        final Class<?> type2 = array2.getClass().getComponentType();\n        Class<?> componentType = type1;\n        if (type1.isAssignableFrom(type2)) {\n            componentType = type1;\n        } else if (type2.isAssignableFrom(type1)) {\n            componentType = type2;\n        } else {\n            throw new IllegalArgumentException(\"Cannot store \" + type2.getName() + \" in an array of \" + type1.getName());\n        }\n        T[] joinedArray = (T[]) Array.newInstance(componentType, array1.length + array2.length);\n        System.arraycopy(array1, 0, joinedArray, 0, array1.length);\n        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);\n        return joinedArray;\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

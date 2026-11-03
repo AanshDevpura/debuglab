@@ -1,0 +1,31 @@
+{
+  "model": "gpt",
+  "bug": "Chart-19",
+  "group": 2,
+  "conditions": [
+    "llm"
+  ],
+  "assessment": "identified_defect",
+  "assessment_basis": "Defective behavior change. getDomainAxisIndex documents -1 for an axis not assigned to this plot. With a child plot owning its own domain axis and a different parent axis, the candidate returns 0 for the parent axis although child.getDomainAxis(0) remains its own different axis. Recompiled full class plus actual dependencies reproduces reference -1 versus candidate 0. The pre-existing range-axis fallback does not override the domain-axis contract.",
+  "methods": [
+    {
+      "id": "source/org/jfree/chart/plot/CategoryPlot.java::org.jfree.chart.plot.CategoryPlot#getDomainAxisIndex@697",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public int getDomainAxisIndex(CategoryAxis axis) {\n        if (axis == null) {\n            throw new IllegalArgumentException(\"Null 'axis' argument.\");\n        }\n        return this.domainAxes.indexOf(axis);\n    }",
+      "original_text": "    public int getDomainAxisIndex(CategoryAxis axis) {\n        return this.domainAxes.indexOf(axis);\n    }",
+      "candidate_text": "    public int getDomainAxisIndex(CategoryAxis axis) {\n        if (axis == null) {\n            throw new IllegalArgumentException(\"Null 'axis' argument.\");\n        }\n        int result = this.domainAxes.indexOf(axis);\n        if (result < 0) { // try the parent plot\n            Plot parent = getParent();\n            if (parent instanceof CategoryPlot) {\n                CategoryPlot p = (CategoryPlot) parent;\n                result = p.getDomainAxisIndex(axis);\n            }\n        }\n        return result;\n    }"
+    },
+    {
+      "id": "source/org/jfree/chart/plot/CategoryPlot.java::org.jfree.chart.plot.CategoryPlot#getRangeAxisIndex@972",
+      "reference_token_equal": true,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public int getRangeAxisIndex(ValueAxis axis) {\n        if (axis == null) {\n            throw new IllegalArgumentException(\"Null 'axis' argument.\");\n        }\n        int result = this.rangeAxes.indexOf(axis);\n        if (result < 0) { // try the parent plot\n            Plot parent = getParent();\n            if (parent instanceof CategoryPlot) {\n                CategoryPlot p = (CategoryPlot) parent;\n                result = p.getRangeAxisIndex(axis);\n            }\n        }\n        return result;\n    }",
+      "original_text": "    public int getRangeAxisIndex(ValueAxis axis) {\n        int result = this.rangeAxes.indexOf(axis);\n        if (result < 0) { // try the parent plot\n            Plot parent = getParent();\n            if (parent instanceof CategoryPlot) {\n                CategoryPlot p = (CategoryPlot) parent;\n                result = p.getRangeAxisIndex(axis);\n            }\n        }\n        return result;\n    }",
+      "candidate_text": "    public int getRangeAxisIndex(ValueAxis axis) {\n        if (axis == null) {\n            throw new IllegalArgumentException(\"Null 'axis' argument.\");\n        }\n        int result = this.rangeAxes.indexOf(axis);\n        if (result < 0) { // try the parent plot\n            Plot parent = getParent();\n            if (parent instanceof CategoryPlot) {\n                CategoryPlot p = (CategoryPlot) parent;\n                result = p.getRangeAxisIndex(axis);\n            }\n        }\n        return result;\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

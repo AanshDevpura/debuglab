@@ -5,6 +5,7 @@ from dataclasses import asdict, replace
 from pathlib import Path
 
 import httpx
+import pytest
 
 from debuglab.config import Config
 from debuglab.harness import Harness
@@ -14,7 +15,10 @@ from debuglab.pipeline import run_bug
 from debuglab.source import Method
 
 
-def test_rankings_drive_four_independent_checked_method_replacements(tmp_path, monkeypatch):
+@pytest.mark.parametrize("independent", [False, True])
+def test_rankings_drive_four_independent_checked_method_replacements(
+    tmp_path, monkeypatch, independent
+):
     cfg = Config.load(Path("tests/fixtures/config.json"))
     model = replace(
         cfg.model,
@@ -28,6 +32,7 @@ def test_rankings_drive_four_independent_checked_method_replacements(tmp_path, m
         model=model,
         work_root=str(tmp_path / "work/bugs"),
         output_root=str(tmp_path / "outputs/runs"),
+        independent_statements=independent,
     )
     monkeypatch.setenv(model.api_key_env, "test-key")
     original = Harness(cfg, "Cli-1", tmp_path / "logs")
@@ -48,6 +53,7 @@ def test_rankings_drive_four_independent_checked_method_replacements(tmp_path, m
 
     def prepare(config, bug, output, budget):
         (output / "context.txt").write_text(context)
+        save(output / "source-hashes.json", {"src/A.java": digest(before.encode())})
         return (
             original,
             meta,
@@ -57,6 +63,8 @@ def test_rankings_drive_four_independent_checked_method_replacements(tmp_path, m
                 "hash": digest(context.encode()),
                 "failure_hash": "frozen-failure",
                 "method_ids": [method.id],
+                "lines": {"src/A.java": [1, 2, 3]},
+                "handles": {"M001": method.id},
             },
             context,
         )
@@ -69,7 +77,11 @@ def test_rankings_drive_four_independent_checked_method_replacements(tmp_path, m
         prompt = kwargs["json"]["messages"][1]["content"]
         requests.append(prompt)
         if "\n\nTASK:\nRank" in prompt:
-            content = '{"methods":[{"method_id":"M001","lines":[2]}]}'
+            content = (
+                '{"methods":[{"method_id":"M001"}],"statements":[{"method_id":"M001","line":2}]}'
+                if independent
+                else '{"methods":[{"method_id":"M001","lines":[2]}]}'
+            )
         else:
             content = '{"edits":[{"method_id":"M001","replacement":"  int f() { return 2; }"}]}'
         return httpx.Response(
@@ -97,7 +109,7 @@ def test_rankings_drive_four_independent_checked_method_replacements(tmp_path, m
     result = json.loads((output / "result.json").read_text())
     assert len(requests) == 6
     assert all(p.startswith(context + "\n\nLOCALIZATION HINT:\n") for p in requests)
-    assert "LOCALIZATION HINT:\nnone" in requests[2]  # direct repair
+    assert "LOCALIZATION HINT:\nnone" in requests[2]
     assert all('"M001"' in p.split("\n\nTASK:")[0] for p in requests[3:])
     assert result["localization"]["llm"]["method"][0]["id"] == method.id
     assert all(rows[0]["status"] == "PLAUSIBLE" for rows in result["repair"].values())

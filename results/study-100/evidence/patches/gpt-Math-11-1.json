@@ -1,0 +1,22 @@
+{
+  "model": "gpt",
+  "bug": "Math-11",
+  "group": 1,
+  "conditions": [
+    "direct"
+  ],
+  "assessment": "identified_defect",
+  "assessment_basis": "GPT direct special-cases dimension one but leaves integer exponent in general path; 3D expression counterexample. Other passing variants fix exponent generally.",
+  "methods": [
+    {
+      "id": "src/main/java/org/apache/commons/math3/distribution/MultivariateNormalDistribution.java::org.apache.commons.math3.distribution.MultivariateNormalDistribution#density@177",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public double density(final double[] vals) throws DimensionMismatchException {\n        final int dim = getDimension();\n        if (vals.length != dim) {\n            throw new DimensionMismatchException(vals.length, dim);\n        }\n\n        return FastMath.pow(2 * FastMath.PI, -0.5 * dim) *\n            FastMath.pow(covarianceMatrixDeterminant, -0.5) *\n            getExponentTerm(vals);\n    }",
+      "original_text": "    public double density(final double[] vals) throws DimensionMismatchException {\n        final int dim = getDimension();\n        if (vals.length != dim) {\n            throw new DimensionMismatchException(vals.length, dim);\n        }\n\n        return FastMath.pow(2 * FastMath.PI, -dim / 2) *\n            FastMath.pow(covarianceMatrixDeterminant, -0.5) *\n            getExponentTerm(vals);\n    }",
+      "candidate_text": "    public double density(final double[] vals) throws DimensionMismatchException {\n        final int dim = getDimension();\n        if (vals.length != dim) {\n            throw new DimensionMismatchException(vals.length, dim);\n        }\n\n        if (dim == 1) {\n            final double x0 = vals[0] - means[0];\n            final double variance = covarianceMatrix.getEntry(0, 0);\n            return FastMath.exp(-0.5 * x0 * x0 / variance) / FastMath.sqrt(2 * FastMath.PI * variance);\n        }\n\n        return FastMath.pow(2 * FastMath.PI, -dim / 2) *\n            FastMath.pow(covarianceMatrixDeterminant, -0.5) *\n            getExponentTerm(vals);\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

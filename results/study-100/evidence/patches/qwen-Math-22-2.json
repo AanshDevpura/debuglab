@@ -1,0 +1,31 @@
+{
+  "model": "qwen",
+  "bug": "Math-22",
+  "group": 2,
+  "conditions": [
+    "direct"
+  ],
+  "assessment": "supported",
+  "assessment_basis": "Java tokens equal developer-fixed methods after excluding comments/whitespace; all developer-changed methods covered.",
+  "methods": [
+    {
+      "id": "src/main/java/org/apache/commons/math3/distribution/FDistribution.java::org.apache.commons.math3.distribution.FDistribution#isSupportLowerBoundInclusive@274",
+      "reference_token_equal": true,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public boolean isSupportLowerBoundInclusive() {\n        return false;\n    }",
+      "original_text": "    public boolean isSupportLowerBoundInclusive() {\n        return true;\n    }",
+      "candidate_text": "public boolean isSupportLowerBoundInclusive() {\n        return false;\n    }"
+    },
+    {
+      "id": "src/main/java/org/apache/commons/math3/distribution/UniformRealDistribution.java::org.apache.commons.math3.distribution.UniformRealDistribution#isSupportUpperBoundInclusive@183",
+      "reference_token_equal": true,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public boolean isSupportUpperBoundInclusive() {\n        return true;\n    }",
+      "original_text": "    public boolean isSupportUpperBoundInclusive() {\n        return false;\n    }",
+      "candidate_text": "public boolean isSupportUpperBoundInclusive() {\n        return true;\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

@@ -1,0 +1,158 @@
+{
+  "bugs": 100,
+  "context_pairs": 100,
+  "fixed_messages_equal": 400,
+  "normalized_schemas_equal": 600,
+  "models": {
+    "qwen": {
+      "suite_passing": 43,
+      "valid": 30,
+      "defective": 13,
+      "distinct_valid_bugs": 9,
+      "suite_passing_by_condition": [
+        11,
+        9,
+        11,
+        12
+      ],
+      "valid_by_condition": [
+        9,
+        6,
+        7,
+        8
+      ],
+      "statuses": {
+        "COMPILE_ERROR": 33,
+        "FAILS_SUITE": 2,
+        "FAILS_TRIGGER": 265,
+        "INVALID_FORMAT": 57,
+        "PLAUSIBLE": 43
+      },
+      "localization": {
+        "spectrum_method": {
+          "eligible": 100,
+          "top1_3_5": [
+            30,
+            61,
+            73
+          ]
+        },
+        "spectrum_line": {
+          "eligible": 68,
+          "top1_3_5": [
+            1,
+            10,
+            16
+          ]
+        },
+        "llm_method": {
+          "eligible": 100,
+          "top1_3_5": [
+            48,
+            64,
+            68
+          ]
+        },
+        "llm_line": {
+          "eligible": 68,
+          "top1_3_5": [
+            4,
+            8,
+            10
+          ]
+        },
+        "combined_method": {
+          "eligible": 100,
+          "top1_3_5": [
+            42,
+            56,
+            63
+          ]
+        },
+        "combined_line": {
+          "eligible": 68,
+          "top1_3_5": [
+            3,
+            8,
+            10
+          ]
+        }
+      }
+    },
+    "gpt": {
+      "suite_passing": 160,
+      "valid": 124,
+      "defective": 36,
+      "distinct_valid_bugs": 39,
+      "suite_passing_by_condition": [
+        41,
+        38,
+        41,
+        40
+      ],
+      "valid_by_condition": [
+        30,
+        32,
+        31,
+        31
+      ],
+      "statuses": {
+        "COMPILE_ERROR": 2,
+        "FAILS_SUITE": 7,
+        "FAILS_TRIGGER": 230,
+        "PLAUSIBLE": 160,
+        "TIMEOUT": 1
+      },
+      "localization": {
+        "spectrum_method": {
+          "eligible": 100,
+          "top1_3_5": [
+            30,
+            61,
+            73
+          ]
+        },
+        "spectrum_line": {
+          "eligible": 68,
+          "top1_3_5": [
+            1,
+            10,
+            16
+          ]
+        },
+        "llm_method": {
+          "eligible": 100,
+          "top1_3_5": [
+            76,
+            87,
+            89
+          ]
+        },
+        "llm_line": {
+          "eligible": 68,
+          "top1_3_5": [
+            22,
+            32,
+            36
+          ]
+        },
+        "combined_method": {
+          "eligible": 100,
+          "top1_3_5": [
+            77,
+            88,
+            90
+          ]
+        },
+        "combined_line": {
+          "eligible": 68,
+          "top1_3_5": [
+            20,
+            33,
+            36
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "model": "gpt",
+  "bug": "Chart-8",
+  "group": 1,
+  "conditions": [
+    "combined"
+  ],
+  "assessment": "supported",
+  "assessment_basis": "Java tokens equal developer-fixed methods after excluding comments/whitespace; all developer-changed methods covered.",
+  "methods": [
+    {
+      "id": "source/org/jfree/data/time/Week.java::org.jfree.data.time.Week#Week@173",
+      "reference_token_equal": true,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public Week(Date time, TimeZone zone) {\n        // defer argument checking...\n        this(time, zone, Locale.getDefault());\n    }",
+      "original_text": "    public Week(Date time, TimeZone zone) {\n        // defer argument checking...\n        this(time, RegularTimePeriod.DEFAULT_TIME_ZONE, Locale.getDefault());\n    }",
+      "candidate_text": "    public Week(Date time, TimeZone zone) {\n        // defer argument checking...\n        this(time, zone, Locale.getDefault());\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

@@ -1,0 +1,22 @@
+{
+  "model": "gpt",
+  "bug": "Lang-42",
+  "group": 2,
+  "conditions": [
+    "direct"
+  ],
+  "assessment": "supported",
+  "assessment_basis": "Supported alternative: explicit valid surrogate-pair processing emits the same code point as reference codePointAt for normal entity dictionaries. 4,496 comparisons across four variants found no differences, including isolated surrogate samples. A custom dictionary with supplementary named entities is outside the finite fixture scope.",
+  "methods": [
+    {
+      "id": "src/java/org/apache/commons/lang/Entities.java::org.apache.commons.lang.Entities#escape@825",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public void escape(Writer writer, String str) throws IOException {\n        int len = str.length();\n        for (int i = 0; i < len; i++) {\n            int c = Character.codePointAt(str, i); \n            String entityName = this.entityName(c);\n            if (entityName == null) {\n                if (c >= 0x010000 && i < len - 1) {\n                    writer.write(\"&#\");\n                    writer.write(Integer.toString(c, 10));\n                    writer.write(';');\n                    i++;\n                } else if (c > 0x7F) { \n                    writer.write(\"&#\");\n                    writer.write(Integer.toString(c, 10));\n                    writer.write(';');\n                } else {\n                    writer.write(c);\n                }\n            } else {\n                writer.write('&');\n                writer.write(entityName);\n                writer.write(';');\n            }\n        }\n    }",
+      "original_text": "    public void escape(Writer writer, String str) throws IOException {\n        int len = str.length();\n        for (int i = 0; i < len; i++) {\n            char c = str.charAt(i);\n            String entityName = this.entityName(c);\n            if (entityName == null) {\n                if (c > 0x7F) {\n                    writer.write(\"&#\");\n                    writer.write(Integer.toString(c, 10));\n                    writer.write(';');\n                } else {\n                    writer.write(c);\n                }\n            } else {\n                writer.write('&');\n                writer.write(entityName);\n                writer.write(';');\n            }\n        }\n    }",
+      "candidate_text": "    public void escape(Writer writer, String str) throws IOException {\n        int len = str.length();\n        for (int i = 0; i < len; i++) {\n            char c = str.charAt(i);\n            String entityName = this.entityName(c);\n            if (entityName == null) {\n                if (c > 0x7F) {\n                    if (Character.isHighSurrogate(c) && i + 1 < len) {\n                        char low = str.charAt(i + 1);\n                        if (Character.isLowSurrogate(low)) {\n                            int codePoint = Character.toCodePoint(c, low);\n                            writer.write(\"&#\");\n                            writer.write(Integer.toString(codePoint, 10));\n                            writer.write(';');\n                            i++;\n                            continue;\n                        }\n                    }\n                    writer.write(\"&#\");\n                    writer.write(Integer.toString(c, 10));\n                    writer.write(';');\n                } else {\n                    writer.write(c);\n                }\n            } else {\n                writer.write('&');\n                writer.write(entityName);\n                writer.write(';');\n            }\n        }\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

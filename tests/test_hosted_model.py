@@ -117,3 +117,61 @@ def test_provider_budget_overflow_is_preserved_as_failed_attempt(tmp_path, monke
     assert result["status"] == "MODEL_ERROR"
     assert result["provider_input_tokens"] == 20000
     assert json.loads(result["raw_response"])["usage"]["prompt_tokens"] == 20000
+
+
+def test_openai_supported_schema_preserves_candidates_and_local_schema():
+    from debuglab.model import openai_schema
+
+    branch = {
+        "type": "object",
+        "properties": {"method_id": {"const": "M001"}, "line": {"type": "integer", "enum": [3, 7]}},
+        "required": ["method_id", "line"],
+        "additionalProperties": False,
+    }
+    schema = {"type": "array", "items": {"oneOf": [branch]}, "uniqueItems": True, "maxItems": 10}
+    before = json.dumps(schema, sort_keys=True)
+    converted = openai_schema(schema)
+    assert json.dumps(schema, sort_keys=True) == before
+    assert "uniqueItems" not in converted and converted["maxItems"] == 10
+    row = converted["items"]["anyOf"][0]
+    assert row["properties"]["method_id"] == {"enum": ["M001"], "type": "string"}
+    assert row["properties"]["line"] == branch["properties"]["line"]
+    with pytest.raises(ValueError, match="disjoint"):
+        openai_schema({"oneOf": [branch, branch]})
+    # Property names are data, even when named like a schema keyword.
+    assert (
+        "uniqueItems"
+        in openai_schema({"properties": {"uniqueItems": {"type": "boolean"}}})["properties"]
+    )
+
+
+def test_openai_dispatch_saves_supported_schema_without_fallback(tmp_path, monkeypatch):
+    config = replace(hosted(), base_url="https://api.openai.com/v1", schema_mode=True)
+    monkeypatch.setenv(config.api_key_env, "test-key")
+    requests = []
+
+    def respond(url, **kwargs):
+        requests.append(kwargs["json"])
+        return httpx.Response(
+            200,
+            request=httpx.Request("POST", url),
+            json={
+                "choices": [{"message": {"content": '{"methods":[]}'}, "finish_reason": "stop"}],
+                "usage": {"prompt_tokens": 12, "completion_tokens": 5},
+            },
+        )
+
+    monkeypatch.setattr(httpx, "post", respond)
+    schema = {"type": "array", "items": {"enum": ["M001"]}, "uniqueItems": True}
+    result = call(
+        config,
+        TokenBudget(config),
+        [{"role": "user", "content": "Rank."}],
+        tmp_path / "call.json",
+        schema=schema,
+    )
+    assert result["status"] == "OK" and len(requests) == 1
+    sent = requests[0]["response_format"]["json_schema"]
+    assert sent["strict"] and "uniqueItems" not in sent["schema"]
+    assert result["parameters"] == requests[0]
+    assert schema["uniqueItems"] is True

@@ -1,0 +1,23 @@
+{
+  "model": "gpt",
+  "bug": "Math-34",
+  "group": 1,
+  "conditions": [
+    "combined",
+    "llm"
+  ],
+  "assessment": "supported",
+  "assessment_basis": "Supported alternative: saved getChromosomes returns Collections.unmodifiableList(chromosomes), exactly the expression now inlined in iterator. Advancing iteration retained and removal prohibited.",
+  "methods": [
+    {
+      "id": "src/main/java/org/apache/commons/math3/genetics/ListPopulation.java::org.apache.commons.math3.genetics.ListPopulation#iterator@208",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public Iterator<Chromosome> iterator() {\n        return getChromosomes().iterator();\n    }",
+      "original_text": "    public Iterator<Chromosome> iterator() {\n        return chromosomes.iterator();\n    }",
+      "candidate_text": "    public Iterator<Chromosome> iterator() {\n        return Collections.unmodifiableList(chromosomes).iterator();\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

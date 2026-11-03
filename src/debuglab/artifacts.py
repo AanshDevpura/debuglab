@@ -50,7 +50,7 @@ def publish_reports(root: Path, destination: Path) -> None:
             shutil.copy2(path, destination / path.name)
     (destination / "README.md").write_text(
         "# Final release evaluation\n\n"
-        "Fresh 60-bug run after cleanup; one patch per condition, existing local7B. "
+        "Selected-bug evaluation; one patch per condition. "
         "REPORT.md and CSVs contain pooled and required context-conditional metrics. "
         "comparison.json compares this repeat with the retained reference; "
         "differences are reported without choosing a preferred sample. "

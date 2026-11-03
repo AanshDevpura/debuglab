@@ -41,6 +41,9 @@ class Config:
     call_depth: int = 2
     method_interface: bool = True
     java_source_guidance: bool = True
+    independent_statements: bool = False
+    dependency_context: bool = False
+    strict_method_replacements: bool = False
     # Kept for reading saved artifacts and testing strict legacy interfaces.
     # New configuration files cannot enable these experimental alternatives.
     line_array_edits: bool = False
@@ -71,11 +74,41 @@ class Config:
                 raise ValueError(f"Unsupported experimental setting: {key}")
             if key not in {f.name for f in fields(cls)}:
                 data.pop(key, None)
+        # Read inactive fields in the original sealed study configs, without
+        # shipping the earlier experimental agent implementation.
+        retired = {
+            "agentic": False,
+            "phase_agents": False,
+            "one_shot_agents": False,
+            "source_aware_reads": False,
+            "compact_edits": False,
+            "uniform_edits": False,
+            "baseline_root": None,
+            "exploration_steps": 8,
+            "exploration_read_lines": 160,
+            "agentic_max_edits": 8,
+            "localization_steps": 24,
+            "repair_steps": 48,
+            "agent_read_lines": 500,
+        }
+        for key, expected in retired.items():
+            if data.get(key, expected) != expected:
+                raise ValueError(f"Unsupported experimental setting: {key}")
+            data.pop(key, None)
         unknown = set(data) - {f.name for f in fields(cls)}
         if unknown:
             raise ValueError(f"Unknown config keys: {unknown}")
         data["model"] = ModelConfig(**data["model"])
         config = cls(**data)
+        if any(
+            type(v) is not bool
+            for v in (
+                config.independent_statements,
+                config.dependency_context,
+                config.strict_method_replacements,
+            )
+        ):
+            raise ValueError("Interface settings must be boolean")
         model = config.model
         if config.samples != 1:
             raise ValueError("This experiment generates exactly one patch per condition")

@@ -167,6 +167,8 @@ def run_bug(config: Config, bug: str, budget: TokenBudget) -> Path:
                 else []
             ),
             config.executable_line_hints,
+            config.independent_statements,
+            config.strict_method_replacements,
         )
         if config.method_interface
         else None

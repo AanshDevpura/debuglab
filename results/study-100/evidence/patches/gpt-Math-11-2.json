@@ -1,0 +1,23 @@
+{
+  "model": "gpt",
+  "bug": "Math-11",
+  "group": 2,
+  "conditions": [
+    "llm",
+    "spectrum"
+  ],
+  "assessment": "supported",
+  "assessment_basis": "Java tokens equal developer-fixed methods after excluding comments/whitespace; all developer-changed methods covered.",
+  "methods": [
+    {
+      "id": "src/main/java/org/apache/commons/math3/distribution/MultivariateNormalDistribution.java::org.apache.commons.math3.distribution.MultivariateNormalDistribution#density@177",
+      "reference_token_equal": true,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public double density(final double[] vals) throws DimensionMismatchException {\n        final int dim = getDimension();\n        if (vals.length != dim) {\n            throw new DimensionMismatchException(vals.length, dim);\n        }\n\n        return FastMath.pow(2 * FastMath.PI, -0.5 * dim) *\n            FastMath.pow(covarianceMatrixDeterminant, -0.5) *\n            getExponentTerm(vals);\n    }",
+      "original_text": "    public double density(final double[] vals) throws DimensionMismatchException {\n        final int dim = getDimension();\n        if (vals.length != dim) {\n            throw new DimensionMismatchException(vals.length, dim);\n        }\n\n        return FastMath.pow(2 * FastMath.PI, -dim / 2) *\n            FastMath.pow(covarianceMatrixDeterminant, -0.5) *\n            getExponentTerm(vals);\n    }",
+      "candidate_text": "    public double density(final double[] vals) throws DimensionMismatchException {\n        final int dim = getDimension();\n        if (vals.length != dim) {\n            throw new DimensionMismatchException(vals.length, dim);\n        }\n\n        return FastMath.pow(2 * FastMath.PI, -0.5 * dim) *\n            FastMath.pow(covarianceMatrixDeterminant, -0.5) *\n            getExponentTerm(vals);\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

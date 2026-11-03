@@ -13,3 +13,5 @@ jobs:
       - run: scripts/check-release
       - run: ruff check . && ruff format --check .
       - run: pytest -q -m 'not integration'
+      - run: python scripts/check-hosted-guard.py
+      - run: python scripts/verify-study-data.py

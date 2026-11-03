@@ -1,0 +1,25 @@
+{
+  "model": "gpt",
+  "bug": "Lang-28",
+  "group": 1,
+  "conditions": [
+    "combined",
+    "direct",
+    "llm",
+    "spectrum"
+  ],
+  "assessment": "supported",
+  "assessment_basis": "Supported alternative: Character.toChars produces same BMP character or supplementary pair as reference. 2,236 numeric entity comparisons found no differences. Negative/invalid text follows existing parsing behavior.",
+  "methods": [
+    {
+      "id": "src/main/java/org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java::org.apache.commons.lang3.text.translate.NumericEntityUnescaper#translate@34",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    @Override\n    public int translate(CharSequence input, int index, Writer out) throws IOException {\n        // TODO: Protect from ArrayIndexOutOfBounds\n        if(input.charAt(index) == '&' && input.charAt(index + 1) == '#') {\n            int start = index + 2;\n            boolean isHex = false;\n\n            char firstChar = input.charAt(start);\n            if(firstChar == 'x' || firstChar == 'X') {\n                start++;\n                isHex = true;\n            }\n\n            int end = start;\n            while(input.charAt(end) != ';') {\n                end++;\n            }\n\n            int entityValue;\n            try {\n                if(isHex) {\n                    entityValue = Integer.parseInt(input.subSequence(start, end).toString(), 16);\n                } else {\n                    entityValue = Integer.parseInt(input.subSequence(start, end).toString(), 10);\n                }\n            } catch(NumberFormatException nfe) {\n                return 0;\n            }\n\n            if(entityValue > 0xFFFF) {\n                char[] chrs = Character.toChars(entityValue);\n                out.write(chrs[0]);\n                out.write(chrs[1]);\n            } else {\n                out.write(entityValue);\n            }\n            return 2 + (end - start) + (isHex ? 1 : 0) + 1;\n        }\n        return 0;\n    }",
+      "original_text": "    @Override\n    public int translate(CharSequence input, int index, Writer out) throws IOException {\n        // TODO: Protect from ArrayIndexOutOfBounds\n        if(input.charAt(index) == '&' && input.charAt(index + 1) == '#') {\n            int start = index + 2;\n            boolean isHex = false;\n\n            char firstChar = input.charAt(start);\n            if(firstChar == 'x' || firstChar == 'X') {\n                start++;\n                isHex = true;\n            }\n\n            int end = start;\n            while(input.charAt(end) != ';') {\n                end++;\n            }\n\n            int entityValue;\n            try {\n                if(isHex) {\n                    entityValue = Integer.parseInt(input.subSequence(start, end).toString(), 16);\n                } else {\n                    entityValue = Integer.parseInt(input.subSequence(start, end).toString(), 10);\n                }\n            } catch(NumberFormatException nfe) {\n                return 0;\n            }\n\n                out.write(entityValue);\n            return 2 + (end - start) + (isHex ? 1 : 0) + 1;\n        }\n        return 0;\n    }",
+      "candidate_text": "    @Override\n    public int translate(CharSequence input, int index, Writer out) throws IOException {\n        // TODO: Protect from ArrayIndexOutOfBounds\n        if(input.charAt(index) == '&' && input.charAt(index + 1) == '#') {\n            int start = index + 2;\n            boolean isHex = false;\n\n            char firstChar = input.charAt(start);\n            if(firstChar == 'x' || firstChar == 'X') {\n                start++;\n                isHex = true;\n            }\n\n            int end = start;\n            while(input.charAt(end) != ';') {\n                end++;\n            }\n\n            int entityValue;\n            try {\n                if(isHex) {\n                    entityValue = Integer.parseInt(input.subSequence(start, end).toString(), 16);\n                } else {\n                    entityValue = Integer.parseInt(input.subSequence(start, end).toString(), 10);\n                }\n            } catch(NumberFormatException nfe) {\n                return 0;\n            }\n\n            out.write(Character.toChars(entityValue));\n            return 2 + (end - start) + (isHex ? 1 : 0) + 1;\n        }\n        return 0;\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

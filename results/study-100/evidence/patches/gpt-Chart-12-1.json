@@ -1,0 +1,24 @@
+{
+  "model": "gpt",
+  "bug": "Chart-12",
+  "group": 1,
+  "conditions": [
+    "combined",
+    "direct",
+    "llm"
+  ],
+  "assessment": "identified_defect",
+  "assessment_basis": "Defect: constructor registers listener but omits dataset-group propagation performed by saved setDataset. Copied constructor/setter fixture: reference group identity true, candidate false.",
+  "methods": [
+    {
+      "id": "source/org/jfree/chart/plot/MultiplePiePlot.java::org.jfree.chart.plot.MultiplePiePlot#MultiplePiePlot@143",
+      "reference_token_equal": false,
+      "unchanged_from_buggy": false,
+      "developer_changes_in_method": true,
+      "reference_text": "    public MultiplePiePlot(CategoryDataset dataset) {\n        super();\n        setDataset(dataset);\n        PiePlot piePlot = new PiePlot(null);\n        this.pieChart = new JFreeChart(piePlot);\n        this.pieChart.removeLegend();\n        this.dataExtractOrder = TableOrder.BY_COLUMN;\n        this.pieChart.setBackgroundPaint(null);\n        TextTitle seriesTitle = new TextTitle(\"Series Title\",\n                new Font(\"SansSerif\", Font.BOLD, 12));\n        seriesTitle.setPosition(RectangleEdge.BOTTOM);\n        this.pieChart.setTitle(seriesTitle);\n        this.aggregatedItemsKey = \"Other\";\n        this.aggregatedItemsPaint = Color.lightGray;\n        this.sectionPaints = new HashMap();\n    }",
+      "original_text": "    public MultiplePiePlot(CategoryDataset dataset) {\n        super();\n        this.dataset = dataset;\n        PiePlot piePlot = new PiePlot(null);\n        this.pieChart = new JFreeChart(piePlot);\n        this.pieChart.removeLegend();\n        this.dataExtractOrder = TableOrder.BY_COLUMN;\n        this.pieChart.setBackgroundPaint(null);\n        TextTitle seriesTitle = new TextTitle(\"Series Title\",\n                new Font(\"SansSerif\", Font.BOLD, 12));\n        seriesTitle.setPosition(RectangleEdge.BOTTOM);\n        this.pieChart.setTitle(seriesTitle);\n        this.aggregatedItemsKey = \"Other\";\n        this.aggregatedItemsPaint = Color.lightGray;\n        this.sectionPaints = new HashMap();\n    }",
+      "candidate_text": "    public MultiplePiePlot(CategoryDataset dataset) {\n        super();\n        this.dataset = dataset;\n        if (dataset != null) {\n            dataset.addChangeListener(this);\n        }\n        PiePlot piePlot = new PiePlot(null);\n        this.pieChart = new JFreeChart(piePlot);\n        this.pieChart.removeLegend();\n        this.dataExtractOrder = TableOrder.BY_COLUMN;\n        this.pieChart.setBackgroundPaint(null);\n        TextTitle seriesTitle = new TextTitle(\"Series Title\",\n                new Font(\"SansSerif\", Font.BOLD, 12));\n        seriesTitle.setPosition(RectangleEdge.BOTTOM);\n        this.pieChart.setTitle(seriesTitle);\n        this.aggregatedItemsKey = \"Other\";\n        this.aggregatedItemsPaint = Color.lightGray;\n        this.sectionPaints = new HashMap();\n    }"
+    }
+  ],
+  "unmodified_reference_changed_methods": []
+}

@@ -87,7 +87,8 @@ def final_audit(config: Config, baseline: Path | None = None) -> dict:
             if rows[0]["status"] != "PLAUSIBLE":
                 continue
             suites = []
-            for path in (folder / "evaluation-logs" / f"{condition}-0-logs").glob("*test.json"):
+            checkout_name = Path(rows[0].get("evaluation_checkout", f"{condition}-0")).name
+            for path in (folder / "evaluation-logs" / f"{checkout_name}-logs").glob("*test.json"):
                 record = json.loads(path.read_text())
                 if record["command"][-1] == "test" and "-t" not in record["command"]:
                     suites.append((path, record))

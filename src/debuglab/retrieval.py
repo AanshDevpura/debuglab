@@ -10,6 +10,7 @@ from pathlib import Path
 from rank_bm25 import BM25Okapi
 
 from debuglab.config import Config
+from debuglab.dependencies import same_class_dependencies
 from debuglab.failure import compact
 from debuglab.interface import MethodInterface
 from debuglab.io import digest, save
@@ -152,6 +153,8 @@ def build(
                 config.java_source_guidance,
                 repair_units,
                 config.executable_line_hints,
+                config.independent_statements,
+                config.strict_method_replacements,
             )
             # Bound all possible hints using only source identities, never coverage scores.
             units = sorted(interface.units.values(), key=lambda m: len(m.id), reverse=True)
@@ -172,13 +175,33 @@ def build(
                     )[: config.hint_candidates]
                 ],
             }
+
+            def request_tokens(task: str) -> int:
+                tokens = budget.messages_count(interface.prompt(task, reserved))
+                # Match model.call's conservative hosted-provider accounting.
+                if (config.independent_statements or config.dependency_context) and not getattr(
+                    budget, "exact", True
+                ):
+                    response_format = None
+                    if config.model.schema_mode:
+                        response_format = {
+                            "type": "json_schema",
+                            "json_schema": {
+                                "name": "debugging_output",
+                                "strict": True,
+                                "schema": interface.schema(task),
+                            },
+                        }
+                    elif config.model.json_mode:
+                        response_format = {"type": "json_object"}
+                    if response_format is not None:
+                        tokens += budget.count(json.dumps(response_format)) + 256
+                return tokens
+
             return (
-                max(
-                    budget.messages_count(interface.prompt(task, reserved))
-                    for task in ("localize", "repair")
-                )
-                <= budget.input_limit
+                max(request_tokens(task) for task in ("localize", "repair")) <= budget.input_limit
             )
+
         return (
             max(
                 budget.messages_count(messages(text, task, worst_hint))
@@ -203,13 +226,13 @@ def build(
     unit_lines: dict[str, set[int]] = defaultdict(set)
     for unit in repair_units:
         unit_lines[unit.file].update(range(unit.start, unit.end + 1))
-    for mid in ordered:
+    dependencies = same_class_dependencies(methods) if config.dependency_context else {}
+    dependency_decisions = []
+
+    def addition_for(mid: str, current_files: set[str]) -> str:
         method = by_id[mid]
-        if mid not in candidates:
-            omitted.append({"method_id": mid, "reason": "outside_retrieved_set", **reasons[mid]})
-            continue
         addition = ""
-        if method.file not in files:
+        if method.file not in current_files:
             scaffold = "\n".join(
                 line
                 for line in skeletons[method.file].splitlines()
@@ -221,13 +244,42 @@ def build(
             )
             addition += f"\n\nCLASS SKELETON {method.file}\n{scaffold}"
         section = "SOURCE UNIT" if mid in unit_ids else "METHOD"
-        addition += f"\n\n{section} {method.id}\n{method.numbered()}"
+        return addition + f"\n\n{section} {method.id}\n{method.numbered()}"
+
+    for mid in ordered:
+        method = by_id[mid]
+        if mid in included:
+            continue
+        if mid not in candidates:
+            omitted.append({"method_id": mid, "reason": "outside_retrieved_set", **reasons[mid]})
+            continue
+        addition = addition_for(mid, files)
         if not fits(context + addition):
             omitted.append({"method_id": mid, "reason": "dropped_for_budget", **reasons[mid]})
             continue
         context += addition
         files.add(method.file)
         included.append(mid)
+        # Give each accepted caller at most two immediate helpers before the next
+        # unrelated candidate. Never evict accepted source or follow recursive edges.
+        for target in dependencies.get(mid, [])[:2]:
+            if target in included:
+                continue
+            extra = addition_for(target, files)
+            accepted = fits(context + extra)
+            dependency_decisions.append(
+                {
+                    "caller": mid,
+                    "callee": target,
+                    "included": accepted,
+                    "reason": "same_class_unique_arity" if accepted else "budget",
+                }
+            )
+            if accepted:
+                context += extra
+                included.append(target)
+                files.add(by_id[target].file)
+    omitted = [row for row in omitted if row["method_id"] not in included]
     encoded = context.encode("utf-8")
     context_path = output / "context.txt"
     if context_path.exists() and context_path.read_bytes() != encoded:
@@ -255,7 +307,13 @@ def build(
             if m.file in files
         ],
         "executed_methods": sorted(executed_methods),
-        "retrieval_policy": (
+        "dependency_context": dependency_decisions,
+        "localization_protocol": "independent-executable-v1"
+        if config.independent_statements
+        else "method-first-v1",
+        "retrieval_policy": "caller-first-two-same-class-helpers-v1"
+        if config.dependency_context
+        else (
             "evidence-tier-file-balanced-v3"
             if config.balanced_retrieval
             else "executed-priority-compact-skeleton-bm25-name-callgraph-v2"

@@ -263,7 +263,11 @@ def report(config: Config) -> None:
                 "shared."
             ),
             (
-                "Rankings select suspicious methods and original lines. Repair emits up "
+                "Method ranks and global executable-statement ranks are independent. "
+                "Statements must be source-derived AST starts. Repair emits up to three complete "
+                "replacement methods mapped to original source ranges."
+                if config.independent_statements
+                else "Rankings select suspicious methods and original lines. Repair emits up "
                 "to three complete replacement methods, mapped to original source "
                 "ranges."
             ),
