@@ -12,13 +12,15 @@ We ask: RQ1, how do spectrum-based, LLM-only and combined localization compare? 
 
 ## 2 Related Work
 
-Statistical and combined localization. Defects4J provides real Java bugs and tests [2]; Ochiai ranks code using test coverage [3]. Zou et al. train a model to merge scores from seven localization families, each estimating how likely a statement is faulty. It ranks a faulty statement first for 72 of 357 faults, versus 24 for the best individual technique, a 200% increase [4]. Unlike this learned combination, we give spectrum ranks directly to an LLM.
+Combining localization evidence. Zou et al. learn how to merge scores from seven localization families, including coverage, mutation and program-dependency evidence [2]. Across 357 faults, their tie-aware Top-1 measure shows that the combination ranks a faulty statement first for 72, versus 24 for the best individual technique. This supports combining complementary signals, but does not show that adding coverage ranks to an LLM prompt improves either localization or repair, which we test.
 
-LLM-based repair. Xia et al. compare nine models on five datasets [5]. On Defects4J 1.2, whole-function generation with Codex yields 102 test-passing fixes, of which 63 are judged correct. They also find that supplying the surrounding code and asking the model to fill only the missing fragment increases the proportion of correct patches. Their models sample multiple candidates; we use one answer per condition with fixed source and edit rules.
+LLM-based localization. Kang et al.’s AutoFL lets an LLM inspect covered code, navigate methods and explain a suspected fault [3]. With GPT-3.5, it improves method Top-1 accuracy by 19.7% relative to a coverage baseline on Java bugs. GPT-4 also outperforms five aggregated GPT-3.5 runs with a single run. Our comparison holds retrieved source fixed and tests whether better rankings lead to valid repairs.
 
-LLM-based localization. Kang et al.’s AutoFL uses test coverage and repository navigation to identify faulty methods [6]. With GPT-3.5, it improves method Top-1 accuracy over Ochiai by 19.7% on Defects4J, a relative increase. This improves diagnosis; we ask whether better rankings also improve repair when the supplied code is fixed.
+Model capability and context. Xia et al. compare nine models across five repair datasets [4]. In whole-function Java repair, Codex yields 63 correct fixes versus GPT-NeoX’s 18; only 63 of Codex’s 102 suite-passing fixes are judged correct. Supplying code before and after a missing fragment also improves repair. We extend these model and context comparisons by testing localization hints with identical source and one answer per condition.
 
-Patch validity. Qi et al. find that GenProg repairs only 2 of 105 defects correctly despite 55 reported fixes; many patches remove functionality or fail proper validation [7]. Their findings motivate checking both test results and preserved behavior. We therefore report test results separately from reference-based patch assessment.
+Feedback-driven repair. Xia and Zhang’s ChatRepair feeds failed patches and test errors into subsequent attempts and generates alternatives to passing patches [5]. It correctly fixes 162 of 337 bugs across three repair settings, versus 105 for its base ChatGPT comparison. This shows benefits from feedback and repeated generation; our study isolates localization hints without those additional opportunities.
+
+Beyond passing tests. Qi et al. find only 2 correct fixes among GenProg’s 55 reported fixes, with many patches deleting required functionality [6]. Together with Xia et al.’s gap between passing and correct fixes, this motivates reporting suite passes separately from reference-guided human review.
 
 ## 3 Approach and Study Methodology
 
@@ -54,7 +56,7 @@ The midpoint’s 60-bug prototype exposed missing context, unsupported edits and
 
 The 100 Defects4J 3.0.1 bugs span JFreeChart (Chart, 19), Apache Commons Lang (Lang, 30), Apache Commons Math (Math, 34) and Joda-Time (Time, 17). All known faulty methods are supplied; 68 bugs have eligible changed/deleted-line targets. Both models receive the same bugs and frozen source. This new cohort is not directly comparable with the midpoint’s 60 bugs.
 
-We compare weaker Qwen2.5-Coder 7B with stronger GPT-5.4 mini (gpt-5.4-mini-2026-03-17) [8]; these labels describe performance here. Both use temperature zero and a 4,096-token output cap. Qwen runs locally with a 32,768-token window, 28,160-token input allowance and seed 20261009. GPT uses the API without a seed or recorded reasoning tokens; its larger window adds no source.
+We compare weaker Qwen2.5-Coder 7B with stronger GPT-5.4 mini (gpt-5.4-mini-2026-03-17) [7]; these labels describe performance here. Both use temperature zero and a 4,096-token output cap. Qwen runs locally with a 32,768-token window, 28,160-token input allowance and seed 20261009. GPT uses the API without a seed or recorded reasoning tokens; its larger window adds no source.
 
 Each model makes 600 requests and 400 repair attempts. Source and failure evidence are identical. The 400 fixed-input messages match across models; 200 repair prompts use each model’s newly generated rankings. Provider-specific request formats preserve the same edit rules and validation.
 
@@ -141,16 +143,14 @@ GPT-5.4 mini produces 124 human-reviewed valid repairs versus Qwen2.5-Coder 7B�
 
 [1] A. Devpura and T. Novitsky. “[DebugLab: Code and Study Data.](https://github.com/AanshDevpura/debuglab)” GitHub repository, 2026.
 
-[2] R. Just, D. Jalali and M. D. Ernst. “[Defects4J: A Database of Existing Faults to Enable Controlled Testing Studies for Java Programs.](https://doi.org/10.1145/2610384.2628055)” ISSTA, 2014.
+[2] D. Zou, J. Liang, Y. Xiong, M. D. Ernst and L. Zhang. “[An Empirical Study of Fault Localization Families and Their Combinations.](https://damingz.github.io/papers/tse19.pdf)” IEEE Transactions on Software Engineering, 47(2), 332–347, 2021.
 
-[3] R. Abreu, P. Zoeteweij and A. J. C. van Gemund. “[An Evaluation of Similarity Coefficients for Software Fault Localization.](https://doi.org/10.1109/PRDC.2006.18)” PRDC, 2006.
+[3] S. Kang, G. An and S. Yoo. “[A Quantitative and Qualitative Evaluation of LLM-Based Explainable Fault Localization.](https://coinse.github.io/publications/pdfs/Kang2024ay.pdf)” Proceedings of the ACM on Software Engineering, FSE, 2024.
 
-[4] D. Zou, J. Liang, Y. Xiong, M. D. Ernst and L. Zhang. “[An Empirical Study of Fault Localization Families and Their Combinations.](https://homes.cs.washington.edu/~mernst/pubs/fl-families-tse2019.pdf)” IEEE Transactions on Software Engineering, 47(2), 332–347, 2021.
+[4] C. S. Xia, Y. Wei and L. Zhang. “[Automated Program Repair in the Era of Large Pre-trained Language Models.](https://lingming.cs.illinois.edu/publications/icse2023a.pdf)” ICSE, 2023.
 
-[5] C. S. Xia, Y. Wei and L. Zhang. “[Automated Program Repair in the Era of Large Pre-trained Language Models.](https://lingming.cs.illinois.edu/publications/icse2023a.pdf)” ICSE, 2023.
+[5] C. S. Xia and L. Zhang. “[Automated Program Repair via Conversation: Fixing 162 out of 337 Bugs for $0.42 Each using ChatGPT.](https://lingming.cs.illinois.edu/publications/issta2024.pdf)” ISSTA, 2024.
 
-[6] S. Kang, G. An and S. Yoo. “[A Quantitative and Qualitative Evaluation of LLM-Based Explainable Fault Localization.](https://coinse.github.io/publications/pdfs/Kang2024ay.pdf)” Proceedings of the ACM on Software Engineering, FSE, 2024.
+[6] Z. Qi, F. Long, S. Achour and M. Rinard. “[An Analysis of Patch Plausibility and Correctness for Generate-and-Validate Patch Generation Systems.](https://people.csail.mit.edu/rinard/paper/issta15.pdf)” ISSTA, 2015.
 
-[7] Z. Qi, F. Long, S. Achour and M. Rinard. “[An Analysis of Patch Plausibility and Correctness for Generate-and-Validate Patch Generation Systems.](https://people.csail.mit.edu/rinard/paper/issta15.pdf)” ISSTA, 2015.
-
-[8] OpenAI. “[GPT-5.4 mini.](https://developers.openai.com/api/docs/models/gpt-5.4-mini)” Model documentation; snapshot checked November 2, 2026.
+[7] OpenAI. “[GPT-5.4 mini.](https://developers.openai.com/api/docs/models/gpt-5.4-mini)” Model documentation; snapshot checked November 2, 2026.
