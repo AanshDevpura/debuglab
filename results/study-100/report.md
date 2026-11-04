@@ -12,13 +12,13 @@ We ask: RQ1, how do spectrum-based, LLM-only and combined localization compare? 
 
 ## 2 Related Work
 
-Combining localization evidence. Zou et al. train RankSVM, a supervised machine-learning ranking model, to combine scores from seven localization families, including coverage, mutation and program-dependency evidence [2]. Training uses known faulty and nonfaulty statements to learn which score combinations should rank faulty code higher. Across 357 faults, their tie-aware Top-1 measure shows that the combination ranks a faulty statement first for 72, versus 24 for the best individual technique. This supports combining complementary signals, but does not show that adding coverage ranks to an LLM prompt improves either localization or repair, which we test.
+Combining localization evidence. Zou et al. train RankSVM, a supervised machine-learning ranking model, to combine scores from seven localization families, including coverage, mutation and program-dependency evidence [2]. Training uses known faulty and nonfaulty statements to learn which score combinations should rank faulty code higher. Across 357 faults, their Top-1 measure shows that the combination ranks a faulty statement first for 72, versus 24 for the best individual technique. This supports combining complementary signals, but does not show that adding coverage ranks to an LLM prompt improves either localization or repair, which we test.
 
-LLM-based localization. Kang et al.’s AutoFL lets an LLM inspect covered code, navigate methods and explain a suspected fault [3]. With GPT-3.5, it improves method Top-1 accuracy by 19.7% relative to Ochiai on Java bugs. Ochiai is the spectrum-based baseline that ranks code using passing and failing test coverage. GPT-4 also outperforms five aggregated GPT-3.5 runs with a single run. Our comparison holds retrieved source fixed and tests whether better rankings lead to valid repairs.
+LLM-based localization. Kang et al.’s AutoFL lets an LLM inspect covered code, navigate methods and explain a suspected fault [3]. With GPT-3.5, it improves method Top-1 accuracy by 19.7% relative to Ochiai on Java bugs. Ochiai is the spectrum-based baseline that ranks code using passing and failing test coverage. GPT-4 also outperforms five aggregated GPT-3.5 runs with a single run. Our comparison holds retrieved source fixed and tests whether better rankings lead to more valid repairs.
 
-Model capability and context. Xia et al. compare nine models across five repair datasets [4]. In whole-function Java repair, Codex yields 63 correct fixes versus GPT-NeoX’s 18; only 63 of Codex’s 102 suite-passing fixes are judged correct. Supplying code before and after a missing fragment also improves repair. We extend these model and context comparisons by testing localization hints with identical source and one answer per condition.
+Model capability and context. Xia et al. compare nine models across five repair datasets [4]. In whole-function Java repair, Codex yields 63 correct fixes versus GPT-NeoX’s 18. Supplying code before and after a missing fragment also improves repair. We extend these model and context comparisons by testing localization hints with identical source and one answer per condition.
 
-Beyond passing tests. Qi et al. find only 2 correct fixes among GenProg’s 55 reported fixes, with many patches deleting required functionality [5]. Together with Xia et al.’s gap between passing and correct fixes, this motivates reporting suite passes separately from reference-guided human review.
+Beyond passing tests. Xia et al. judge only 63 of Codex’s 102 suite-passing fixes correct [4], showing that passing the existing tests does not guarantee a valid repair. We therefore report suite passes separately from reference-guided human review, which checks whether patches fix the defect while preserving required behavior.
 
 ## 3 Approach and Study Methodology
 
@@ -54,7 +54,7 @@ The midpoint’s 60-bug prototype exposed missing context, unsupported edits and
 
 The 100 Defects4J 3.0.1 bugs span JFreeChart (Chart, 19), Apache Commons Lang (Lang, 30), Apache Commons Math (Math, 34) and Joda-Time (Time, 17). All known faulty methods are supplied; 68 bugs have eligible changed/deleted-line targets. Both models receive the same bugs and frozen source. This new cohort is not directly comparable with the midpoint’s 60 bugs.
 
-We compare weaker Qwen2.5-Coder 7B with stronger GPT-5.4 mini (gpt-5.4-mini-2026-03-17) [6]; these labels describe performance here. Both use temperature zero and a 4,096-token output cap. Qwen runs locally with a 32,768-token window, 28,160-token input allowance and seed 20261009. GPT uses the API without a seed or recorded reasoning tokens; its larger window adds no source.
+We compare weaker Qwen2.5-Coder 7B with stronger GPT-5.4 mini (gpt-5.4-mini-2026-03-17) [5]; these labels describe performance here. Both use temperature zero and a 4,096-token output cap. Qwen runs locally with a 32,768-token window, 28,160-token input allowance and seed 20261009. GPT uses the API without a seed or recorded reasoning tokens; its larger window adds no source.
 
 Each model makes 600 requests and 400 repair attempts. Source and failure evidence are identical. The 400 fixed-input messages match across models; 200 repair prompts use each model’s newly generated rankings. Provider-specific request formats preserve the same edit rules and validation.
 
@@ -149,6 +149,4 @@ GPT-5.4 mini produces 124 human-reviewed valid repairs versus Qwen2.5-Coder 7B�
 
 [4] C. S. Xia, Y. Wei and L. Zhang. “[Automated Program Repair in the Era of Large Pre-trained Language Models.](https://lingming.cs.illinois.edu/publications/icse2023a.pdf)” ICSE, 2023.
 
-[5] Z. Qi, F. Long, S. Achour and M. Rinard. “[An Analysis of Patch Plausibility and Correctness for Generate-and-Validate Patch Generation Systems.](https://people.csail.mit.edu/rinard/paper/issta15.pdf)” ISSTA, 2015.
-
-[6] OpenAI. “[GPT-5.4 mini.](https://developers.openai.com/api/docs/models/gpt-5.4-mini)” Model documentation; snapshot checked November 2, 2026.
+[5] OpenAI. “[GPT-5.4 mini.](https://developers.openai.com/api/docs/models/gpt-5.4-mini)” Model documentation; snapshot checked November 2, 2026.
