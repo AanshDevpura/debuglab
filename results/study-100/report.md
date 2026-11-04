@@ -129,13 +129,9 @@ Scope and confidence. The cohort excludes missing-context failures and larger fi
 
 ### 5.2 Future extensions
 
-Broader, repeated evaluation. Include more projects, model families and bugs excluded by current source or edit limits. Repeat each condition at a fixed budget to check whether small gains persist. Add tests for behavior the original suite misses, such as sort order, array types and overflow.
+Broader, repeated evaluation. Evaluate more bugs across additional projects, including cases excluded by the current retrieval and edit limits. Compare more models across sizes and families, and repeat each condition across independent runs with declared settings and budgets. This would show whether the model gap and small guidance gains persist beyond one model pair or run. Expand human review of suite-passing patches, using multiple reviewers to check fixes and preserved behavior against developer references while allowing valid alternatives. Report reviewer agreement and investigate disagreements, with targeted tests where needed.
 
-Better context and retrieval. Vary helper code, field definitions and relevant API information, while keeping source identical across conditions within each comparison. Measure whether extra context increases valid repairs. Evaluate retrieval on an unrestricted bug set, including missing faulty methods, to separate failure to find useful code from failure to repair supplied code.
-
-Localization that helps repair. Compare a trained merger of spectrum and LLM scores with a policy that consults spectrum only when the LLM is uncertain. Judge both by valid repairs and Top-k accuracy. A separate diagnostic should identify known faulty methods without revealing fixes or adding source. Continued failure would isolate patch generation as the remaining obstacle.
-
-Agentic and iterative repair. Under matched call, token and time limits, compare one-shot repair, read-only exploration, and exploration with compiler/test feedback and revision. This separates gains from more information and from revision. We excluded these workflows for cost and time, and fixed supplied context to compare use of the same evidence. Record inspected code and independently review final patches.
+Agentic and iterative repair. Let models search the repository, inspect additional files and dependencies, and revise patches using compiler and test feedback. This could recover information missing from the frozen context, but would not guarantee finding the bug: an agent might never locate the faulty method. The scope would therefore change from repairing identical supplied source to evaluating an end-to-end debugging workflow, in which models and conditions may inspect different code. Compare exploration alone with exploration plus feedback under matched call, token and time budgets, recording inspected source, retrieval failures and final human-reviewed repairs. We excluded this broader workflow because of cost, time and the decision to hold supplied information fixed.
 
 ## 6 Conclusion
 
