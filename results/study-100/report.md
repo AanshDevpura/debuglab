@@ -109,7 +109,7 @@ Table 2. Suite-passing attempts on the same bugs: 100 per condition and 400 per 
 
 #### 4.2.4 Reference-guided human review
 
-Review procedure. Human review used the developer’s reference (golden) patch and original code to assess suite-passing patches. Exact matches were not required: alternative implementations were accepted if they fixed the defect while preserving required behavior.
+Review procedure. Human review used the developer’s reference (golden) patch and original code to assess suite-passing patches. Exact matches were not required: alternative implementations were accepted if they fixed the defect while preserving required behavior. Common errors. Qwen patches suppressed exceptions, invented zero values for missing data, or removed ordering and type checks. GPT patches ignored input bounds, changed array types, or missed overflow checks. Both models left related methods faulty despite passing tests.
 
 Table 3. Human-reviewed patch outcomes. Each repair condition contains 100 attempts.
 
@@ -121,7 +121,7 @@ Table 3. Human-reviewed patch outcomes. Each repair condition contains 100 attem
 | Valid repairs | 30/400 (7.5%) | 124/400 (31%) |
 | Direct (no hints)<br>Spectrum-guided<br>LLM-guided<br>Combined-guided | 9/100 (9%)<br>6/100 (6%)<br>7/100 (7%)<br>8/100 (8%) | 30/100 (30%)<br>32/100 (32%)<br>31/100 (31%)<br>31/100 (31%) |
 
-Interpretation. Valid-repair rates are 7.5% for Qwen and 31% for GPT, below suite-pass rates of 10.75% and 40%. The model gap narrows from 29.25 to 23.5 percentage points, but GPT retains a substantial advantage. Its guided rates of 31–32% remain close to direct repair’s 30%; combined and LLM guidance tie at 31%. Thus review preserves the model advantage without establishing a meaningful guidance benefit.
+Interpretation. Review reduces Qwen’s rate from 10.75% to 7.5% and GPT’s from 40% to 31%, narrowing the model gap to 23.5 points. GPT’s guided rates (31–32%) remain close to direct repair (30%); LLM and combined guidance tie at 31%. Review preserves the model advantage but reveals little guidance benefit.
 
 ## 5 Discussion (Limitations and Future Extensions)
 
