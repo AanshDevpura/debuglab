@@ -4,10 +4,6 @@ A Paired Study of 100 Defects4J Bugs
 
 Aansh Devpura (devpura2) and Theodor Novitsky (theodor4)
 
-## Abstract
-
-Finding faulty code does not guarantee a correct repair. We compare Ochiai, LLM-only and combined localization on 100 selected Defects4J Java bugs, then test one-shot repair with identical source code and no test feedback. GPT-5.4 mini places a faulty method first for 76% of bugs with LLM-only localization, 30% with Ochiai and 77% with combined localization. Code review and targeted tests identify 124 valid repairs from GPT’s 400 attempts versus 30 from Qwen2.5-Coder 7B’s 400. GPT’s valid-repair rates are 30% directly and 31–32% with guidance. The stronger model produces more valid repairs here, but better rankings alone do not ensure better patches.
-
 ## 1 Introduction (Target Problem and Motivation)
 
 Fault localization identifies buggy code; program repair changes it to restore intended behavior. Spectrum-based localization uses passing and failing test coverage, while a large language model (LLM) interprets source and failure evidence. Combining these signals may improve diagnosis, but a repair must also preserve other behavior.
@@ -109,11 +105,11 @@ Table 2. Suite-passing attempts on the same bugs: 100 per condition and 400 per 
 | All attempts | 43/400 (10.75%) | 160/400 (40%) |
 | Bugs with any pass | 13/100 | 49/100 |
 
-#### 4.2.4 Reference-based patch assessment
+#### 4.2.4 Human review
 
-Review results. We compared patches with the original code, developer fixes and documented API behavior, then tested suspected errors. These checks assess whether a patch preserves required behavior beyond passing the existing suite. Human review and these checks identify 30 valid Qwen and 124 valid GPT repairs; 13 and 36 passing attempts are defective (Table 3). Original test outcomes remain unchanged.
+Review results. Human review judged 30 Qwen and 124 GPT attempts valid, and found defects in 13 and 36 suite-passing attempts (Table 3). These judgments are reported separately from the original test outcomes, which remain unchanged.
 
-Table 3. Reviewed patch outcomes. Each repair condition contains 100 attempts.
+Table 3. Human-reviewed patch outcomes. Each repair condition contains 100 attempts.
 
 | Assessment outcome | Qwen2.5-Coder 7B | GPT-5.4 mini |
 | --- | --- | --- |
@@ -127,21 +123,23 @@ Table 3. Reviewed patch outcomes. Each repair condition contains 100 attempts.
 
 ### 5.1 Limitations
 
-The cohort includes only bugs whose known fixes fit the edit rules and whose faulty methods are retrieved. Results do not describe all Defects4J bugs or unseen projects; public bugs may appear in training data. Human review, source comparison and targeted tests support the patch judgments, but do not prove correctness for every possible input.
+Selection and generalization. We selected bugs whose known fixes fit our edit limits and whose faulty methods were retrieved. This controls the supplied information but excludes missing-context failures and larger fixes. Results describe this restricted cohort, not arbitrary Defects4J bugs or new projects. Public benchmark code may also appear in training data.
 
-We evaluate one main run each for two models, which also differ in implementation. More models and repeated trials are needed to establish general trends or reliable one-bug differences.
+Model comparison and validation. One main run per model cannot establish stable one-bug differences. Provider, tokenizer and seed settings also differ, so we compare configured systems rather than isolate the cause of their performance gap. Human review strengthens validation but cannot prove correctness for every input.
 
 ### 5.2 Future extensions
 
-Broader evaluation and validation. Future work should include bugs where retrieval misses faulty code, plus additional projects and model families. Repeating each condition would show whether small differences persist. Further independent review and additional tests should check behavior the original suite may miss, such as preserving sort order, rejecting incompatible array types and detecting overflow.
+Broader, repeated evaluation. Include more projects, model families and bugs excluded by current source or edit limits. Repeat each condition under the same declared budget to check whether small gains persist. Report suite-passing and human-reviewed valid repairs separately. Add tests for behavior the original suite misses, such as sort order, array types and overflow.
 
-Context and localization. Vary the amount of relevant helper code supplied to both models and measure whether more context improves repair. Compare the current LLM-based combination with a model trained to merge the two rankings. A separate experiment should explicitly identify the known faulty methods without showing their fixes. If repair still fails, generating the fix, rather than finding where to edit, is the remaining obstacle.
+Better context and retrieval. Vary helper code, field definitions and relevant API information, while keeping source identical across conditions within each comparison. Measure whether extra context increases valid repairs. Evaluate retrieval on an unrestricted bug set, including missing faulty methods, to separate failure to find useful code from failure to repair supplied code.
 
-Iterative repair. Let models inspect more code and revise patches after tests, using equal call, token and time budgets. We excluded this because of cost and runtime and to keep supplied information identical. Compare extra code access alone with test feedback to determine which helps.
+Localization that helps repair. Compare a trained merger of spectrum and LLM scores with a policy that consults spectrum only when the LLM is uncertain. Judge both by valid repairs and Top-k accuracy. A separate diagnostic should identify known faulty methods without revealing fixes or adding source. Continued failure would isolate patch generation as the remaining obstacle.
+
+Agentic and iterative repair. Under matched call, token and time limits, compare one-shot repair, read-only exploration, and exploration with compiler/test feedback and revision. This separates gains from more information and from revision. We excluded these workflows for cost and time, and fixed supplied context to compare use of the same evidence. Record inspected code and independently review final patches.
 
 ## 6 Conclusion
 
-LLM-based localization outperforms spectrum, but combining the signals adds no consistent gain over LLM-only. Code review and targeted tests identify 124 valid GPT-5.4 mini repairs versus 30 Qwen repairs out of 400 attempts per model. GPT’s valid-repair rate is 30% directly and 31–32% with guidance. Correct rankings do not guarantee effective edits, so direct generation remains a strong baseline. Broader, repeated evaluations are needed before drawing stronger conclusions.
+GPT-5.4 mini produces 124 human-reviewed valid repairs versus Qwen2.5-Coder 7B’s 30 out of 400 attempts each. LLM localization beats Ochiai, but combining signals adds no consistent gain. GPT’s direct repair rate is 30%, versus 31–32% with guidance: finding faulty code is insufficient when generating the edit remains difficult. Direct generation should remain a baseline, and localization should be judged by valid repairs.
 
 ## References
 
