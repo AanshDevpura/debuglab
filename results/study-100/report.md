@@ -16,7 +16,7 @@ Combining localization evidence. Zou et al. train RankSVM, a supervised machine-
 
 LLM-based localization. Kang et al.’s AutoFL lets an LLM inspect covered code, navigate methods and explain a suspected fault [3]. With GPT-3.5, it improves method Top-1 accuracy by 19.7% relative to Ochiai on Java bugs. Ochiai is the spectrum-based baseline that ranks code using passing and failing test coverage. GPT-4 also outperforms five aggregated GPT-3.5 runs with a single run. Our comparison holds retrieved source fixed and tests whether better rankings lead to more valid repairs.
 
-Model capability and context. Xia et al. compare nine models across five repair datasets [4]. In whole-function Java repair, Codex yields 63 correct fixes versus GPT-NeoX’s 18. Supplying code before and after a missing fragment also improves repair. We extend these model and context comparisons by testing localization hints with identical source and one answer per condition.
+Model capability and context. Xia et al. compare nine models across five repair datasets [4]. On their whole-function Java subset, Codex yields 63 correct fixes versus GPT-NeoX’s 18. Supplying code before and after a missing fragment also improves repair. We extend these model and context comparisons by testing localization hints with identical source and one answer per condition.
 
 Beyond passing tests. Xia et al. judge only 63 of Codex’s 102 suite-passing fixes correct [4], showing that passing the existing tests does not guarantee a valid repair. We therefore report suite passes separately from reference-guided human review, which checks whether patches fix the defect while preserving required behavior.
 
@@ -76,7 +76,7 @@ Table 1. Top-1 (%), Qwen → GPT-5.4 mini (change in points); n = 100 methods, 6
 | LLM-only | 48.0 → 76.0 (+28.0) | 5.9 → 32.4 (+26.5) |
 | Combined | 42.0 → 77.0 (+35.0) | 4.4 → 29.4 (+25.0) |
 
-Answer to RQ1. Qwen2.5-Coder 7B’s method Top-1 is 48% with LLM-only versus 42% combined; statement Top-1 is 5.9% versus 4.4%. GPT-5.4 mini reaches 76% versus 77% for methods and 32.4% versus 29.4% for statements. Both outperform Ochiai (30% methods, 1.5% statements). GPT’s combination gains 7 first-ranked faulty methods but loses 6 through 3 demotions and 3 invalid duplicate rankings; statement gains of 3 are offset by 5 losses. Spectrum hints can misdirect ranking: combination hurts Qwen and adds no consistent GPT benefit.
+Answer to RQ1. Qwen2.5-Coder 7B’s method Top-1 is 48% with LLM-only versus 42% combined; statement Top-1 is 5.9% versus 4.4%. GPT-5.4 mini reaches 76% versus 77% for methods and 32.4% versus 29.4% for statements. At Top-1, both outperform Ochiai (30% methods, 1.5% statements). GPT’s combination gains 7 first-ranked faulty methods but loses 6 through 3 demotions and 3 invalid duplicate rankings; statement gains of 3 are offset by 5 losses. Spectrum hints can misdirect ranking: combination hurts Qwen and adds no consistent GPT benefit.
 
 4.2.2 Repair (RQ2): guidance yields no clear aggregate advantage
 
@@ -107,16 +107,16 @@ Table 2. Suite-passing attempts on the same bugs: 100 per condition and 400 per 
 
 #### 4.2.4 Reference-guided human review
 
-Review procedure. Human review used the developer’s reference (golden) patch and original code to assess suite-passing patches. Exact matches were not required: alternative implementations were accepted if they fixed the defect while preserving required behavior.
+Review procedure. Human review compared suite-passing patches with the original code and developer’s reference (golden) patch. AI-assisted source checks and targeted tests resolved the remaining 12 attempts. Alternative implementations were accepted when they fixed the defect and preserved required behavior; exact matches were not required.
 
-Common errors. Passing patches still suppressed exceptions, removed ordering or type checks, ignored input bounds and overflow, or left related methods faulty.
+Common errors. Passing patches still suppressed exceptions, removed ordering or type checks, ignored input bounds and overflow, or fixed one affected method but left another affected overload unfixed.
 
-Table 3. Human-reviewed patch outcomes. Each repair condition contains 100 attempts.
+Table 3. Patch review outcomes. Each repair condition contains 100 attempts.
 
 | Assessment outcome | Qwen2.5-Coder 7B | GPT-5.4 mini |
 | --- | --- | --- |
 | Suite-passing attempts | 43 | 160 |
-| Identified defects | 13 | 36 |
+| Defective passing attempts | 13 | 36 |
 | Bugs with valid repairs | 9/100 | 39/100 |
 | Valid repairs | 30/400 (7.5%) | 124/400 (31%) |
 | Direct (no hints)<br>Spectrum-guided<br>LLM-guided<br>Combined-guided | 9/100 (9%)<br>6/100 (6%)<br>7/100 (7%)<br>8/100 (8%) | 30/100 (30%)<br>32/100 (32%)<br>31/100 (31%)<br>31/100 (31%) |
@@ -127,7 +127,7 @@ Interpretation. Review reduces Qwen’s rate from 10.75% to 7.5% and GPT’s fro
 
 ### 5.1 Limitations
 
-Scope and confidence. The cohort excludes missing-context failures and larger fixes, so results do not describe arbitrary Defects4J bugs or new projects. Public benchmark code may appear in training data. Only one run per model was evaluated; provider, tokenizer and seed also differ. Human review supports validity judgments but cannot prove correctness for every input.
+Scope and confidence. The cohort excludes missing-context failures and larger fixes, so results do not describe arbitrary Defects4J bugs or new projects. Public benchmark code may appear in training data. The model comparison uses one run per model; provider, tokenizer and seed also differ. Patch review supports validity judgments but cannot prove correctness for every input.
 
 ### 5.2 Future extensions
 
@@ -137,7 +137,7 @@ Agentic and iterative repair. Let models search the repository, inspect addition
 
 ## 6 Conclusion
 
-GPT-5.4 mini produces 124 human-reviewed valid repairs versus Qwen2.5-Coder 7B’s 30 out of 400 attempts each. LLM localization beats Ochiai, but combining signals adds no consistent gain. GPT’s direct repair rate is 30%, versus 31–32% with guidance: finding faulty code is insufficient when generating the edit remains difficult. Direct generation should remain a baseline, and localization should be judged by valid repairs.
+GPT-5.4 mini produces 124 valid repairs after review versus Qwen2.5-Coder 7B’s 30 out of 400 attempts each. LLM localization improves Top-1 over Ochiai, but combining signals adds no consistent gain. GPT’s direct repair rate is 30%, versus 31–32% with guidance: finding faulty code is insufficient when generating the edit remains difficult. Direct generation should remain a baseline, and localization should be judged by valid repairs.
 
 ## References
 

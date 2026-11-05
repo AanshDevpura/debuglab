@@ -27,7 +27,7 @@ Method Top-1 for Ochiai / LLM-only / combined is **30 / 48 / 42** for Qwen and
 **30 / 76 / 77** for GPT. Statement Top-1 has 68 eligible bugs: **1 / 4 / 3**
 versus **1 / 22 / 20**. See [summary.json](summary.json) for every Top-1/3/5 count.
 
-LLM localization outperforms Ochiai here. Combining signals is worse for Qwen and
+LLM localization improves Top-1 over Ochiai here. Combining signals is worse for Qwen and
 adds no consistent gain for GPT. GPT yields substantially more valid repairs, but
 localization hints add little over direct generation when faulty code is already
 supplied. These are observations on this selected cohort, not isolated causal
