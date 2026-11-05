@@ -107,7 +107,7 @@ Table 2. Suite-passing attempts on the same bugs: 100 per condition and 400 per 
 
 #### 4.2.4 Reference-guided human review
 
-Review procedure. Human review compared suite-passing patches with the original code and developer’s reference (golden) patch. AI-assisted source checks and targeted tests resolved the remaining 12 attempts. Alternative implementations were accepted when they fixed the defect and preserved required behavior; exact matches were not required.
+Review procedure. Human review used the developer’s reference (golden) patch and original code to assess suite-passing patches. Exact matches were not required: alternative implementations were accepted if they fixed the defect while preserving required behavior.
 
 Common errors. Passing patches still suppressed exceptions, removed ordering or type checks, ignored input bounds and overflow, or fixed one affected method but left another affected overload unfixed.
 
@@ -137,7 +137,7 @@ Agentic and iterative repair. Let models search the repository, inspect addition
 
 ## 6 Conclusion
 
-GPT-5.4 mini produces 124 valid repairs after review versus Qwen2.5-Coder 7B’s 30 out of 400 attempts each. LLM localization improves Top-1 over Ochiai, but combining signals adds no consistent gain. GPT’s direct repair rate is 30%, versus 31–32% with guidance: finding faulty code is insufficient when generating the edit remains difficult. Direct generation should remain a baseline, and localization should be judged by valid repairs.
+On the same 100 bugs, GPT-5.4 mini yields 124 valid repairs across 400 attempts, versus 30 for Qwen2.5-Coder 7B. Both improve Top-1 localization over Ochiai, but combining signals adds no consistent gain. GPT’s valid-repair rate rises only from 30% without hints to 31–32% with guidance. Once faulty code is supplied, locating it more accurately does not reliably produce a valid edit. In this setting, choosing the stronger model made a much larger difference than adding localization hints.
 
 ## References
 
